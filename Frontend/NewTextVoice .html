@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnoAI</title>
+    
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 100%;
+            
+            height: 90vh;
+            background-color: #121212;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            background-color: #0d1117;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e2738;
+        }
+
+        .chat-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-title i {
+            color: #0084ff;
+            font-size: 1.5rem;
+        }
+
+        .chat-title h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f0f0f0;
+        }
+
+        .chat-status {
+            background-color: #0084ff;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #1e2738;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .user-message .message-avatar {
+            background-color: #0084ff;
+        }
+
+        .message-avatar i {
+            color: #f0f0f0;
+            font-size: 1rem;
+        }
+
+        .message-content {
+            background-color: #1e2738;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            font-size: 25px;
+            line-height: 1.4;
+        }
+
+        .user-message .message-content {
+            background-color: #0084ff;
+            border-radius: 18px;
+            border-top-right-radius: 4px;
+        }
+
+        .message-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            background-color: #0d1117;
+            border-top: 1px solid #1e2738;
+        }
+
+        .attachment-preview {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-preview {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .attachment-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .attachment-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1e2738;
+            border: none;
+            color: #0084ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .attachment-button:hover {
+            background-color: #0084ff;
+            color: white;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            background-color: #1e2738;
+            border-radius: 24px;
+            padding: 8px 16px;
+            align-items: center;
+        }
+
+        #message-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #f0f0f0;
+            font-size: 0.95rem;
+            resize: none;
+            height: 24px;
+            max-height: 120px;
+            outline: none;
+            padding: 0;
+        }
+
+        #message-input::placeholder {
+            color: #8a8a8a;
+        }
+
+        .send-button {
+            background: transparent;
+            border: none;
+            color: #0084ff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 0 0 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .recording-indicator {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0d1117;
+            border: 1px solid #1e2738;
+            border-radius: 24px;
+            padding: 10px 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #ff3b30;
+        }
+
+        .recording-pulse {
+            width: 12px;
+            height: 12px;
+            background-color: #ff3b30;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e2738;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0084ff;
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                max-width: 100%;
+                border-radius: 0;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-robot"></i>
+                <h1>AI Assistant</h1>
+            </div>
+            <div class="chat-status">Online</div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <p>Hello! I'm your AI assistant. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="attachment-preview" id="attachment-preview"></div>
+            
+            <div class="chat-input-wrapper">
+                <div class="attachment-buttons">
+                    <label for="image-upload">
+                        <div>
+                          
+                        </div>
+                        <input type="file" id="image-upload" accept="image/*" hidden>
+                    </label>
+                    <button id="voice-record" class="attachment-button">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="stop-recording" class="attachment-button" hidden>
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
+                
+                <div class="input-wrapper">
+                    <textarea id="message-input" placeholder="Type your message..."></textarea>
+                    <button id="send-button" class="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recording-indicator" id="recording-indicator">
+            <div class="recording-pulse"></div>
+            <span>Recording...</span>
+            <button id="stop-recording-indicator">
+                <i class="fas fa-stop"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const chatMessages = document.getElementById('chat-messages');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const imageUpload = document.getElementById('image-upload');
+            const voiceRecord = document.getElementById('voice-record');
+            const stopRecord = document.getElementById('stop-recording');
+            const recordingIndicator = document.getElementById('recording-indicator');
+            const attachmentPreview = document.getElementById('attachment-preview');
+
+            // Speech Recognition Setup
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition;
+            let isRecording = false;
+
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = navigator.language || 'en-US';
+
+                recognition.onstart = () => {
+                    isRecording = true;
+                    voiceRecord.disabled = true;
+                    stopRecord.hidden = false;
+                    recordingIndicator.style.display = 'flex';
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    messageInput.value = transcript;
+                    messageInput.dispatchEvent(new Event('input'));
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    stopVoiceRecognition();
+                    if (event.error === 'not-allowed') {
+                        alert('Please enable microphone access in your browser settings');
+                    }
+                };
+
+                recognition.onend = () => {
+                    if (isRecording) {
+                        stopVoiceRecognition();
+                    }
+                };
+            } else {
+                voiceRecord.style.display = 'none';
+                console.warn('Speech recognition not supported in this browser');
+            }
+
+            function stopVoiceRecognition() {
+                isRecording = false;
+                recognition?.stop();
+                voiceRecord.disabled = false;
+                stopRecord.hidden = true;
+                recordingIndicator.style.display = 'none';
+            }
+
+            // Event Listeners
+            voiceRecord.addEventListener('click', () => {
+                if (recognition && !isRecording) {
+                    recognition.start();
+                }
+            });
+
+            stopRecord.addEventListener('click', stopVoiceRecognition);
+            document.getElementById('stop-recording-indicator').addEventListener('click', stopVoiceRecognition);
+
+            // Message Handling
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'message-avatar';
+                avatar.innerHTML = `<i class="fas fa-${sender === 'user' ? 'user' : 'robot'}"></i>`;
+                
+                const content = document.createElement('div');
+                content.className = 'message-content';
+                content.innerHTML = `<p>${text}</p>`;
+
+                sender === 'user' 
+                    ? messageDiv.append(content, avatar)
+                    : messageDiv.append(avatar, content);
+
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function handleSendMessage() {
+                const message = messageInput.value.trim();
+                if (!message) return;
+
+                addMessage(message, 'user');
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+
+                // Simulate AI response
+                setTimeout(() => {
+                    const responses = [
+                        "Interesting! Tell me more about that.",
+                        "I'm processing your request...",
+                        "Could you clarify that for me?",
+                        "Let me think about how to help with that.",
+                        "Thanks for sharing! What else can I assist with?"
+                    ];
+                    addMessage(responses[Math.floor(Math.random() * responses.length)], 'bot');
+                }, 1000);
+            }
+
+            sendButton.addEventListener('click', handleSendMessage);
+            messageInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            });
+
+            // Textarea Auto-resize
+            messageInput.addEventListener('input', () => {
+                messageInput.style.height = 'auto';
+                messageInput.style.height = `${Math.min(messageInput.scrollHeight, 120)}px`;
+            });
+
+            // Image Upload Handling
+            imageUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const preview = document.createElement('div');
+                    preview.className = 'preview-item';
+                    preview.innerHTML = `
+                        <img src="${event.target.result}">
+                        <button class="remove-preview"><i class="fas fa-times"></i></button>
+                    `;
+                    preview.querySelector('.remove-preview').addEventListener('click', () => {
+                        attachmentPreview.removeChild(preview);
+                    });
+                    attachmentPreview.appendChild(preview);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    </script>
+</body>
+</html>
