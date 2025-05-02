@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnoAI</title>
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            height: 100vh;
+            color: #f5f5f5;
+        }
+
+        .chat-container {
+            width: 100%;
+            height: 100vh;
+            background-color: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #0a0a0a;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .chat-header-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-header-title i {
+            color: #1e88e5;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .chat-header-title h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .chat-header-status {
+            background-color: #1e88e5;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+        }
+
+        .user-message {
+            align-self: flex-end;
+        }
+
+        .message-content {
+            padding: 12px 15px;
+            border-radius: 18px;
+            word-break: break-word;
+            font-size: 25px;
+        }
+
+        .bot-message .message-content {
+            background-color: #2a2a2a;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message .message-content {
+            background-color: #1e88e5;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-timestamp {
+            font-size: 1rem;
+            color: #888;
+            margin-top: 5px;
+            align-self: flex-start;
+        }
+
+        .user-message .message-timestamp {
+            align-self: flex-end;
+        }
+
+        .message-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 5px;
+        }
+
+        .chat-input-container {
+            padding: 15px;
+            background-color: #0a0a0a;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .image-preview-container {
+            display: none;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 150px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 8px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .chat-input-area {
+            display: flex;
+            align-items: center;
+            background-color: #2a2a2a;
+            border-radius: 24px;
+            padding: 5px;
+        }
+
+        #message-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f5f5f5;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        #message-input::placeholder {
+            color: #888;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .send-btn:hover {
+            background-color: #1976d2;
+        }
+
+        /* Scrollbar styling */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #3a3a3a;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-header-title">
+                <i class="fas fa-robot"></i>
+                <h1>AI Assistant</h1>
+            </div>
+            <div class="chat-header-status">Online</div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                <div class="message-content">
+                    <p>Hello! How can I assist you today?</p>
+                </div>
+                <div class="message-timestamp">Just now</div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="image-preview-container" id="image-preview-container">
+                <div class="image-preview" id="image-preview"></div>
+                <button class="remove-image-btn" id="remove-image-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="file" id="image-upload" accept="image/*" hidden>
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button id="send-btn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const chatMessages = document.getElementById("chat-messages")
+            const messageInput = document.getElementById("message-input")
+            const sendBtn = document.getElementById("send-btn")
+            const imageUpload = document.getElementById("image-upload")
+            const imagePreviewContainer = document.getElementById("image-preview-container")
+            const imagePreview = document.getElementById("image-preview")
+            const removeImageBtn = document.getElementById("remove-image-btn")
+
+            let selectedImage = null
+
+            // Function to add a message to the chat
+            function addMessage(message, isUser = false, imageUrl = null) {
+                const messageElement = document.createElement("div")
+                messageElement.classList.add("message")
+                messageElement.classList.add(isUser ? "user-message" : "bot-message")
+
+                const messageContent = document.createElement("div")
+                messageContent.classList.add("message-content")
+
+                if (message) {
+                    const paragraph = document.createElement("p")
+                    paragraph.textContent = message
+                    messageContent.appendChild(paragraph)
+                }
+
+                if (imageUrl) {
+                    const image = document.createElement("img")
+                    image.src = imageUrl
+                    image.classList.add("message-image")
+                    messageContent.appendChild(image)
+                }
+
+                const timestamp = document.createElement("div")
+                timestamp.classList.add("message-timestamp")
+                timestamp.textContent = "Just now"
+
+                messageElement.appendChild(messageContent)
+                messageElement.appendChild(timestamp)
+
+                chatMessages.appendChild(messageElement)
+
+                // Scroll to the bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight
+            }
+
+            // Function to handle sending a message
+            function sendMessage() {
+                const message = messageInput.value.trim()
+
+                if (message || selectedImage) {
+                    // Add user message
+                    addMessage(message, true, selectedImage)
+
+                    // Clear input
+                    messageInput.value = ""
+
+                    // Clear image preview
+                    if (selectedImage) {
+                        clearImagePreview()
+                    }
+
+                    // Simulate bot response after a delay
+                    setTimeout(() => {
+                        const botResponses = [
+                            "I understand. Can you tell me more?",
+                            "That's interesting! How can I help with that?",
+                            "I'm processing your request. Is there anything specific you're looking for?",
+                            "Thanks for sharing. Let me know if you need any assistance.",
+                            "I'm here to help. What else would you like to know?",
+                        ]
+
+                        const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)]
+                        addMessage(randomResponse, false)
+                    }, 1000)
+                }
+            }
+
+            // Event listener for send button
+            sendBtn.addEventListener("click", sendMessage)
+
+            // Event listener for Enter key
+            messageInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    sendMessage()
+                }
+            })
+
+            // Image upload handling
+            imageUpload.addEventListener("change", (e) => {
+                const file = e.target.files[0]
+                if (file) {
+                    selectedImage = URL.createObjectURL(file)
+                    imagePreview.style.backgroundImage = `url(${selectedImage})`
+                    imagePreviewContainer.style.display = "block"
+                }
+            })
+
+            // Remove image preview
+            removeImageBtn.addEventListener("click", () => {
+                clearImagePreview()
+            })
+
+            function clearImagePreview() {
+                imagePreview.style.backgroundImage = ""
+                imagePreviewContainer.style.display = "none"
+                selectedImage = null
+                imageUpload.value = ""
+            }
+        })
+    </script>
+</body>
+</html>
