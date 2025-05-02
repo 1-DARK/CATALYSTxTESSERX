@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnoAI</title>
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+    <link rel="stylesheet" href="Footer.css">
+    <script src="Footer.js"></script>
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Navbar.css">
+    <link href="https://fonts.cdnfonts.com/css/druk" rel="stylesheet">
+    <script src="Navbar.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #2ecc71;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --text-color: #333;
+            --text-light: #7f8c8d;
+            --shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .A{
+            margin-top: 20px;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #212121;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #121212;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        h1, h2, h3, h4 {
+            color: #4fc3f7;
+            margin-top: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .search-container {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .search-container button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        
+        .search-container button:hover {
+            background-color: #2980b9;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .human-body {
+            width: 100%;
+            max-width: 350px;
+            position: relative;
+            height: 500px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .human-body svg {
+            width: 100%;
+            height: auto;
+        }
+        
+        .human-body path {
+            fill: #57c9d5;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .human-body path:hover {
+            fill: #ff7d16;
+           
+        }
+        
+        .human-body path.selected {
+            fill: var(--danger-color);
+            filter: drop-shadow(0 0 5px rgba(231, 76, 60, 0.5));
+        }
+        
+        .results-panel {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .selected-area {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .selected-area h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 8px;
+        }
+        
+        #selected-body-part {
+            font-weight: bold;
+            color: var(--danger-color);
+        }
+        
+        .diseases-list {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        
+        .disease-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+        }
+        
+        .disease-item.high-severity {
+            border-left-color: var(--danger-color);
+        }
+        
+        .disease-item.medium-severity {
+            border-left-color: var(--warning-color);
+        }
+        
+        .disease-item.low-severity {
+            border-left-color: var(--success-color);
+        }
+        
+        .disease-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .disease-name {
+            font-weight: bold;
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .high-severity-badge {
+            background-color: var(--danger-color);
+        }
+        
+        .medium-severity-badge {
+            background-color: var(--warning-color);
+        }
+        
+        .low-severity-badge {
+            background-color: var(--success-color);
+        }
+        
+        .emergency-warning {
+            background-color: #ffebee;
+            border-left: 4px solid var(--danger-color);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .emergency-warning i {
+            color: var(--danger-color);
+            font-size: 20px;
+        }
+        
+        .disease-symptoms, .disease-medications, .disease-specialist, .disease-firstaid {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .disease-symptoms strong, .disease-medications strong, 
+        .disease-specialist strong, .disease-firstaid strong {
+            color: var(--secondary-color);
+        }
+        
+        .empty-message {
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn i {
+            font-size: 14px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        
+        .specialist-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        .specialist-name {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        .specialist-details {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .specialist-contact {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .human-body {
+                margin-bottom: 30px;
+                height: 400px;
+            }
+            
+            .selected-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .btn {
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+            
+            .action-buttons {
+                justify-content: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .human-body {
+                height: 300px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-container button {
+                width: 100%;
+            }
+        }
+        .A{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="index.html" class="navbar-brand Z">DiagnoAI</a>
+                
+                <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarLinks">
+                    <span class="sr-only">Menu</span>
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="navbar-links" id="navbarLinks">
+                    <ul>
+                        <li><a  href="Vision.html">Our Services</a></li>
+                        <li><a  href="FrontSYM.html">FrontSymptoms</a></li>
+                        <li><a  href="BackSYM.html">BackSymptoms</a></li>
+                        <li><a  href="D.html">Fitness</a></li>
+                   
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+<div>
+<div class="A"></div>
+    <div class="container">
+        <h1>Advanced Medical Symptom Checker</h1>
+        <p class="subtitle">Click on a body part or search to see potential conditions and treatments</p>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search conditions, symptoms or treatments...">
+            <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="human-body">
+                <svg xmlns="http://www.w3.org/2000/svg" width="350.22897" height="422" viewBox="0 0 68.587668 92.604164">
+                    <path id="armback-left" d="m 43.185645,27.069445 0.4297,-1.4164 1.30458,-1.68577 -1.39393,-2.96155 -2.28367,0.92162 -1.83567,1.7467 -0.53524,1.78673 0.27068,4.30806 z m -2.46869,15.35539 -1.5182,0.0863 -0.78184,-0.65295 -1.16168,2.1855 -0.78414,3.34805 0.49892,0.20949 0.54632,-2.2158 0.50597,0.24175 -0.29779,2.5019 0.62936,0.22875 0.35546,-2.50096 0.56242,0.16536 -0.16126,2.77057 0.77674,0.30455 0.19056,-2.87291 0.45724,-0.0289 0.22827,2.64778 0.66597,0.24774 -0.0359,-4.56685 0.33693,-0.20224 1.39227,1.65147 0.32017,-0.35115 -0.77444,-2.03749 z m -0.97726,-0.17765 -1.43509,-0.746 -0.30622,-7.00985 c 0,0 0.64359,-2.77938 0.63694,-3.06274 l 0.6093,-1.21924 3.62552,-2.56583 -0.68276,1.9919 0.41561,4.74788 -1.80402,7.69727 z" />
+                    <path id="leg-left" d="m 51.176145,64.073985 -1.20605,3.01461 0.70738,0.26558 0.89754,3.51771 -0.55801,-4.01191 z m -5.08496,-3.15003 0.63355,1.8609 0.16813,2.03261 0.61314,1.93117 -0.90585,-0.0851 -0.28534,2.15982 z m 4.3014,6.58834 1.27664,4.99697 -0.28984,3.02284 -0.67869,10.06546 -1.66325,0.63506 -3.50399,-11.96959 1.24985,-7.17525 z m 0.54053,20.8287 0.85194,1.3581 0.37189,0.79238 -0.15588,1.21774 -0.76984,0.74446 -1.51185,0.12543 -1.1299,-0.29192 -0.24225,-0.95894 0.80765,-1.30405 -0.22562,-0.85987 0.29679,-0.84153 -0.0194,-1.81524 1.53568,-0.54817 z m -1.19598,0.4675 0.15943,1.25776 -0.6023,0.97431 m -0.54436,0.29544 1.06474,0.40084 1.55326,-0.65137 m -4.19331,-39.53466 4.55099,-2.03879 0.63802,0.23079 0.0353,1.80672 0.075,4.64669 -1.97837,6.04282 0.47612,1.41403 -1.42812,3.29446 -1.76611,-0.30111 -0.50079,-2.11605 -0.1695,-1.75674 -2.42102,-8.15763 -0.34279,-3.64687 z" />
+                    <path id="buttock" d="m 44.742845,39.689035 5.48374,1.86457 2.27386,1.3378 2.74195,-1.74412 4.51804,-1.28077 0.90009,2.29721 0.675,3.4346 -0.81272,5.02838 -2.82636,0.16819 -4.11256,-1.67581 -1.00814,0.39118 -0.95849,-0.39888 -4.44053,1.94411 -2.77023,-0.51478 -0.95181,-6.15325 0.36754,-2.7864 z" />
+                    <path id="loin" d="m 51.818445,37.309575 0.14418,2.97292 1.15984,-0.0241 0.048,-2.96488 2.80867,-0.81981 2.34029,-0.7541 1.34121,3.73319 -4.77886,1.36455 -2.33301,1.2158 -2.37536,-1.2333 -5.45663,-1.37716 1.51961,-3.95743 z" />
+                    <path id="column" d="m 51.733705,14.788555 0.53876,25.33066 0.48967,-0.0297 0.65658,-25.3387 -0.28147,-0.84188 -1.25059,-4.9e-4 z" />
+                    <path id="head-back" d="m 48.157455,6.3585449 0.44208,-0.14964 0.16111,0.16427 1.48163,4.0475101 2.32401,1.45118 2.39971,-1.52387 0.97577,-3.6896901 0.52752,-0.55908 0.23367,0.0981 0.24198,-3.34467 -2.03129,-2.31103004 -2.84509,-0.51629 -2.20422,0.52915 -1.93631,2.63077004 z" />
+                    <path id="nape" d="m 52.369695,12.105075 -2.35767,-1.55045 -1.47119,-3.9514301 -0.60741,0.0403 0.27409,1.82447 0.97635,0.33932 0.7613,2.2157201 0.33017,1.06849 0.0895,2.14894 1.16448,0.008 0.10563,-0.70833 0.54716,-0.0606 z m 1.01793,1.47595 0.23768,0.64982 1.38107,-0.004 0.01,-2.38784 0.25971,-0.79061 0.57215,-2.1698001 0.76359,-0.41018 0.25158,-1.78416 -0.62859,0.0193 -1.08488,3.8998101 -2.39725,1.46684 0.2768,1.48507 z" />
+                    <path id="armback-right" d="m 61.657445,27.250625 -0.32785,-1.05121 -1.27383,-2.05489 1.38708,-2.96476 2.28579,0.91634 1.83971,1.74245 0.53937,1.78549 -0.26073,4.30868 z m 2.64394,15.3417 1.51839,0.0828 0.78033,-0.65476 1.16673,2.18281 0.79187,3.34623 -0.49843,0.21064 -0.55144,-2.21453 -0.50541,0.24292 0.30356,2.5012 -0.62882,0.23021 -0.36124,-2.50014 -0.56203,0.16666 0.16765,2.77019 -0.77603,0.30634 -0.19719,-2.87245 -0.45732,-0.0278 -0.22215,2.64829 -0.66539,0.24928 0.0254,-4.56692 -0.3374,-0.20146 -1.38845,1.65469 -0.32098,-0.35041 0.76973,-2.03928 z m 0.97685,-0.1799 1.43335,-0.74932 0.29002,-7.01054 c 0,0 -0.65,-2.77789 -0.64401,-3.06126 l -0.61212,-1.21783 -3.98124,-2.57566 1.0222,1.93525 -0.38967,4.82212 1.8218,7.69308 z" />
+                    <path id="leg-right" d="m 54.019305,64.073985 1.20605,3.01461 -0.70737,0.26558 -0.89755,3.51771 0.55802,-4.01191 z m 5.08496,-3.15003 -0.63355,1.8609 -0.16813,2.03261 -0.61313,1.93117 0.90584,-0.0851 0.28534,2.15982 z m -4.3014,6.58834 -1.27664,4.99697 0.28984,3.02284 0.67869,10.06546 1.66325,0.63506 3.504,-11.96959 -1.24986,-7.17525 z m -0.54053,20.8287 -0.85194,1.3581 -0.37189,0.79238 0.15589,1.21774 0.76983,0.74446 1.51186,0.12543 1.12989,-0.29192 0.24225,-0.95894 -0.80765,-1.30405 0.22563,-0.85987 -0.29679,-0.84153 0.0194,-1.81524 -1.53568,-0.54817 z m 1.19598,0.4675 -0.15943,1.25776 0.6023,0.97431 m 0.54436,0.29544 -1.06474,0.40084 -1.55326,-0.65137 m 3.56525,-39.90247 -3.97962,-1.70224 -0.56389,0.27131 -0.0528,1.79746 -0.075,4.64669 1.97837,6.04282 -0.47612,1.41403 1.42813,3.29446 1.7661,-0.30111 0.50079,-2.11605 0.1695,-1.75674 2.42102,-8.15763 0.009,-3.68308 z" />
+                    <path id="back-right" d="m 62.863315,16.685695 1.57473,1.56518 0.81404,2.06904 0.0384,2.52859 -1.48921,-1.23926 -2.76223,-1.15539 -1.84691,3.4342 -1.13679,5.49715 -0.0767,5.85930 -4.07066,1.10938 0.10355,-7.94098 1.94107,-4.90021 5.04395,-8.19335 z" />
+                    <path id="clavicule-right" d="m 55.439085,14.728535 -0.063,-2.62463 0.71441,1.15181 4.37994,1.49796 -4.97857,8.36746 -1.83043,5.08189 0.21949,-13.55362 z" />
+                    <path id="back-left" d="m 42.200945,16.586495 -1.57473,1.56517 -0.81404,2.06905 -0.38603,2.52859 1.83679,-1.23927 2.76223,-1.15538 1.84691,3.4342 1.13679,5.49715 0.0767,5.8593 4.07066,1.10938 -0.10355,-7.94098 -1.94107,-4.90022 -5.04395,-8.19334 z" />
+                    <path id="clavicule-left" d="m 49.625175,14.629325 0.063,-2.62462 -0.71441,1.15181 -4.37994,1.49796 4.97857,8.36746 1.83043,5.08188 -0.21949,-13.55362 z" />
+                </svg>
+            </div>
+            
+            <div class="results-panel">
+                <div class="selected-area">
+                    <div>
+                        <h3>Select Body Part: <span id="selected-body-part">None</span></h3>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="download-btn" class="btn"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+                    </div>
+                </div>
+                
+                <div class="diseases-list">
+                    <h3>Possible Conditions:</h3>
+                    <div id="diseases-container">
+                        <div class="empty-message">Please select a body part or search to see potential conditions</div>
+                    </div>
+                </div>
+                
+                <div id="specialist-info" style="display: none;">
+                    <div class="specialist-card">
+                        <h3>Recommended Specialist</h3>
+                        <div id="specialist-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="A"></div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2><span>DiagnoAI</span></h2>
+                    <p>We provide innovative solutions for your business needs. Our team of experts is dedicated to delivering high-quality products and services.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a  href="Vision.html">Our Services</a></li>
+                        <li><a  href="FrontSYM.html">FrontSymptoms</a></li>
+                        <li><a  href="BackSYM.html">BackSymptoms</a></li>
+                        <li><a  href="D.html">Fitness</a></li>
+                      
+                    </ul>
+                </div>
+
+                <div class="footer-social">
+                    <h3>Connect With Us</h3>
+                    <p  style="margin-top: 17px;">Follow us on social media to stay updated with our latest news and announcements.</p>
+                    <div class="social-icons">
+                      
+                        <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 <a href="#">DiagnoAI</a>. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+  
+    <script>
+        // Comprehensive medical database with conditions and suggested medications
+        const medicalDatabase = {
+    "head-back": [
+        {
+            "name": "Tension Headache",
+            "symptoms": "Dull, band-like pressure at the back of the head, often from stress or poor posture.",
+            "medicine": "Over-the-counter pain relievers (ibuprofen, acetaminophen), muscle relaxants, stress management",
+            "doctor": "Neurologist or Primary Care Physician",
+            "severity": "low",
+            "firstAid": "Apply a warm compress to the back of the neck, practice relaxation techniques, and ensure proper hydration."
+        },
+        {
+            "name": "Occipital Neuralgia",
+            "symptoms": "Sharp, stabbing, or electric-shock-like pain from the base of the skull, sometimes radiating to the scalp.",
+            "medicine": "Nerve blocks, anti-inflammatory medications, physical therapy",
+            "doctor": "Neurologist or Pain Specialist",
+            "severity": "medium",
+            "firstAid": "Apply gentle heat to the area, avoid neck strain, and consider over-the-counter anti-inflammatories."
+        },
+        {
+            "name": "Cervicogenic Headache",
+            "symptoms": "Pain originating from neck issues (e.g., arthritis, herniated disc), worsens with movement.",
+            "medicine": "Physical therapy, neck exercises, NSAIDs",
+            "doctor": "Neurologist or Physical Therapist",
+            "severity": "medium",
+            "firstAid": "Gentle neck stretches, proper posture, and over-the-counter pain relievers may help."
+        },
+        {
+            "name": "Migraine (Occipital Involvement)",
+            "symptoms": "Throbbing pain, often one-sided, with nausea, light/sound sensitivity (may start at the back).",
+            "medicine": "Triptans, preventive medications, lifestyle changes",
+            "doctor": "Neurologist",
+            "severity": "medium",
+            "firstAid": "Rest in a quiet, dark room, apply cold compress to the neck, and take prescribed migraine medication if available."
+        },
+        {
+            "name": "Serious Causes (Red Flags)",
+            "symptoms": "Sudden severe pain (aneurysm), fever/stiff neck (meningitis), trauma (concussion/fracture).",
+            "medicine": "Emergency treatment required",
+            "doctor": "Emergency Room Physician",
+            "severity": "high",
+            "firstAid": "Seek immediate medical attention. Do not delay treatment for sudden, severe head pain or after head trauma."
+        }
+    ],
+    "leg-right": [
+        {
+            "name": "Musculoskeletal Issues",
+            "symptoms": "Pain, stiffness, or cramping in right calf/thigh (e.g., muscle strain, overuse, or dehydration).",
+            "medicine": "Rest, ice, compression, elevation (RICE), NSAIDs",
+            "doctor": "Orthopedist or Sports Medicine Specialist",
+            "severity": "low",
+            "firstAid": "Follow RICE protocol: Rest, Ice for 20 minutes every 2-3 hours, Compression with an elastic bandage, and Elevation."
+        },
+        {
+            "name": "Nerve Compression (Right Side)",
+            "symptoms": "Sciatica: Sharp pain radiating from right buttock down leg, numbness/tingling (L4-S1 nerve roots).",
+            "medicine": "Physical therapy, epidural steroid injections",
+            "doctor": "Neurologist or Orthopedist",
+            "severity": "medium",
+            "firstAid": "Gentle stretching of the hamstrings and piriformis muscle may help relieve pressure on the sciatic nerve."
+        },
+        {
+            "name": "Vascular Problems",
+            "symptoms": "Deep vein thrombosis (DVT): Right calf swelling, warmth, redness (urgent if sudden).",
+            "medicine": "Anticoagulants, compression stockings",
+            "doctor": "Vascular Surgeon",
+            "severity": "high",
+            "firstAid": "Seek immediate medical attention. Do not massage the leg. Keep the leg elevated while waiting for care."
+        }
+    ],
+    "leg-left": [
+        {
+            "name": "Musculoskeletal Issues",
+            "symptoms": "Left thigh/calf pain from injury, muscle imbalance, or poor posture.",
+            "medicine": "Rest, physical therapy, pain relievers",
+            "doctor": "Orthopedist or Physical Therapist",
+            "severity": "low",
+            "firstAid": "Apply ice for acute injuries or heat for chronic pain. Gentle stretching may help."
+        },
+        {
+            "name": "Nerve-Related (Left Side)",
+            "symptoms": "Left sciatica: Burning pain down leg, foot weakness (e.g., dropped foot).",
+            "medicine": "Nerve pain medications, physical therapy",
+            "doctor": "Neurologist or Spine Specialist",
+            "severity": "medium",
+            "firstAid": "Try the 'knee-to-chest' stretch while lying on your back to relieve sciatic nerve pressure."
+        },
+        {
+            "name": "Vascular Concerns",
+            "symptoms": "Left DVT: Swelling, tenderness, or discoloration (especially post-surgery/long immobility).",
+            "medicine": "Emergency anticoagulant therapy",
+            "doctor": "Vascular Surgeon",
+            "severity": "high",
+            "firstAid": "Seek emergency care immediately. Do not massage the area or walk excessively."
+        }
+    ],
+    "buttock": [
+        {
+            "name": "Piriformis Syndrome",
+            "symptoms": "Deep buttock pain, worsened by sitting or climbing stairs (due to piriformis muscle irritating the sciatic nerve).",
+            "medicine": "Stretching exercises, physical therapy",
+            "doctor": "Physical Therapist",
+            "severity": "low",
+            "firstAid": "Try the seated piriformis stretch: Cross the affected leg over the other knee and lean forward gently."
+        },
+        {
+            "name": "Sciatica/Nerve Compression",
+            "symptoms": "Sharp, burning, or radiating pain from the lower back/buttock down the leg (may include tingling or numbness).",
+            "medicine": "Epidural steroid injections, nerve pain medications",
+            "doctor": "Neurologist or Spine Specialist",
+            "severity": "medium",
+            "firstAid": "Alternate ice and heat therapy. Avoid prolonged sitting. Try gentle yoga poses like child's pose."
+        },
+        {
+            "name": "Spinal Conditions",
+            "symptoms": "Herniated disc or spinal stenosis: buttock pain with leg weakness, numbness, or bowel/bladder changes (urgent).",
+            "medicine": "Surgical evaluation if severe",
+            "doctor": "Spine Surgeon",
+            "severity": "high",
+            "firstAid": "Seek immediate medical attention if experiencing bowel/bladder changes or sudden weakness."
+        }
+    ],
+    "armback-left": [
+        {
+            "name": "Cardiac Referred Pain (Left)",
+            "symptoms": "Left shoulder/arm pain with chest pressure, sweating (possible heart attack—seek emergency care).",
+            "medicine": "Emergency cardiac treatment",
+            "doctor": "Emergency Room Physician",
+            "severity": "high",
+            "firstAid": "Call emergency services immediately if experiencing chest pain with left arm pain."
+        },
+        {
+            "name": "Rotator Cuff Tear (Left)",
+            "symptoms": "Left shoulder pain when reaching backward, weakness (e.g., difficulty combing hair).",
+            "medicine": "Physical therapy, possible surgery",
+            "doctor": "Orthopedist",
+            "severity": "medium",
+            "firstAid": "Rest the arm, apply ice for 20 minutes every few hours, and avoid overhead activities."
+        }
+    ],
+    "armback-right": [
+        {
+            "name": "Rotator Cuff Injury (Right)",
+            "symptoms": "Pain when lifting the right arm, weakness, nighttime discomfort (common in athletes or overhead workers).",
+            "medicine": "Physical therapy, possible surgery",
+            "doctor": "Orthopedist",
+            "severity": "medium",
+            "firstAid": "Rest the arm, apply ice packs, and avoid activities that cause pain."
+        },
+        {
+            "name": "Gallbladder/Referred Pain (Right)",
+            "symptoms": "Right shoulder blade pain with nausea (possible gallstones or liver issues).",
+            "medicine": "Treatment of gallbladder condition",
+            "doctor": "Gastroenterologist",
+            "severity": "high",
+            "firstAid": "Seek medical attention, especially if accompanied by abdominal pain, fever, or jaundice."
+        }
+    ],
+    "nape": [
+        {
+            "name": "Muscle Tension/Cervical Strain",
+            "symptoms": "Stiffness, dull ache, tightness (often from poor posture, stress, or overuse)",
+            "medicine": "Muscle relaxants, physical therapy, massage",
+            "doctor": "Physical Therapist",
+            "severity": "low",
+            "firstAid": "Gentle neck stretches, heat therapy, and posture correction can help relieve tension."
+        },
+        {
+            "name": "Cervical Spine Issues",
+            "symptoms": "Herniated disc: Sharp pain radiating to arms, numbness. Osteoarthritis: Chronic stiffness, grinding sensation with movement",
+            "medicine": "Physical therapy, cervical traction, NSAIDs",
+            "doctor": "Neurologist or Orthopedist",
+            "severity": "medium",
+            "firstAid": "Avoid sudden neck movements. Use a supportive pillow and consider over-the-counter pain relievers."
+        }
+    ],
+    "clavicule-right": [
+        {
+            "name": "Thoracic Outlet Syndrome",
+            "symptoms": "Numbness/tingling in arm/hand, weakness, cold fingers (may worsen with arm elevation).",
+            "medicine": "Physical therapy, nerve gliding exercises",
+            "doctor": "Neurologist",
+            "severity": "medium",
+            "firstAid": "Avoid carrying heavy bags on the affected side. Try gentle shoulder rolls and stretches."
+        },
+        {
+            "name": "Trauma/Fracture",
+            "symptoms": "Sharp pain, swelling, bruising, difficulty moving arm, visible deformity (after falls, accidents, or direct blows).",
+            "medicine": "Immobilization with sling, pain management",
+            "doctor": "Orthopedist",
+            "severity": "low",
+            "firstAid": "Immobilize the area with a sling and apply ice to reduce swelling while seeking medical care."
+        },
+        {
+            "name": "Joint Disorders",
+            "symptoms": "AC joint separation: Popping sound, shoulder sagging, tenderness. Sternoclavicular joint pain: Discomfort at breastbone connection, clicking sensations.",
+            "medicine": "Physical therapy, joint stabilization",
+            "doctor": "Orthopedist",
+            "severity": "high",
+            "firstAid": "Apply ice to reduce swelling and avoid movements that cause pain until evaluated by a doctor."
+        },
+        {
+            "name": "Nerve Compression",
+            "symptoms": "Thoracic outlet syndrome: Numbness/tingling in arm/hand, weakness, cold fingers (may worsen with arm elevation).",
+            "medicine": "Physical therapy, nerve gliding exercises",
+            "doctor": "Neurologist",
+            "severity": "medium",
+            "firstAid": "Perform gentle neck stretches and avoid prolonged positions that compress nerves."
+        }
+    ],
+    "clavicule-left": [
+        {
+            "name": "Thoracic Outlet Syndrome",
+            "symptoms": "Numbness/tingling in arm/hand, weakness, cold fingers (may worsen with arm elevation).",
+            "medicine": "Physical therapy, nerve gliding exercises",
+            "doctor": "Neurologist",
+            "severity": "medium",
+            "firstAid": "Avoid carrying heavy bags on the affected side. Try gentle shoulder rolls and stretches."
+        },
+        {
+            "name": "Trauma/Fracture",
+            "symptoms": "Sharp pain, swelling, bruising, difficulty moving arm, visible deformity (after falls, accidents, or direct blows).",
+            "medicine": "Immobilization with sling, pain management",
+            "doctor": "Orthopedist",
+            "severity": "low",
+            "firstAid": "Immobilize the area with a sling and apply ice to reduce swelling while seeking medical care."
+        },
+        {
+            "name": "Joint Disorders",
+            "symptoms": "AC joint separation: Popping sound, shoulder sagging, tenderness. Sternoclavicular joint pain: Discomfort at breastbone connection, clicking sensations.",
+            "medicine": "Physical therapy, joint stabilization",
+            "doctor": "Orthopedist",
+            "severity": "high",
+            "firstAid": "Apply ice to reduce swelling and avoid movements that cause pain until evaluated by a doctor."
+        },
+        {
+            "name": "Nerve Compression",
+            "symptoms": "Thoracic outlet syndrome: Numbness/tingling in arm/hand, weakness, cold fingers (may worsen with arm elevation).",
+            "medicine": "Physical therapy, nerve gliding exercises",
+            "doctor": "Neurologist",
+            "severity": "medium",
+            "firstAid": "Perform gentle neck stretches and avoid prolonged positions that compress nerves."
+        }
+    ],
+    "column": [
+        {
+            "name": "Spinal Disc Issues",
+            "symptoms": "Herniated disc: Sharp, shooting pain (sciatica), numbness, or weakness in legs. Degenerative disc disease: Chronic dull ache, stiffness.",
+            "medicine": "Physical therapy, epidural injections, possible surgery",
+            "doctor": "Spine Specialist",
+            "severity": "medium",
+            "firstAid": "Maintain proper posture, avoid heavy lifting, and try gentle back extensions while lying prone."
+        }
+    ],
+    "loin": [
+        {
+            "name": "Kidney Stones",
+            "symptoms": "Severe flank pain that may radiate to groin, nausea, blood in urine.",
+            "medicine": "Pain management, increased fluids, possible lithotripsy",
+            "doctor": "Urologist",
+            "severity": "high",
+            "firstAid": "Drink plenty of water and seek medical attention. Heat application may help with pain."
+        },
+        {
+            "name": "Kidney-Related Causes",
+            "symptoms": "Sharp or aching pain, worse with movement, tenderness.",
+            "medicine": "Antibiotics for infection, pain management for stones",
+            "severity": "low",
+            "doctor": "Nephrologist or Urologist",
+            "firstAid": "Apply heat to the affected area and stay hydrated while consulting a doctor."
+        },
+        {
+            "name": "Musculoskeletal Causes",
+            "symptoms": "Pain may radiate to the loin, stiffness, numbness, or tingling.",
+            "medicine": "Physical therapy, chiropractic care",
+            "severity": "low",
+            "doctor": "Physical Therapist or Chiropractor",
+            "firstAid": "Rest the area and apply ice or heat depending on whether the pain is acute or chronic."
+        },
+        {
+            "name": "Nerve-Related Causes",
+            "symptoms": "Shooting pain, numbness, or tingling down the leg.",
+            "medicine": "Nerve pain medications, epidural injections",
+            "severity": "medium",
+            "doctor": "Neurologist",
+            "firstAid": "Avoid movements that aggravate the pain and consider gentle stretching exercises."
+        }
+    ],
+    "back-left": [
+        {
+            "name": "Muscle Strain",
+            "symptoms": "Pain, swelling, limited range of motion, muscle spasms",
+            "medicine": "Rest, ice, NSAIDs, muscle relaxants",
+            "doctor": "Physical Therapist",
+            "severity": "low",
+            "firstAid": "Apply ice for first 48 hours, then switch to heat. Gentle stretching after acute phase."
+        },
+        {
+            "name": "Herniated Disc",
+            "symptoms": "Pain radiating to limbs, numbness/tingling, weakness",
+            "medicine": "Physical therapy, epidural steroid injections",
+            "doctor": "Spine Specialist",
+            "severity": "high",
+            "firstAid": "Lie flat on your back with knees bent and pillows under knees to relieve pressure."
+        },
+        {
+            "name": "Scoliosis",
+            "symptoms": "Uneven shoulders/waist, one hip higher, back pain",
+            "medicine": "Bracing, physical therapy, possible surgery",
+            "doctor": "Orthopedist",
+            "severity": "medium",
+            "firstAid": "Practice proper posture and avoid heavy lifting until evaluated by a specialist."
+        }
+    ],
+    "back-right": [
+        {
+            "name": "Muscle Strain",
+            "symptoms": "Pain, swelling, limited range of motion, muscle spasms",
+            "medicine": "Rest, ice, NSAIDs, muscle relaxants",
+            "doctor": "Physical Therapist",
+            "severity": "low",
+            "firstAid": "Apply ice for first 48 hours, then switch to heat. Gentle stretching after acute phase."
+        },
+        {
+            "name": "Herniated Disc",
+            "symptoms": "Pain radiating to limbs, numbness/tingling, weakness",
+            "medicine": "Physical therapy, epidural steroid injections",
+            "doctor": "Spine Specialist",
+            "severity": "high",
+            "firstAid": "Lie flat on your back with knees bent and pillows under knees to relieve pressure."
+        },
+        {
+            "name": "Scoliosis",
+            "symptoms": "Uneven shoulders/waist, one hip higher, back pain",
+            "medicine": "Bracing, physical therapy, possible surgery",
+            "doctor": "Orthopedist",
+            "severity": "medium",
+            "firstAid": "Practice proper posture and avoid heavy lifting until evaluated by a specialist."
+        }
+    ]
+};
+
+        // Enhanced Doctor database with contact information and specialties
+        const doctorDatabase = {
+    "Neurologist": [
+        { 
+            name: "Dr. Sarah Johnson",
+            specialty: "Neurologist",
+            hospital: "Apollo Hospitals, Delhi", 
+            address: "21, Greams Lane, Off Greams Road, Chennai - 600006, Tamil Nadu",
+            phone: "+91 9876543210" 
+        },
+        { 
+            name: "Dr. Michael Chen",
+            specialty: "Neurologist",
+            hospital: "Fortis Hospital, Mumbai", 
+            address: "Mulund Goregaon Link Road, Mulund-West, Mumbai - 400078, Maharashtra",
+            phone: "+91 8765432109" 
+        }
+    ],
+    "Primary Care Physician": [
+        { 
+            name: "Dr. Emily Wilson",
+            specialty: "Primary Care Physician",
+            hospital: "Manipal Hospitals, Bangalore", 
+            address: "98, HAL Old Airport Road, Bangalore - 560017, Karnataka",
+            phone: "+91 7654321098" 
+        },
+        { 
+            name: "Dr. James Rodriguez",
+            specialty: "Primary Care Physician",
+            hospital: "Max Super Speciality Hospital, Delhi", 
+            address: "1, Press Enclave Road, Saket, Delhi - 110017",
+            phone: "+91 6543210987" 
+        }
+    ],
+    "Pain Specialist": [
+        { 
+            name: "Dr. Lisa Thompson",
+            specialty: "Pain Specialist",
+            hospital: "Artemis Hospital, Gurgaon", 
+            address: "Sector 51, Gurugram, Haryana - 122001",
+            phone: "+91 9432109876" 
+        }
+    ],
+    "Physical Therapist": [
+        { 
+            name: "Robert Davis, PT",
+            specialty: "Physical Therapist",
+            hospital: "Columbia Asia Hospital, Pune", 
+            address: "Mundhwa - Kharadi Road, Pune - 411014, Maharashtra",
+            phone: "+91 8321098765" 
+        },
+        { 
+            name: "Jennifer Adams, DPT",
+            specialty: "Physical Therapist",
+            hospital: "Kokilaben Dhirubhai Ambani Hospital, Mumbai", 
+            address: "Rao Saheb Achutrao Patwardhan Marg, Four Bungalows, Andheri West, Mumbai - 400053, Maharashtra",
+            phone: "+91 7210987654" 
+        }
+    ],
+    "Emergency Room Physician": [
+        { 
+            name: "Dr. David Miller",
+            specialty: "Emergency Room Physician",
+            hospital: "AIIMS, New Delhi", 
+            address: "Ansari Nagar, New Delhi - 110029",
+            phone: "+91 6109876543" 
+        }
+    ],
+    "Orthopedist": [
+        { 
+            name: "Dr. Patricia White",
+            specialty: "Orthopedist",
+            hospital: "Medanta - The Medicity, Gurgaon", 
+            address: "CH Baktawar Singh Rd, Medicity, Islampur Colony, Sector 38, Gurugram, Haryana - 122001",
+            phone: "+91 5098765432" 
+        },
+        { 
+            name: "Dr. Thomas Brown",
+            specialty: "Orthopedist",
+            hospital: "Narayana Health, Bangalore", 
+            address: "258/A, Bommasandra Industrial Area, Anekal Taluk, Bangalore - 560099, Karnataka",
+            phone: "+91 4987654321" 
+        }
+    ],
+    "Sports Medicine Specialist": [
+        { 
+            name: "Dr. Kevin Lee",
+            specialty: "Sports Medicine Specialist",
+            hospital: "Jaslok Hospital, Mumbai", 
+            address: "15, Dr. G. Deshmukh Marg, Pedder Road, Mumbai - 400026, Maharashtra",
+            phone: "+91 3876543210" 
+        }
+    ],
+    "Vascular Surgeon": [
+        { 
+            name: "Dr. Nancy Green",
+            specialty: "Vascular Surgeon",
+            hospital: "Lilavati Hospital, Mumbai", 
+            address: "A-791, Bandra Reclamation, Bandra West, Mumbai - 400050, Maharashtra",
+            phone: "+91 2765432109" 
+        }
+    ],
+    "Rheumatologist": [
+        { 
+            name: "Dr. Richard Harris",
+            specialty: "Rheumatologist",
+            hospital: "Global Hospitals, Chennai", 
+            address: "439, Cheran Nagar, Perumbakkam, Chennai - 600100, Tamil Nadu",
+            phone: "+91 1654321098" 
+        }
+    ],
+    "Spine Specialist": [
+        { 
+            name: "Dr. Karen Scott",
+            specialty: "Spine Specialist",
+            hospital: "Wockhardt Hospitals, Mumbai", 
+            address: "1877, Dr Anand Rao Nair Marg, Mumbai Central East, Mumbai - 400011, Maharashtra",
+            phone: "+91 9876543211" 
+        }
+    ],
+    "General Surgeon": [
+        { 
+            name: "Dr. Daniel King",
+            specialty: "General Surgeon",
+            hospital: "Ruby Hall Clinic, Pune", 
+            address: "40, Sassoon Road, Pune - 411001, Maharashtra",
+            phone: "+91 8765432108" 
+        }
+    ],
+    "Cardiologist": [
+        { 
+            name: "Dr. Susan Baker",
+            specialty: "Cardiologist",
+            hospital: "Asian Heart Institute, Mumbai", 
+            address: "G/N Block, Bandra Kurla Complex, Bandra East, Mumbai - 400051, Maharashtra",
+            phone: "+91 7654321097" 
+        }
+    ],
+    "Gastroenterologist": [
+        { 
+            name: "Dr. Mark Taylor",
+            specialty: "Gastroenterologist",
+            hospital: "BLK Super Speciality Hospital, Delhi", 
+            address: "Pusa Road, New Delhi - 110005",
+            phone: "+91 6543210986" 
+        }
+    ],
+    "Infectious Disease Specialist": [
+        { 
+            name: "Dr. Jessica Clark",
+            specialty: "Infectious Disease Specialist",
+            hospital: "Christian Medical College, Vellore", 
+            address: "Ida Scudder Rd, Vellore - 632004, Tamil Nadu",
+            phone: "+91 9432109875" 
+        }
+    ],
+    "Oncologist": [
+        { 
+            name: "Dr. Paul Wright",
+            specialty: "Oncologist",
+            hospital: "Tata Memorial Hospital, Mumbai", 
+            address: "Dr. E Borges Road, Parel, Mumbai - 400012, Maharashtra",
+            phone: "+91 8321098764" 
+        }
+    ],
+    "Chiropractor": [
+        { 
+            name: "Dr. Steven Hill, DC",
+            specialty: "Chiropractor",
+            hospital: "Sahyadri Hospitals, Pune", 
+            address: "Kothrud, Pune - 411038, Maharashtra",
+            phone: "+91 7210987653" 
+        }
+    ],
+    "Nephrologist": [
+        { 
+            name: "Dr. Amanda Young",
+            specialty: "Nephrologist",
+            hospital: "Sir Ganga Ram Hospital, Delhi", 
+            address: "Old Rajinder Nagar, New Delhi - 110060",
+            phone: "+91 6109876542" 
+        }
+    ],
+    "Urologist": [
+        { 
+            name: "Dr. Brian Adams",
+            specialty: "Urologist",
+            hospital: "Sanjay Gandhi Postgraduate Institute, Lucknow", 
+            address: "Raebareli Road, Lucknow - 226014, Uttar Pradesh",
+            phone: "+91 5098765431" 
+        }
+    ],
+    "Ayurvedic Specialist": [
+        { 
+            name: "Dr. Rajesh Sharma",
+            specialty: "Ayurvedic Specialist",
+            hospital: "Arya Vaidya Sala, Kerala", 
+            address: "Kottakkal, Malappuram - 676503, Kerala",
+            phone: "+91 4987654320" 
+        }
+    ],
+    "Homeopathy Specialist": [
+        { 
+            name: "Dr. Priya Patel",
+            specialty: "Homeopathy Specialist",
+            hospital: "National Homoeopathy Hospital, Kolkata", 
+            address: "Block GE, Sector III, Salt Lake City, Kolkata - 700106, West Bengal",
+            phone: "+91 3876543219" 
+        }
+    ],
+    "Pediatrician": [
+        { 
+            name: "Dr. Anjali Mehta",
+            specialty: "Pediatrician",
+            hospital: "Rainbow Children's Hospital, Hyderabad", 
+            address: "Road No 2, Banjara Hills, Hyderabad - 500034, Telangana",
+            phone: "+91 2765432108" 
+        }
+    ],
+    "Dermatologist": [
+        { 
+            name: "Dr. Sameer Gupta",
+            specialty: "Dermatologist",
+            hospital: "Skin Care Clinic, Jaipur", 
+            address: "D-138, Sawai Mansingh Road, Jaipur - 302001, Rajasthan",
+            phone: "+91 1654321097" 
+        }
+    ],
+    "Psychiatrist": [
+        { 
+            name: "Dr. Neha Kapoor",
+            specialty: "Psychiatrist",
+            hospital: "NIMHANS, Bangalore", 
+            address: "Hosur Road, Bangalore - 560029, Karnataka",
+            phone: "+91 9876543212" 
+        }
+    ],
+    "ENT Specialist": [
+        { 
+            name: "Dr. Arun Kumar",
+            specialty: "ENT Specialist",
+            hospital: "PGIMER, Chandigarh", 
+            address: "Sector 12, Chandigarh - 160012",
+            phone: "+91 8765432107" 
+        }
+    ],
+    "Ophthalmologist": [
+        { 
+            name: "Dr. Nandini Reddy",
+            specialty: "Ophthalmologist",
+            hospital: "LV Prasad Eye Institute, Hyderabad", 
+            address: "Kallam Anji Reddy Campus, Banjara Hills, Hyderabad - 500034, Telangana",
+            phone: "+91 7654321096" 
+        }
+    ]
+};
+
+        // DOM elements
+        const bodyParts = document.querySelectorAll('.human-body path');
+        const selectedBodyPartElement = document.getElementById('selected-body-part');
+        const diseasesContainer = document.getElementById('diseases-container');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const specialistContainer = document.getElementById('specialist-container');
+        const specialistInfo = document.getElementById('specialist-info');
+
+        // Current state
+        let currentBodyPart = null;
+        let currentConditions = [];
+
+        // Initialize the app
+        function init() {
+            // Add event listeners
+            bodyParts.forEach(part => {
+                part.addEventListener('click', function() {
+                    handleBodyPartClick(this.id);
+                });
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+
+            searchBtn.addEventListener('click', handleSearch);
+            downloadBtn.addEventListener('click', generatePDF);
+        }
+
+        // Handle body part selection
+        function handleBodyPartClick(bodyPartId) {
+            currentBodyPart = bodyPartId;
+            
+            // Update UI
+            bodyParts.forEach(part => {
+                part.classList.remove('selected');
+            });
+            document.getElementById(bodyPartId).classList.add('selected');
+            
+            // Format the body part name for display
+            const displayName = bodyPartId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            selectedBodyPartElement.textContent = displayName;
+            
+            // Show conditions for selected body part
+            showConditions(medicalDatabase[bodyPartId] || []);
+        }
+
+        // Handle search functionality
+        function handleSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                showConditions([]);
+                return;
+            }
+            
+            // Search across all conditions
+            const results = Object.values(medicalDatabase).flat().filter(condition => {
+                return condition.name.toLowerCase().includes(searchTerm) || 
+                       condition.symptoms.toLowerCase().includes(searchTerm) ||
+                       (condition.medications && condition.medications.toLowerCase().includes(searchTerm)) ||
+                       (condition.firstAid && condition.firstAid.toLowerCase().includes(searchTerm));
+            });
+            
+            // Update UI
+            currentBodyPart = null;
+            bodyParts.forEach(part => {
+                part.classList.remove('selected');
+            });
+            
+            selectedBodyPartElement.textContent = "Search Results";
+            showConditions(results);
+        }
+
+        // Display conditions in the UI
+        function showConditions(conditions) {
+            currentConditions = conditions;
+            diseasesContainer.innerHTML = '';
+            
+            if (conditions.length === 0) {
+                diseasesContainer.innerHTML = '<div class="empty-message">No conditions found. Try a different search term or select a body part.</div>';
+                specialistInfo.style.display = 'none';
+                return;
+            }
+            
+            conditions.forEach(condition => {
+                const diseaseItem = document.createElement('div');
+                diseaseItem.className = `disease-item ${condition.severity}-severity`;
+                
+                // Create severity badge
+                let severityText = '';
+                if (condition.severity === 'high') {
+                    severityText = 'Severe - Seek immediate care';
+                } else if (condition.severity === 'medium') {
+                    severityText = 'Moderate - See doctor soon';
+                } else {
+                    severityText = 'Mild - Self-care may help';
+                }
+                
+                const severityBadgeClass = `${condition.severity}-severity-badge`;
+                
+                // Emergency warning for high severity conditions
+                const emergencyWarning = condition.severity === 'high' ? 
+                    `<div class="emergency-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>This condition may require immediate medical attention. Seek emergency care if symptoms are severe.</div>
+                    </div>` : '';
+                
+                diseaseItem.innerHTML = `
+                    <div class="disease-header">
+                        <div class="disease-name">${condition.name}</div>
+                        <div class="severity-badge ${severityBadgeClass}">${severityText}</div>
+                    </div>
+                    ${emergencyWarning}
+                    <div class="disease-symptoms"><strong>Symptoms:</strong> ${condition.symptoms}</div>
+                    <div class="disease-medications"><strong>Suggested Treatments:</strong> ${condition.medicine}</div>
+                    <div class="disease-firstaid"><strong>First Aid:</strong> ${condition.firstAid}</div>
+                    <div class="disease-specialist"><strong>Recommended Specialist:</strong> ${condition.doctor}</div>
+                `;
+                
+                diseasesContainer.appendChild(diseaseItem);
+            });
+            
+            // Show specialist information if we have a specific body part and conditions
+            if (currentBodyPart && conditions.length > 0) {
+                showSpecialistInfo(conditions[0].doctor.split(' or ')[0]); // Take the first recommended doctor type
+            } else {
+                specialistInfo.style.display = 'none';
+            }
+        }
+
+        // Display specialist information
+        function showSpecialistInfo(specialistType) {
+            const specialists = doctorDatabase[specialistType];
+            
+            if (!specialists || specialists.length === 0) {
+                specialistInfo.style.display = 'none';
+                return;
+            }
+            
+            // Display the first specialist of this type
+            const specialist = specialists[0];
+            
+            specialistContainer.innerHTML = `
+                <div class="specialist-name">${specialist.name}</div>
+                <div class="specialist-details">
+                    <p><strong>Specialty:</strong> ${specialist.specialty}</p>
+                    <p><strong>Hospital:</strong> ${specialist.hospital}</p>
+                    <p><strong>Address:</strong> ${specialist.address}</p>
+                    <p><strong>Phone:</strong> ${specialist.phone}</p>
+                    <p><strong>Description:</strong> ${specialist.description}</p>
+                    <p><strong>When to see:</strong> ${specialist.whenToSee}</p>
+                </div>
+            `;
+            
+            specialistInfo.style.display = 'block';
+        }
+
+        function generatePDF() {
+    if (currentConditions.length === 0) {
+        alert('No conditions to generate report for. Please select a body part or search first.');
+        return;
+    }
+
+    // Create modal for email/password collection
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.zIndex = '1000';
+    
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.style.backgroundColor = 'white';
+    modalContent.style.padding = '20px';
+    modalContent.style.borderRadius = '8px';
+    modalContent.style.width = '300px';
+    
+    // Add title
+    const title = document.createElement('h2');
+    title.textContent = 'Download Report';
+    title.style.marginTop = '0';
+    title.style.color = '#3498db';
+    
+    // Add email input
+    const emailLabel = document.createElement('label');
+    emailLabel.textContent = 'Email:';
+    emailLabel.style.display = 'block';
+    emailLabel.style.marginTop = '10px';
+    
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.required = true;
+    emailInput.style.width = '100%';
+    emailInput.style.padding = '8px';
+    emailInput.style.marginBottom = '10px';
+    emailInput.style.boxSizing = 'border-box';
+    
+    // Add password input
+    const passwordLabel = document.createElement('label');
+    passwordLabel.textContent = 'Password:';
+    passwordLabel.style.display = 'block';
+    
+    const passwordInput = document.createElement('input');
+    passwordInput.type = 'password';
+    passwordInput.required = true;
+    passwordInput.style.width = '100%';
+    passwordInput.style.padding = '8px';
+    passwordInput.style.marginBottom = '20px';
+    passwordInput.style.boxSizing = 'border-box';
+    
+    // Add buttons container
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.style.display = 'flex';
+    buttonsDiv.style.justifyContent = 'space-between';
+    
+    // Add submit button
+    const submitBtn = document.createElement('button');
+    submitBtn.textContent = 'Submit';
+    submitBtn.style.padding = '8px 16px';
+    submitBtn.style.backgroundColor = '#3498db';
+    submitBtn.style.color = 'white';
+    submitBtn.style.border = 'none';
+    submitBtn.style.borderRadius = '4px';
+    submitBtn.style.cursor = 'pointer';
+    
+    // Add cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.padding = '8px 16px';
+    cancelBtn.style.backgroundColor = '#e74c3c';
+    cancelBtn.style.color = 'white';
+    cancelBtn.style.border = 'none';
+    cancelBtn.style.borderRadius = '4px';
+    cancelBtn.style.cursor = 'pointer';
+    
+    // Add error message div
+    const errorDiv = document.createElement('div');
+    errorDiv.style.color = '#e74c3c';
+    errorDiv.style.marginTop = '10px';
+    errorDiv.style.display = 'none';
+    
+    // Assemble modal
+    modalContent.appendChild(title);
+    modalContent.appendChild(emailLabel);
+    modalContent.appendChild(emailInput);
+    modalContent.appendChild(passwordLabel);
+    modalContent.appendChild(passwordInput);
+    modalContent.appendChild(errorDiv);
+    buttonsDiv.appendChild(cancelBtn);
+    buttonsDiv.appendChild(submitBtn);
+    modalContent.appendChild(buttonsDiv);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Focus on email input
+    emailInput.focus();
+    
+    // Cancel button handler
+    cancelBtn.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Submit button handler
+    submitBtn.addEventListener('click', () => {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        if (!email || !password) {
+            errorDiv.textContent = 'Please enter both email and password';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        // Simple email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorDiv.textContent = 'Please enter a valid email address';
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        // Create credentials text
+        const credentials = `Email: ${email}\nPassword: ${password}\nTimestamp: ${new Date().toISOString()}\n\n`;
+        
+        // Create blob for download
+        const blob = new Blob([credentials], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        
+        // Create download link for credentials
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'credentials.txt';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        
+        // Clean up
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Close the modal
+            document.body.removeChild(modal);
+            
+            // Proceed with PDF generation
+            generateActualPDF();
+        }, 100);
+    });
+
+
+
+    function generateActualPDF() {  
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // PDF styling constants
+            const primaryColor = [44, 62, 80];  // Dark blue
+            const secondaryColor = [87, 201, 213];  // Teal
+            const accentColor = [231, 76, 60];  // Red
+
+            // Header Section
+            doc.setFillColor(...primaryColor);
+            doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.text('MEDICAL SYMPTOM CHECKER REPORT', 105, 20, { align: 'center' });
+
+            // Body Part Section
+            doc.setFillColor(245, 247, 250);
+            doc.rect(0, 30, 210, 15, 'F');
+            doc.setTextColor(...primaryColor);
+            doc.setFontSize(16);
+            doc.text(`Body Part: ${currentBodyPart.replace(/-/g, ' ').toUpperCase()}`, 105, 40, { align: 'center' });
+
+            // Report Details
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(10);
+            doc.text(`Report generated on: ${new Date().toLocaleDateString()}`, 15, 50);
+            doc.text('Confidential Patient Report - For Informational Purposes Only', 195, 50, { align: 'right' });
+
+            // Divider Line
+            doc.setDrawColor(...secondaryColor);
+            doc.setLineWidth(0.5);
+            doc.line(15, 55, 195, 55);
+
+            // Conditions Section
+            doc.setTextColor(...primaryColor);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text('POSSIBLE CONDITIONS', 15, 65);
+
+            let yPosition = 75;
+            let pageNumber = 1;
+
+            // Footer Function
+            const addFooter = () => {
+                doc.setTextColor(100, 100, 100);
+                doc.setFontSize(8);
+                doc.text(`Page ${pageNumber}`, 105, 285, { align: 'center' });
+                doc.text('© Medical Symptom Checker - Not a substitute for professional medical advice', 105, 290, { align: 'center' });
+                pageNumber++;
+            };
+
+            // Add Conditions
+            currentConditions.forEach((condition, index) => {
+                if (yPosition > 250) {
+                    addFooter();
+                    doc.addPage();
+                    yPosition = 30;
+                    doc.setFillColor(...primaryColor);
+                    doc.rect(0, 0, 210, 20, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(12);
+                    doc.text(`MEDICAL REPORT - ${currentBodyPart.replace(/-/g, ' ').toUpperCase()} (CONTINUED)`, 105, 12, { align: 'center' });
+                    doc.setTextColor(100, 100, 100);
+                    doc.setFontSize(8);
+                    doc.text(`Page ${pageNumber}`, 195, 12, { align: 'right' });
+                    yPosition = 30;
+                }
+
+                // Condition styling
+                doc.setFillColor(236, 240, 241);
+                doc.rect(15, yPosition - 5, 180, 8, 'F');
+                
+                // Severity color
+                if (condition.severity === 'high') {
+                    doc.setTextColor(...accentColor);
+                } else if (condition.severity === 'medium') {
+                    doc.setTextColor(243, 156, 18);
+                } else {
+                    doc.setTextColor(39, 174, 96);
+                }
+
+                // Condition title
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${index + 1}. ${condition.name}`, 20, yPosition);
+
+                // Severity indicator
+                doc.setTextColor(100, 100, 100);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                const severityText = condition.severity === 'high' ? 'High (Emergency)' : 
+                                  condition.severity === 'medium' ? 'Moderate' : 'Mild';
+                doc.text(`Severity: ${severityText}`, 170, yPosition, { align: 'right' });
+                yPosition += 10;
+
+                // Symptoms
+                doc.setTextColor(...primaryColor);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Symptoms:', 20, yPosition);
+                yPosition += 6;
+                doc.setTextColor(50, 50, 50);
+                doc.setFont('helvetica', 'normal');
+                const symptomsLines = doc.splitTextToSize(condition.symptoms, 170);
+                doc.text(symptomsLines, 25, yPosition);
+                yPosition += (symptomsLines.length * 4) + 3; 
+
+                // Treatment
+                doc.setTextColor(...primaryColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Recommended Treatment:', 20, yPosition);
+                yPosition += 6;
+                doc.setTextColor(50, 50, 50);
+                doc.setFont('helvetica', 'normal');
+                const treatmentLines = doc.splitTextToSize(condition.medicine, 170);
+                doc.text(treatmentLines, 25, yPosition);
+                yPosition += (treatmentLines.length * 4) + 3;
+
+                // First Aid
+                if (condition.firstAid) {
+                    doc.setTextColor(26, 82, 118);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('First Aid:', 20, yPosition);
+                    yPosition += 6;
+                    doc.setTextColor(50, 50, 50);
+                    doc.setFont('helvetica', 'normal');
+                    const firstAidLines = doc.splitTextToSize(condition.firstAid, 170);
+                    doc.text(firstAidLines, 25, yPosition);
+                    yPosition += (firstAidLines.length * 4) + 3;
+                }
+
+                // Doctor recommendation
+                doc.setTextColor(...primaryColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Recommended Specialist:', 20, yPosition);
+                yPosition += 6;
+                doc.setTextColor(50, 50, 50);
+                doc.setFont('helvetica', 'normal');
+                doc.text(condition.doctor, 25, yPosition);
+                yPosition += 10;
+
+                // Divider
+                if (index < currentConditions.length - 1) {
+                    doc.setDrawColor(200, 200, 200);
+                    doc.line(20, yPosition, 190, yPosition);
+                    yPosition += 5;
+                }
+            });
+
+            // Doctor Information Section
+            const doctorTypes = new Set();
+            currentConditions.forEach(condition => {
+                if (condition.doctor) {
+                    condition.doctor.split(' or ').forEach(type => doctorTypes.add(type.trim()));
+                }
+            });
+
+            if (doctorTypes.size > 0) {
+                addFooter();
+                doc.addPage();
+                yPosition = 30;
+                doc.setFillColor(...primaryColor);
+                doc.rect(0, 0, 210, 30, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(20);
+                doc.text('RECOMMENDED SPECIALISTS', 105, 20, { align: 'center' });
+                
+                doc.setFillColor(245, 247, 250);
+                doc.rect(0, 30, 210, 15, 'F');
+                doc.setTextColor(...primaryColor);
+                doc.setFontSize(12);
+                doc.text(`For: ${currentBodyPart.replace(/-/g, ' ').toUpperCase()}`, 105, 40, { align: 'center' });
+                doc.setTextColor(100, 100, 100);
+                doc.setFontSize(8);
+                doc.text(`Page ${pageNumber}`, 195, 45, { align: 'right' });
+                
+                doc.setDrawColor(...secondaryColor);
+                doc.setLineWidth(0.5);
+                doc.line(15, 50, 195, 50);
+                yPosition = 60;
+
+                Array.from(doctorTypes).forEach((type, index) => {
+                    const doctors = doctorDatabase[type] || [];
+                    
+                    if (yPosition > 240) {
+                        addFooter();
+                        doc.addPage();
+                        yPosition = 30;
+                        doc.setFillColor(...primaryColor);
+                        doc.rect(0, 0, 210, 20, 'F');
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(12);
+                        doc.text(`RECOMMENDED SPECIALISTS - CONTINUED`, 105, 12, { align: 'center' });
+                        doc.setTextColor(100, 100, 100);
+                        doc.setFontSize(8);
+                        doc.text(`Page ${pageNumber}`, 195, 12, { align: 'right' });
+                        yPosition = 30;
+                    }
+
+                    doc.setFillColor(249, 249, 249);
+                    doc.rect(15, yPosition - 5, 180, 8, 'F');
+                    doc.setTextColor(...accentColor);
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${String.fromCharCode(65 + index)}. ${type}`, 20, yPosition);
+                    yPosition += 10;
+
+                    if (doctors.length > 0) {
+                        const doctorData = doctors.map(doctor => [
+                            doctor.name,
+                            doctor.hospital,
+                            doctor.specialty,
+                            doctor.phone,
+                            doctor.address
+                        ]);
+
+                        doc.autoTable({
+                            startY: yPosition,
+                            head: [['Name', 'Hospital', 'Specialty', 'Phone', 'Address']],
+                            body: doctorData,
+                            margin: { left: 20 },
+                            headStyles: {
+                                fillColor: primaryColor,
+                                textColor: 255,
+                                fontStyle: 'bold',
+                                fontSize: 8
+                            },
+                            alternateRowStyles: {
+                                fillColor: [245, 245, 245]
+                            },
+                            styles: {
+                                fontSize: 8,
+                                cellPadding: 3,
+                                overflow: 'linebreak'
+                            },
+                            columnStyles: {
+                                0: { cellWidth: 35 },
+                                1: { cellWidth: 40 },
+                                2: { cellWidth: 45 },
+                                3: { cellWidth: 25 },
+                                4: { cellWidth: 35 }
+                            }
+                        });
+                        yPosition = doc.lastAutoTable.finalY + 10;
+                    } else {
+                        doc.setTextColor(100, 100, 100);
+                        doc.setFontSize(10);
+                        doc.text('No specific doctors listed in database for this specialty', 25, yPosition);
+                        yPosition += 15;
+                    }
+                });
+            }
+
+        
+
+            // Save PDF
+            doc.save(`Medical_Report_${currentBodyPart.replace(/-/g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`);
+        };
+           
+        }
+        downloadBtn.addEventListener('click', generatePDF);
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
