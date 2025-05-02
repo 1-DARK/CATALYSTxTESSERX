@@ -1,0 +1,67 @@
+@media (max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    
+    .hero-content {
+        margin-bottom: 40px;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .feature-card {
+        flex-direction: column;
+    }
+    
+    .feature-card.reverse {
+        flex-direction: column;
+    }
+    
+    .feature-content, .feature-image {
+        width: 100%;
+    }
+    
+   
+    
+  
+}
+
+@media (max-width: 768px) {
+
+    
+   
+    .fa-bars, .fa-times {
+        display: block;
+    }
+    
+    .fa-times {
+        margin: 20px;
+        font-size: 22px;
+        cursor: pointer;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .stats .container {
+        flex-direction: column;
+    }
+    
+    .stat-item {
+        margin-bottom: 20px;
+    }
+    
+
+}
+
