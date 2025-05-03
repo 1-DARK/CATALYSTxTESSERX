@@ -51,6 +51,10 @@ DiagnoAI is a comprehensive web-based medical diagnosis platform that combines i
 
 8. **Emergency Protocols**:
    - Dedicated section in `FrontSYM.html` for emergency guidance and first aid recommendations.
+  
+9. **Video Chatbot**:
+   - Video Messaging: Users can record and send video messages
+   - Visual demonstration of physical symptoms
 
 ### Technical Implementation
 
