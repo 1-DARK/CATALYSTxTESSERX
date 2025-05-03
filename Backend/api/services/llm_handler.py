@@ -1,15 +1,6 @@
 from google import genai
 import json
 
-
-#  
-#             '''The output should be in pure text form containing possible illness names. IMPORTANT: Respond *only* with the valid raw text, and absolutely no other text before or after it. For example: responding only with text  "Gastroenteritis, Influenza, Food poisoning" for a certain condition.
-#             For each, each disease:
-#             1 Common name (avoid jargon)
-#             2. Estimated likelihood as a percentage (must sum to 100 %)
-#             3. One-sentence “why it might fit”
-# history = ""
-
 class QueryResponse:
     def __init__(self):        
         self.client = genai.Client(api_key="")
