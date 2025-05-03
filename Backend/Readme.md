@@ -1,4 +1,4 @@
-# Catalyst - Backend API
+# DiagnoAI - Medical Diagnosis Platform
 
 ## Overview
 
