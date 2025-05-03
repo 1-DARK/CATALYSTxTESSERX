@@ -1,488 +1,772 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>DiagnoAI</title>
-    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
 
-        body {
-            background-color: #121212;
-            color: #f0f0f0;
-            height: 100vh;
-            overflow: hidden;
-        }
+      body {
+        background-color: #121212;
+        color: #f0f0f0;
+        height: 100vh;
+        overflow: hidden;
+      }
 
-        .chat-container {
-            width: 100%;
-            height: 100vh;
-            background-color: #121212;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+      .chat-container {
+        width: 100%;
+        height: 100vh;
+        background-color: #121212;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
 
-        .chat-header {
-            background-color: #0d1117;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #1e2738;
-        }
+      .chat-header {
+        background-color: #0d1117;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #1e2738;
+      }
 
-        .chat-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+      .chat-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-        .chat-title i {
-            color: #0084ff;
-            font-size: 1.5rem;
-        }
+      .chat-title i {
+        color: #0084ff;
+        font-size: 1.5rem;
+      }
 
-        .chat-title h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #f0f0f0;
-        }
+      .chat-title h1 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #f0f0f0;
+      }
 
-        .chat-status {
-            background-color: #0084ff;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+      .chat-status {
+        background-color: #0084ff;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
 
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+      .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
 
-        .message {
-            display: flex;
-            gap: 10px;
-            max-width: 80%;
-        }
+      .message {
+        display: flex;
+        gap: 10px;
+        max-width: 80%;
+        animation: fadeIn 0.3s ease-out; /* Added fade-in animation */
+      }
 
-        .user-message {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
+      .user-message {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+      }
 
-        .bot-message {
-            align-self: flex-start;
-        }
+      .bot-message {
+        align-self: flex-start;
+      }
 
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #1e2738;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
+      /* Style for the thinking/placeholder message */
+      .bot-message.thinking .message-content {
+        background-color: #3a3a3a; /* Slightly different color for thinking state */
+        font-style: italic;
+        color: #b0b0b0;
+      }
+      /* Style for error messages */
+      .bot-message.error .message-content {
+        background-color: #5a3a3a; /* Reddish tint for errors */
+        color: #ffb0b0;
+      }
 
-        .user-message .message-avatar {
-            background-color: #0084ff;
-        }
+      .message-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #1e2738;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+      }
 
-        .message-avatar i {
-            color: #f0f0f0;
-            font-size: 1rem;
-        }
+      .user-message .message-avatar {
+        background-color: #0084ff;
+      }
 
-        .message-content {
-            background-color: #1e2738;
-            padding: 12px 16px;
-            border-radius: 18px;
-            border-top-left-radius: 4px;
-            font-size: 25px; 
-            line-height: 1.4;
-        }
+      .message-avatar i {
+        color: #f0f0f0;
+        font-size: 1rem;
+      }
 
-        .user-message .message-content {
-            background-color: #0084ff;
-            border-radius: 18px;
-            border-top-right-radius: 4px;
-        }
+      .message-content {
+        background-color: #1e2738;
+        padding: 12px 16px;
+        border-radius: 18px;
+        border-top-left-radius: 4px;
+        font-size: 1rem; /* Base font size for the bubble */
+        line-height: 1.4;
+        word-break: break-word; /* Ensure long words wrap */
+        /* Add overflow-x for wide tables */
+        overflow-x: auto;
+      }
 
-        .message-content img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 8px;
-        }
+      .user-message .message-content {
+        background-color: #0084ff;
+        border-radius: 18px;
+        border-top-right-radius: 4px;
+      }
 
-        .chat-input-container {
-            padding: 15px;
-            background-color: #0d1117;
-            border-top: 1px solid #1e2738;
-        }
+      .message-content img {
+        max-width: 100%;
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 8px;
+        margin-top: 8px;
+        display: block; /* Prevent extra space below image */
+      }
 
-        .attachment-preview {
-            margin-bottom: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+      .chat-input-container {
+        padding: 15px;
+        background-color: #0d1117;
+        border-top: 1px solid #1e2738;
+      }
 
-        .preview-item {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
+      .attachment-preview {
+        margin-bottom: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
 
-        .preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+      .preview-item {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        border: 1px solid #1e2738; /* Added border */
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #1e2738; /* Background for empty state/loading */
+      }
 
-        .preview-item .remove-preview {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
+      .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-        .chat-input-wrapper {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
+      .preview-item .remove-preview {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 0.8rem;
+        z-index: 1; /* Ensure it's above the image */
+      }
 
-        .attachment-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+      .chat-input-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
 
-        .attachment-button {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #1e2738;
-            border: none;
-            color: #0084ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+      .attachment-buttons {
+        display: flex;
+        /* Use row for horizontal layout */
+        flex-direction: row;
+        gap: 10px;
+      }
 
-        .attachment-button:hover {
-            background-color: #0084ff;
-            color: white;
-        }
+      .attachment-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #1e2738;
+        border: none;
+        color: #0084ff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        /* Added margin-bottom to align with input */
+        margin-bottom: 5px;
+      }
 
-        .input-wrapper {
-            flex: 1;
-            display: flex;
-            background-color: #1e2738;
-            border-radius: 24px;
-            padding: 8px 16px;
-            align-items: center;
-        }
+      .attachment-button:hover {
+        background-color: #0084ff;
+        color: white;
+      }
 
-        #message-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #f0f0f0;
-            font-size: 0.95rem;
-            resize: none;
-            height: 24px;
-            max-height: 120px;
-            outline: none;
-            padding: 0;
-        }
+      .attachment-button:disabled {
+        background-color: #3a3a3a;
+        color: #8a8a8a;
+        cursor: not-allowed;
+      }
 
-        #message-input::placeholder {
-            color: #8a8a8a;
-        }
+      .input-wrapper {
+        flex: 1;
+        display: flex;
+        background-color: #1e2738;
+        border-radius: 24px;
+        padding: 8px 16px;
+        align-items: center;
+      }
 
-        .send-button {
-            background: transparent;
-            border: none;
-            color: #0084ff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0 0 0 10px;
-            display: flex;
-            align-items: center;
-        }
+      #message-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: #f0f0f0;
+        font-size: 0.95rem;
+        resize: none;
+        height: 24px;
+        max-height: 120px;
+        outline: none;
+        padding: 0;
+        /* Align text top in textarea */
+        vertical-align: top;
+        line-height: 1.4; /* Match message content line height */
+        padding-top: 3px; /* Small adjustment for vertical alignment */
+      }
 
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
+      #message-input::placeholder {
+        color: #8a8a8a;
+      }
 
-        ::-webkit-scrollbar-track {
-            background: #0d1117;
-        }
+      .send-button {
+        background: transparent;
+        border: none;
+        color: #0084ff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0 0 0 10px;
+        display: flex;
+        align-items: center;
+        transition: color 0.2s ease;
+      }
 
-        ::-webkit-scrollbar-thumb {
-            background: #1e2738;
-            border-radius: 3px;
-        }
+      .send-button:hover:not(:disabled) {
+        color: #4db8ff;
+      }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #0084ff;
-        }
+      .send-button:disabled {
+        color: #3a3a3a;
+        cursor: not-allowed;
+      }
 
-        /* Animation for new messages */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
 
-        .message {
-            animation: fadeIn 0.3s ease-out;
+      ::-webkit-scrollbar-track {
+        background: #0d1117;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #1e2738;
+        border-radius: 3px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #0084ff;
+      }
+
+      /* Animation for new messages */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* --- NEW/MODIFIED CSS for Table in message-content --- */
+      /* Added this block from your first HTML */
+      .message-content table {
+        width: 100%; /* Make table take full width of the chat bubble */
+        border-collapse: collapse; /* Remove space between table borders */
+        margin-top: 10px; /* Space above the table if there's text before it */
+        margin-bottom: 10px; /* Space below the table if there's text after it */
+        /* Inherits base font-size from .message-content (1rem).
+           Let's set a specific font size for cells/headers for consistency. */
+        font-size: 15px; /* Adjust font size for better readability within the table cells */
+        line-height: 1.3; /* Adjust line height */
+        /* Ensure it respects the chat bubble's padding but doesn't add its own background */
+        /* Background and border-radius are on the .message-content div */
+      }
+
+      .message-content th,
+      .message-content td {
+        border: 1px solid #2a3547; /* Border color slightly lighter than bubble background */
+        padding: 8px; /* Padding inside table cells */
+        text-align: left; /* Align text to the left */
+        vertical-align: top; /* Align content to the top in cells */
+        word-wrap: break-word; /* Ensure long words break */
+        white-space: normal; /* Override potential pre-wrap from outside */
+        color: #f0f0f0; /* Inherit text color */
+        font-size: 15px; /* Ensure consistent font size */
+      }
+
+      .message-content th {
+        background-color: #1e2738; /* Match the chat bubble's background color */
+        font-weight: bold;
+        color: #0084ff; /* Highlight header text */
+      }
+
+      /* Optional: Alternate row background for better readability */
+      .message-content tr:nth-child(even) {
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.1
+        ); /* Slightly darker shade over the bubble background */
+      }
+
+      /* Optional: Hover effect on rows */
+      .message-content tr:hover {
+        background-color: rgba(0, 132, 255, 0.05); /* Light blue hover effect */
+      }
+
+      /* If message-content has a <p> and then a table, adjust margins */
+      .message-content p + table {
+        margin-top: 15px; /* More space if table follows a paragraph */
+      }
+
+      /* Ensure raw HTML like lists, etc. also renders correctly */
+      .message-content ul,
+      .message-content ol {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-left: 20px; /* Add padding for list markers */
+      }
+      .message-content li {
+        margin-bottom: 5px;
+      }
+      .message-content p {
+        /* Add margin bottom to paragraphs if followed by another element */
+        margin-bottom: 0.5em;
+        /* Remove margin from last paragraph to avoid extra space */
+        margin-bottom: 0;
+      }
+      .message-content p:not(:last-child) {
+        margin-bottom: 0.5em;
+      }
+      /* Add margin top to first paragraph if not the only child */
+      .message-content p:first-child:not(:last-child) {
+        margin-top: 0;
+      }
+
+      /* Adjust markdown-like formatting if backend sends it within the HTML */
+      .message-content strong,
+      .message-content b {
+        font-weight: bold;
+      }
+      .message-content em,
+      .message-content i {
+        font-style: italic;
+      }
+
+      /* --- END NEW/MODIFIED CSS --- */
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="chat-container">
-        <div class="chat-header">
-            <div class="chat-title">
-                <i class="fas fa-robot"></i>
-                <h1>AI Assistant</h1>
-            </div>
-            <div class="chat-status">Online</div>
+      <div class="chat-header">
+        <div class="chat-title">
+          <i class="fas fa-robot"></i>
+          <h1>AI Assistant</h1>
         </div>
-       
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot-message">
-                <div class="message-avatar">
-                    <i class="fas fa-robot"></i>
-                </div>
-                <div class="message-content">
-                    <p>Hello! I'm your AI assistant. How can I help you today?</p>
-                </div>
-            </div>
+        <!-- Status can be updated dynamically -->
+        <div class="chat-status" id="chat-status">Online</div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <!-- Initial bot message will be added by JavaScript -->
+      </div>
+
+      <div class="chat-input-container">
+        <div class="attachment-preview" id="attachment-preview"></div>
+
+        <div class="chat-input-wrapper">
+          <!-- Moved file input and label inside input-wrapper for flex alignment -->
+          <div class="input-wrapper">
+            <label for="image-upload" class="attachment-button">
+              <i class="fas fa-image"></i>
+              <!-- Input element is now inside the label -->
+              <input type="file" id="image-upload" accept="image/*" hidden />
+            </label>
+            <textarea
+              id="message-input"
+              placeholder="Type your message..."
+              rows="1"
+            ></textarea>
+            <!-- Start with 1 row -->
+            <button id="send-button" class="send-button">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
         </div>
-       
-        <div class="chat-input-container">
-            <div class="attachment-preview" id="attachment-preview"></div>
-           
-            <div class="chat-input-wrapper">
-                <div class="attachment-buttons">
-                    <label for="image-upload" class="attachment-button">
-                        <i class="fas fa-image"></i>
-                        <input type="file" id="image-upload" accept="image/*" hidden>
-                    </label>
-                </div>
-               
-                <div class="input-wrapper">
-                    <textarea id="message-input" placeholder="Type your message..."></textarea>
-                    <button id="send-button" class="send-button">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const chatMessages = document.getElementById('chat-messages');
-            const messageInput = document.getElementById('message-input');
-            const sendButton = document.getElementById('send-button');
-            const imageUpload = document.getElementById('image-upload');
-            const attachmentPreview = document.getElementById('attachment-preview');
-           
-            // Variables for image upload
-            let selectedImage = null;
-           
-            // Auto-resize textarea
-            messageInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-                if (this.scrollHeight > 120) {
-                    this.style.overflowY = 'auto';
-                } else {
-                    this.style.overflowY = 'hidden';
-                }
-            });
-           
-            // Send message function
-            function sendMessage() {
-                const messageText = messageInput.value.trim();
-               
-                // Don't send if no text and no attachments
-                if (!messageText && !selectedImage) return;
-               
-                // Create message element
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message user-message';
-               
-                // Create avatar
-                const avatarElement = document.createElement('div');
-                avatarElement.className = 'message-avatar';
-                const avatarIcon = document.createElement('i');
-                avatarIcon.className = 'fas fa-user';
-                avatarElement.appendChild(avatarIcon);
-               
-                // Create message content
-                const contentElement = document.createElement('div');
-                contentElement.className = 'message-content';
-               
-                // Add text if any
-                if (messageText) {
-                    const textElement = document.createElement('p');
-                    textElement.textContent = messageText;
-                    contentElement.appendChild(textElement);
-                }
-               
-                // Add image if any
-                if (selectedImage) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = selectedImage;
-                    contentElement.appendChild(imgElement);
-                }
-               
-                // Assemble message
-                messageElement.appendChild(contentElement);
-                messageElement.appendChild(avatarElement);
-               
-                // Add to chat
-                chatMessages.appendChild(messageElement);
-               
-                // Clear input and attachments
-                messageInput.value = '';
-                messageInput.style.height = 'auto';
-                selectedImage = null;
-                attachmentPreview.innerHTML = '';
-               
-                // Scroll to bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-               
-                // Simulate bot response after a delay
-                setTimeout(botResponse, 1000);
+      document.addEventListener("DOMContentLoaded", function () {
+        // DOM Elements
+        const chatMessages = document.getElementById("chat-messages");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const imageUpload = document.getElementById("image-upload");
+        const attachmentPreview = document.getElementById("attachment-preview");
+        const chatStatus = document.getElementById("chat-status");
+
+        // Backend endpoint URL (Adjust if needed)
+        const BACKEND_UPLOAD_URL = "http://127.0.0.1:8000/upload";
+
+        // Variables for attachments
+        let attachedFile = null; // Store the actual File object
+        let attachedFilePreview = null; // Store the Data URL for preview
+
+        // --- Utility Functions ---
+
+        // Function to add a message to the chat
+        // Modified to accept raw HTML content for bot messages
+        function addMessage(
+          type,
+          content,
+          imagePreviewUrl = null,
+          isPlaceholder = false
+        ) {
+          const messageElement = document.createElement("div");
+          messageElement.className = `message ${type}-message`;
+          if (isPlaceholder) {
+            messageElement.classList.add("thinking");
+          }
+
+          const avatarElement = document.createElement("div");
+          avatarElement.className = "message-avatar";
+          const avatarIcon = document.createElement("i");
+          avatarIcon.className =
+            type === "user" ? "fas fa-user" : "fas fa-robot";
+          avatarElement.appendChild(avatarIcon);
+
+          const contentElement = document.createElement("div");
+          contentElement.className = "message-content";
+
+          if (type === "user") {
+            // User message: Treat content as plain text, wrap in p, add image if any
+            if (content) {
+              const textElement = document.createElement("p");
+              textElement.textContent = content; // Use textContent for safety
+              contentElement.appendChild(textElement);
             }
-           
-            // Bot response function (simulated)
-            function botResponse() {
-                const responses = [
-                    "I understand. How can I assist you further?",
-                    "That's interesting! Tell me more.",
-                    "I'm processing your request. Is there anything else you'd like to add?",
-                    "Thanks for sharing. Is there anything specific you'd like to know?",
-                    "I'm here to help. What else would you like to discuss?"
-                ];
-               
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-               
-                // Create message element
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message bot-message';
-               
-                // Create avatar
-                const avatarElement = document.createElement('div');
-                avatarElement.className = 'message-avatar';
-                const avatarIcon = document.createElement('i');
-                avatarIcon.className = 'fas fa-robot';
-                avatarElement.appendChild(avatarIcon);
-               
-                // Create message content
-                const contentElement = document.createElement('div');
-                contentElement.className = 'message-content';
-                const textElement = document.createElement('p');
-                textElement.textContent = randomResponse;
-                contentElement.appendChild(textElement);
-               
-                // Assemble message
-                messageElement.appendChild(avatarElement);
-                messageElement.appendChild(contentElement);
-               
-                // Add to chat
-                chatMessages.appendChild(messageElement);
-               
-                // Scroll to bottom
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+            if (imagePreviewUrl) {
+              const imgElement = document.createElement("img");
+              imgElement.src = imagePreviewUrl;
+              contentElement.appendChild(imgElement);
             }
-           
-            // Handle image upload
-            imageUpload.addEventListener('change', function(e) {
-                if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
-                   
-                    reader.onload = function(event) {
-                        selectedImage = event.target.result;
-                       
-                        // Create preview
-                        attachmentPreview.innerHTML = '';
-                        const previewItem = document.createElement('div');
-                        previewItem.className = 'preview-item';
-                       
-                        const img = document.createElement('img');
-                        img.src = selectedImage;
-                       
-                        const removeButton = document.createElement('button');
-                        removeButton.className = 'remove-preview';
-                        removeButton.innerHTML = '<i class="fas fa-times"></i>';
-                        removeButton.addEventListener('click', function() {
-                            attachmentPreview.innerHTML = '';
-                            selectedImage = null;
-                        });
-                       
-                        previewItem.appendChild(img);
-                        previewItem.appendChild(removeButton);
-                        attachmentPreview.appendChild(previewItem);
-                    };
-                   
-                    reader.readAsDataURL(file);
-                }
+            messageElement.append(contentElement, avatarElement); // User on right
+          } else {
+            // type === 'bot'
+            // Bot message: Treat content as potential HTML, directly set innerHTML
+            // This is the key change allowing tables and other HTML to render
+            contentElement.innerHTML = content;
+            messageElement.append(avatarElement, contentElement); // Bot on left
+          }
+
+          chatMessages.appendChild(messageElement);
+          scrollToBottom();
+
+          return messageElement; // Return for placeholder update if needed
+        }
+
+        // Helper to scroll messages to the bottom
+        function scrollToBottom() {
+          // Use setTimeout to ensure DOM update finishes before scrolling
+          setTimeout(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 0);
+        }
+
+        // Function to update chat status
+        function updateChatStatus(statusText) {
+          chatStatus.textContent = statusText;
+        }
+
+        // --- Core Functionality ---
+
+        // Function to send message (text and/or image)
+        async function sendMessage() {
+          const messageText = messageInput.value.trim();
+          const fileToSend = attachedFile; // Get the File object before clearing
+
+          // Don't send if no text and no attachments
+          if (!messageText && !fileToSend) return;
+
+          // Add user message to chat immediately using the preview URL
+          addMessage("user", messageText, attachedFilePreview);
+
+          // Clear input and attachments display
+          messageInput.value = "";
+          messageInput.style.height = "24px"; // Reset height to single line
+          attachedFile = null;
+          attachedFilePreview = null;
+          attachmentPreview.innerHTML = "";
+          checkSendButtonState(); // Update button state after clearing
+          sendButton.disabled = true; // Disable send button while sending
+          imageUpload.disabled = true; // Disable image button while sending
+
+          // Add a "Thinking..." bot message placeholder
+          // Placeholder content is just text for now, the real response will replace innerHTML
+          const placeholderMessage = addMessage(
+            "bot",
+            "<p>Thinking...</p>", // Wrap placeholder text in <p>
+            null,
+            true // Mark as placeholder
+          );
+          updateChatStatus("Typing..."); // Indicate thinking status
+
+          // Send data to backend
+          await sendDataToBackend(messageText, fileToSend, placeholderMessage);
+
+          // Re-enable input and buttons after sending (regardless of success/failure)
+          sendButton.disabled = false;
+          imageUpload.disabled = false;
+          updateChatStatus("Online"); // Reset status
+        }
+
+        // Function to send data (text and file) to the backend
+        // Modified to expect raw HTML response from backend
+        async function sendDataToBackend(text, file, placeholderElement) {
+          const formData = new FormData();
+
+          // Append fields as expected by the backend
+          formData.append("title", "User Chat Upload");
+
+          if (file) {
+            formData.append("image_url", file, file.name); // Assuming backend expects 'image_url' for the file
+          }
+          if (text) {
+            formData.append("text_message", text); // Assuming backend accepts 'text_message' for text
+          }
+
+          try {
+            const response = await fetch(BACKEND_UPLOAD_URL, {
+              method: "POST",
+              body: formData,
             });
-           
-            // Send message on button click
-            sendButton.addEventListener('click', sendMessage);
-           
-            // Send message on Enter key (but allow Shift+Enter for new line)
-            messageInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
+
+            // Get the content element from the existing placeholder message
+            const contentElement =
+              placeholderElement.querySelector(".message-content");
+
+            if (!response.ok) {
+              // Handle HTTP errors
+              const errorText = await response.text(); // Read error response as text
+              console.error(
+                "Backend response error:",
+                response.status,
+                errorText
+              );
+              // Update content element with error details, wrapped in <p>
+              contentElement.innerHTML = `<p>Error from backend: ${
+                response.status
+              } ${response.statusText || ""}. Details: ${errorText.substring(
+                0,
+                200
+              )}...</p>`;
+              placeholderElement.classList.remove("thinking"); // Remove thinking style on error
+              placeholderElement.classList.add("error"); // Add error style
+            } else {
+              // *** Key Change Here ***
+              // Assume backend returns HTML content directly (or plain text)
+              const botResponseHTML = await response.text(); // Read response as raw text
+
+              if (!botResponseHTML || !botResponseHTML.trim()) {
+                // Handle empty response - display a default message, wrapped in <p>
+                contentElement.innerHTML =
+                  "<p>Received an empty response from the server.</p>";
+                console.warn("Received empty response from backend.");
+              } else {
+                // Set the content element's innerHTML directly with the received content
+                // This will render HTML (like tables) or plain text correctly
+                contentElement.innerHTML = botResponseHTML;
+              }
+
+              placeholderElement.classList.remove("thinking"); // Remove thinking style
+            }
+
+            scrollToBottom(); // Scroll after updating
+          } catch (error) {
+            console.error("Error sending data to backend:", error);
+            const contentElement =
+              placeholderElement.querySelector(".message-content");
+            let displayError = error.message;
+            if (error.message.includes("Failed to fetch")) {
+              displayError =
+                "Could not connect to the backend server. Is it running and accessible?";
+            } else if (error.message.includes("SyntaxError")) {
+              displayError = "Error parsing backend response."; // Could happen if backend sends non-HTML/non-text on error
+            }
+            // Display communication error, wrapped in <p>
+            contentElement.innerHTML = `<p>Communication error: ${displayError}</p>`;
+            placeholderElement.classList.remove("thinking");
+            placeholderElement.classList.add("error");
+            scrollToBottom();
+          }
+        }
+
+        // --- Event Handlers ---
+
+        // Initial bot message on load
+        // Using the updated addMessage function
+        addMessage(
+          "bot",
+          "<p>Hello! I'm your AI assistant. Send me a message or an image.</p>"
+        );
+
+        // Auto-resize textarea
+        messageInput.addEventListener("input", function () {
+          this.style.height = "auto";
+          this.style.height = this.scrollHeight + "px";
+          if (this.scrollHeight > 120) {
+            this.style.overflowY = "auto";
+          } else {
+            this.style.overflowY = "hidden";
+          }
+          // Adjust input wrapper height if textarea grows
+          // This is handled by align-items: flex-end on chat-input-wrapper
+          // No need for explicit height adjustment here
         });
+
+        // Handle image upload
+        imageUpload.addEventListener("change", function (e) {
+          if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+
+            // Basic file size and type validation (optional but recommended)
+            if (!file.type.startsWith("image/")) {
+              alert("Please select an image file.");
+              e.target.value = null; // Clear the input
+              checkSendButtonState(); // Update button state
+              return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+              // Example: 5MB limit
+              alert("File size exceeds 5MB limit.");
+              e.target.value = null; // Clear the input
+              checkSendButtonState(); // Update button state
+              return;
+            }
+
+            attachedFile = file; // Store the actual File object
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              attachedFilePreview = event.target.result; // Store Data URL for preview
+
+              // Create preview display
+              attachmentPreview.innerHTML = ""; // Clear previous previews
+              const previewItem = document.createElement("div");
+              previewItem.className = "preview-item";
+
+              const img = document.createElement("img");
+              img.src = attachedFilePreview;
+
+              const removeButton = document.createElement("button");
+              removeButton.className = "remove-preview";
+              removeButton.innerHTML = '<i class="fas fa-times"></i>';
+              removeButton.addEventListener("click", function () {
+                attachmentPreview.innerHTML = "";
+                attachedFile = null;
+                attachedFilePreview = null;
+                imageUpload.value = null; // Clear the file input value
+                checkSendButtonState(); // Re-check send button state
+              });
+
+              previewItem.appendChild(img);
+              previewItem.appendChild(removeButton);
+              attachmentPreview.appendChild(previewItem);
+
+              checkSendButtonState(); // Re-check send button state
+            };
+            reader.readAsDataURL(file); // Read the file as Data URL for preview
+          } else {
+            // If file selection was cancelled or no file selected
+            attachedFile = null;
+            attachedFilePreview = null;
+            attachmentPreview.innerHTML = "";
+            checkSendButtonState();
+          }
+        });
+
+        // Enable/disable send button based on input/attachment state
+        function checkSendButtonState() {
+          const messageText = messageInput.value.trim();
+          // Button is enabled if there's text OR there's an attached file
+          sendButton.disabled = !messageText && !attachedFile;
+        }
+
+        // Listen for input changes and attachment changes to update button state
+        messageInput.addEventListener("input", checkSendButtonState);
+        // imageUpload.addEventListener("change", checkSendButtonState); // This is already called inside the handler
+
+        // Send message on button click
+        sendButton.addEventListener("click", sendMessage);
+
+        // Send message on Enter key (but allow Shift+Enter for new line)
+        messageInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            // Only send if button is not disabled (handles empty input/attachment)
+            if (!sendButton.disabled) {
+              sendMessage();
+            }
+          }
+        });
+
+        // Initial state check on load
+        checkSendButtonState();
+      });
     </script>
-</body>
+  </body>
 </html>
