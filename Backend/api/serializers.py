@@ -5,18 +5,20 @@ class TextSerializer(serializers.ModelSerializer):
     class Meta:
         model = Text
         fields = "__all__"
-        
+
+# TODO
 class ImgSerializer(serializers.ModelSerializer):
     class Meta:
         model = Img
         fields = "__all__"
-        
+
+# TODO        
 class AudioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Audio
         fields = "__all__"
 
-
+# TODO
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video

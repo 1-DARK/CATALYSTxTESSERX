@@ -1,9 +1,5 @@
 from django.db import models
 
-# Create your models here
-# def upload_to(instance, filename):
-#     return 'images/{filename}'.format(filename=filename)
-
 class Text(models.Model):
     content = models.CharField(max_length=1000)
 
@@ -16,14 +12,16 @@ class Img(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+# TODO
 class Audio(models.Model):
     title = models.CharField(max_length=100, blank=False, null=True)
     audio = models.FileField(upload_to='audio_files/')
     
     def __str__(self):
         return self.title
-    
+
+# TODO
 class Video(models.Model):
     context = models.TextField(max_length=500, blank=False, null=True)
     video = models.FileField(upload_to='videos/')

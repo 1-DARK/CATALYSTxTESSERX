@@ -27,7 +27,6 @@ def query(request):
         count += 1
     prettyString = prettyString[count:]
     print(prettyString)
-    # resDict = {'response': f'{prettyString}'}
     return HttpResponse(prettyString, status=200)
 
 
@@ -87,13 +86,13 @@ def PdfViewSet(request):
                 "success": ipfs_cid is not None,
                 "cid": ipfs_cid,
                 "error": pinata_upload_error,
-                "ipfs_gateway_url": f"https://ipfs.io/ipfs/{ipfs_cid}" if ipfs_cid else None # Helpful URL
+                "ipfs_gateway_url": f"https://ipfs.io/ipfs/{ipfs_cid}" if ipfs_cid else None
             },
             "blockchain_storage": {
                 "success": tx_hash is not None,
                 "tx_hash": tx_hash,
                 "error": blockchain_storage_error,
-                "block_explorer_url": f"https://holesky.etherscan.io/tx/{tx_hash}" if tx_hash else None # Helpful URL
+                "block_explorer_url": f"https://holesky.etherscan.io/tx/{tx_hash}" if tx_hash else None 
             }
         }
 
