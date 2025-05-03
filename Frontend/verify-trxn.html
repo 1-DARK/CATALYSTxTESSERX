@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DiagnoAI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction Verifier</title>
+
+    <!-- Inline CSS - ONLY THIS SECTION IS MODIFIED -->
+    <style>
+      /* Basic Reset and Body Styling */
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 20px;
+        /* background-color: #e1f5fe; /* Lightest blue */
+        /* Use a subtle gradient background for a more modern feel */
+        background: linear-gradient(
+          135deg,
+          #c8f0ff 0%,
+          #2980b9 100%
+        ); /* linear-gradient(135deg, #aac3cc 0%, var(--darkreader-background-2980b9, #216694) 100%) */
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        box-sizing: border-box; /* Include padding in element's total width and height */
+      }
+
+      /* Container for the main content */
+      .container {
+        background-color: #ffffff; /* White background for clarity */
+        padding: 30px;
+        border-radius: 12px; /* Slightly larger border-radius */
+        /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
+        /* Enhance shadow for better depth */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+          0 6px 6px rgba(0, 0, 0, 0.23);
+        text-align: center;
+        max-width: 700px; /* Increased max-width for potentially long hashes/addresses */
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Heading */
+      h1 {
+        /* color: #0277bd; /* Darker blue */
+        color: #0d47a1; /* A slightly deeper, richer blue */
+        margin-bottom: 30px;
+        font-size: 2.2em; /* Slightly larger heading */
+        font-weight: 700;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* Subtle text shadow */
+      }
+
+      /* Input and Button Area */
+      .input-area {
+        display: flex;
+        gap: 15px; /* Increased space */
+        margin-bottom: 30px;
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        justify-content: center; /* Center items when wrapped */
+        align-items: center;
+      }
+
+      /* Input Field Styling */
+      #transactionHashInput {
+        flex-grow: 1; /* Allow input to take most space */
+        padding: 14px 20px;
+        /* border: 1px solid #b0bec5; /* Light grey-blue border */
+        border: 1px solid #cfd8dc; /* Softer border color */
+        border-radius: 5px;
+        font-size: 1.1rem;
+        outline: none;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        min-width: 250px; /* Ensure input is not too small */
+      }
+
+      #transactionHashInput:focus {
+        /* border-color: #0288d1; /* Medium blue highlight */
+        /* box-shadow: 0 0 5px rgba(2, 136, 209, 0.3); */
+        border-color: #1e88e5; /* Brighter blue focus */
+        box-shadow: 0 0 8px rgba(30, 136, 229, 0.4); /* More prominent shadow */
+      }
+
+      /* Button Styling */
+      #verifyButton {
+        /* background-color: #0288d1; /* Medium blue */
+        background: linear-gradient(
+          45deg,
+          #2196f3 0%,
+          #1976d2 100%
+        ); /* Blue gradient button */
+        color: white;
+        padding: 14px 25px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease, opacity 0.3s ease,
+          transform 0.1s ease; /* Add transform for press effect */
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between icon and text */
+        font-weight: 700;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle button shadow */
+      }
+
+      #verifyButton:hover:not(:disabled) {
+        /* background-color: #01579b; /* Darker blue on hover */
+        background: linear-gradient(
+          45deg,
+          #1976d2 0%,
+          #a9ccff 100%
+        ); /* Darker gradient on hover */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #verifyButton:active:not(:disabled) {
+        /* background-color: #003f72; /* Even darker on active */
+        background: linear-gradient(
+          45deg,
+          #0d47a1 0%,
+          #1976d2 100%
+        ); /* Shift gradient on active */
+        transform: translateY(1px); /* Press down effect */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      #verifyButton:disabled {
+        background-color: #b0bec5; /* Greyed out when disabled */
+        cursor: not-allowed;
+        opacity: 0.7;
+        box-shadow: none;
+      }
+
+      /* Results Display Area */
+      .results-area {
+        text-align: left;
+        margin-top: 25px;
+        padding: 25px;
+        /* border: 1px solid #e0e0e0; /* Light grey border */
+        border: 1px solid #bdbdbd; /* Slightly darker border */
+        border-radius: 8px;
+        /* background-color: #f5f5f5; /* Light grey background */
+        background-color: #eceff1; /* Slightly cooler grey background */
+        min-height: 50px; /* Ensure it has visible space */
+        box-sizing: border-box;
+        word-wrap: break-word; /* Prevent long strings from overflowing */
+        overflow-wrap: break-word;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+      }
+
+      .results-area p {
+        margin: 0 0 15px 0;
+        line-height: 1.6;
+        font-size: 1rem;
+        color: #555; /* Slightly darker text for body content */
+      }
+
+      .results-area p:last-child {
+        margin-bottom: 0; /* Remove bottom margin from the last paragraph */
+      }
+
+      /* Styling for the definition list within results */
+      .results-area dl {
+        margin: 0;
+        padding: 0;
+      }
+
+      .results-area dt {
+        font-weight: bold;
+        /* color: #0277bd; /* Darker blue for labels */
+        color: #1a237e; /* Even darker, deeper blue for labels */
+        float: left; /* Align labels to the left */
+        clear: left; /* Ensure label starts on a new line */
+        width: 180px; /* Fixed width for labels */
+        margin-right: 15px;
+        padding: 5px 0;
+        box-sizing: border-box;
+        font-size: 1rem;
+        text-transform: uppercase; /* Make labels uppercase for emphasis */
+        letter-spacing: 0.5px;
+      }
+
+      .results-area dd {
+        margin-left: 200px; /* Space for the fixed-width label + margin */
+        padding: 5px 0;
+        margin-bottom: 10px; /* Increased space between items */
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #333; /* Standard text color for values */
+      }
+
+      .results-area dd:last-child {
+        margin-bottom: 0; /* Remove bottom margin from the last dd */
+      }
+
+      /* Specific styling for hashes and addresses */
+      .hex-bytes,
+      .address {
+        font-family: "Courier New", Courier, monospace; /* Monospace font for hex/addresses */
+        /* background-color: #e3f2fd; /* Very light blue background */
+        background-color: #bbdefb; /* Slightly richer light blue */
+        padding: 3px 7px;
+        border-radius: 4px;
+        word-break: break-all; /* Break long strings */
+        display: inline-block; /* Ensures padding/margin works */
+        color: #0d47a1; /* Darker text color for values */
+        font-weight: bold;
+      }
+
+      /* Success/Error Messages */
+      .success-message {
+        /* color: #4caf50; /* Green */
+        color: #2e7d32; /* Darker green */
+        font-weight: bold;
+        margin-bottom: 20px; /* More space */
+        font-size: 1.2rem; /* Slightly larger font */
+        text-align: center; /* Center the main status message */
+        display: flex; /* Use flexbox for icon alignment */
+        align-items: center;
+        justify-content: center;
+        gap: 10px; /* Space between icon and text */
+      }
+
+      .error-message {
+        /* color: #f44336; /* Red */
+        color: #c62828; /* Darker red */
+        font-weight: bold;
+        margin-bottom: 20px; /* More space */
+        font-size: 1.2rem; /* Slightly larger font */
+        text-align: center; /* Center the main error message */
+        display: flex; /* Use flexbox for icon alignment */
+        align-items: center;
+        justify-content: center;
+        gap: 10px; /* Space between icon and text */
+      }
+
+      /* Style for the initial prompt text */
+      .results-area p:first-child:not(.success-message):not(.error-message) {
+        font-style: italic;
+        color: #757575; /* Grey out the initial message */
+      }
+
+      /* Loading spinner style */
+      .fas.fa-spinner {
+        margin-right: 5px; /* Space between spinner and text */
+      }
+
+      /* Media Queries for responsiveness */
+      @media (max-width: 600px) {
+        body {
+          padding: 10px; /* Reduce body padding */
+        }
+        .container {
+          padding: 20px;
+          border-radius: 8px; /* Smaller radius on small screens */
+        }
+
+        h1 {
+          font-size: 1.8em; /* Adjust heading size */
+          margin-bottom: 20px;
+        }
+
+        .input-area {
+          flex-direction: column;
+          gap: 15px; /* Keep gap reasonable */
+        }
+
+        #transactionHashInput,
+        #verifyButton {
+          width: 100%; /* Full width on small screens */
+          min-width: auto;
+          box-sizing: border-box;
+          font-size: 1rem; /* Slightly smaller font */
+          padding: 12px 15px;
+        }
+
+        .results-area {
+          padding: 15px; /* Reduced padding */
+        }
+
+        .results-area dt {
+          width: 100%; /* Labels take full width */
+          float: none;
+          clear: none;
+          margin-right: 0;
+          text-align: left; /* Align labels left */
+          padding-bottom: 2px; /* Reduced padding between dt and dd */
+          font-size: 0.95rem; /* Slightly smaller font */
+          text-transform: none; /* Revert uppercase on small screens */
+          letter-spacing: normal;
+        }
+
+        .results-area dd {
+          margin-left: 0; /* Remove left margin for dd */
+          margin-bottom: 15px; /* Add space below each item */
+          padding-top: 0;
+          font-size: 0.95rem; /* Slightly smaller font */
+        }
+
+        .success-message,
+        .error-message {
+          font-size: 1rem; /* Adjust message font size */
+          flex-direction: column; /* Stack icon and text */
+          gap: 5px;
+        }
+      }
+    </style>
+
+    <!-- External Fonts and Icons (still need to link externally) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Verify Blockchain Transaction</h1>
+
+      <div class="input-area">
+        <input
+          type="text"
+          id="transactionHashInput"
+          placeholder="Enter Transaction Hash..."
+        />
+        <button id="verifyButton"><i class="fas fa-search"></i> Verify</button>
+      </div>
+
+      <div id="resultsArea" class="results-area">
+        <!-- Transaction details will be displayed here -->
+        <p>
+          Enter a transaction hash above and click "Verify" to see its details.
+        </p>
+      </div>
+    </div>
+
+    <!-- Inline JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const hashInput = document.getElementById("transactionHashInput");
+        const verifyButton = document.getElementById("verifyButton");
+        const resultsArea = document.getElementById("resultsArea");
+
+        // Function to update the results area
+        const updateResults = (htmlContent) => {
+          resultsArea.innerHTML = htmlContent;
+        };
+
+        // Add event listener to the button
+        verifyButton.addEventListener("click", async () => {
+          const hash = hashInput.value.trim();
+
+          if (!hash) {
+            updateResults(
+              '<p class="error-message"><i class="fas fa-exclamation-circle"></i> Please enter a transaction hash.</p>'
+            );
+            return;
+          }
+
+          // Show loading state
+          updateResults(
+            '<p><i class="fas fa-spinner fa-spin"></i> Verifying transaction...</p>'
+          );
+          verifyButton.disabled = true; // Disable button during fetch
+
+          // Prepare data for the POST request
+          // The backend expects form data with key "hash"
+          const formData = new URLSearchParams();
+          formData.append("hash", hash);
+
+          const endpoint = "http://127.0.0.1:8000/verify-trxn";
+
+          try {
+            const response = await fetch(endpoint, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: formData,
+            });
+
+            // Check for HTTP errors (e.g., 404, 500)
+            if (!response.ok) {
+              const errorText = await response.text(); // Get potential error message from backend
+              updateResults(
+                `<p class="error-message"><i class="fas fa-times-circle"></i> Error verifying transaction: ${
+                  response.status
+                } ${response.statusText}. Backend response: ${
+                  errorText || "No specific error message."
+                }</p>`
+              );
+              return; // Stop here if HTTP error
+            }
+
+            // Backend returns a string representation of a Python object (AttributeDict).
+            // This is NOT standard JSON. We need to parse the string manually.
+            const responseText = await response.text();
+
+            // --- Manual String Parsing ---
+            // This is a simplified parser assuming the format is consistent like the example.
+            // It is brittle and might fail if the format varies significantly.
+            // A robust solution requires the backend to return proper JSON.
+            let transactionDetails = {};
+            try {
+              // Basic cleanup: remove 'AttributeDict(' and the trailing ')'
+              const innerString = responseText
+                .replace(/^AttributeDict\(/, "")
+                .replace(/\)$/, "");
+
+              // Use regex or careful string splitting to extract key-value pairs
+              // This regex looks for 'key': value pairs. It's still basic.
+              // This version is slightly improved to handle potential commas within values
+              const keyValueRegex =
+                /'([^']+)'\s*:\s*((?:HexBytes\('[^']*'\)|'[^']*'|None|True|False|-?\d+(\.\d+)?(?:\w+)?|\[.*?\]|\{.*?\})[^,]*)(?:,|$)/g;
+
+              let match;
+              while ((match = keyValueRegex.exec(innerString)) !== null) {
+                const key = match[1];
+                let valueStr = match[2].trim();
+
+                // Remove trailing comma if present (regex might include it)
+                if (valueStr.endsWith(",")) {
+                  valueStr = valueStr.slice(0, -1).trim();
+                }
+
+                // Attempt to convert common Python types from string representation
+                if (
+                  valueStr.startsWith("HexBytes('") &&
+                  valueStr.endsWith("')")
+                ) {
+                  transactionDetails[key] = valueStr.substring(
+                    10,
+                    valueStr.length - 2
+                  ); // Extract hex
+                } else if (valueStr.startsWith("'") && valueStr.endsWith("'")) {
+                  transactionDetails[key] = valueStr.substring(
+                    1,
+                    valueStr.length - 1
+                  ); // Extract string
+                } else if (valueStr === "None") {
+                  transactionDetails[key] = null;
+                } else if (valueStr === "True") {
+                  transactionDetails[key] = true;
+                } else if (valueStr === "False") {
+                  transactionDetails[key] = false;
+                } else if (!isNaN(parseFloat(valueStr)) && isFinite(valueStr)) {
+                  // Check if it's a number (including potential scientific notation like '2315128')
+                  transactionDetails[key] = Number(valueStr);
+                } else {
+                  // For complex types like lists/nested dicts (logs), store as raw string
+                  transactionDetails[key] = valueStr;
+                }
+              }
+
+              // Check if essential data was extracted
+              if (
+                Object.keys(transactionDetails).length === 0 &&
+                responseText.length > 0
+              ) {
+                // Only consider it a parsing failure if the response wasn't empty
+                throw new Error(
+                  "Parsed no key-value pairs from the response string."
+                );
+              }
+            } catch (parseError) {
+              console.error(
+                "Error parsing backend response string:",
+                responseText,
+                parseError
+              );
+              updateResults(
+                `<p class="error-message"><i class="fas fa-times-circle"></i> Failed to parse transaction details from backend response.</p><p><small>Raw response: ${responseText}</small></p>`
+              );
+              return; // Stop if parsing fails
+            }
+            // --- End Manual String Parsing ---
+
+            // --- Display Results ---
+            let resultsHtml = "";
+
+            // Display transaction status prominently
+            // Assuming status 1 is success, 0 is failure, or check for the key's existence
+            if (transactionDetails.hasOwnProperty("status")) {
+              if (transactionDetails.status === 1) {
+                resultsHtml +=
+                  '<p class="success-message"><i class="fas fa-check-circle"></i> Transaction Status: Successful</p>';
+              } else if (transactionDetails.status === 0) {
+                resultsHtml +=
+                  '<p class="error-message"><i class="fas fa-times-circle"></i> Transaction Status: Failed</p>';
+              } else {
+                // Handle other potential status values
+                resultsHtml += `<p>Transaction Status: ${transactionDetails.status}</p>`;
+              }
+            } else {
+              resultsHtml +=
+                '<p class="error-message"><i class="fas fa-info-circle"></i> Status information not available in response.</p>';
+            }
+
+            // Use a definition list (<dl>) for structured key-value display
+            resultsHtml += "<dl>";
+
+            const addDetail = (label, value, className = "") => {
+              // Check explicitly for undefined or null, allow 0, false etc.
+              if (value !== undefined && value !== null) {
+                // Ensure value is not empty string if className implies it's a hash/address
+                if (
+                  (className === "hex-bytes" || className === "address") &&
+                  value === ""
+                ) {
+                  // Do nothing or display a placeholder like "N/A"
+                  // For now, skip if empty string for hex/address
+                  return;
+                }
+                resultsHtml += `<dt>${label}</dt><dd><span class="${className}">${value}</span></dd>`;
+              } else {
+                // Display "N/A" for null/undefined values
+                resultsHtml += `<dt>${label}</dt><dd>N/A</dd>`;
+              }
+            };
+
+            // Add key details in a desired order
+            // Added checks for undefined/null before adding
+            addDetail(
+              "Transaction Hash",
+              transactionDetails.transactionHash,
+              "hex-bytes"
+            );
+            addDetail("Block Number", transactionDetails.blockNumber);
+            addDetail("Block Hash", transactionDetails.blockHash, "hex-bytes");
+            addDetail("From Address", transactionDetails.from, "address");
+            addDetail("To Address", transactionDetails.to, "address"); // Note: 'to' can be null for contract creation
+            addDetail("Gas Used", transactionDetails.gasUsed);
+            addDetail("Transaction Index", transactionDetails.transactionIndex);
+            // Add 'logs' if present, though it might be the raw string representation
+            // Adding logs as a raw string detail
+
+            resultsHtml += "</dl>";
+
+            updateResults(resultsHtml);
+          } catch (error) {
+            console.error("Fetch or processing error:", error);
+            updateResults(
+              `<p class="error-message"><i class="fas fa-times-circle"></i> An unexpected error occurred. Please try again later.</p><p><small>${error.message}</small></p>`
+            );
+          } finally {
+            verifyButton.disabled = false; // Re-enable button regardless of success/failure
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
