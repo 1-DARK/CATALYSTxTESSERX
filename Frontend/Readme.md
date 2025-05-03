@@ -124,16 +124,6 @@ DiagnoAI is a comprehensive web-based medical diagnosis platform that combines i
    - Includes robust error handling for network issues, backend failures, and invalid transaction hashes.
    - Displays user-friendly error messages and status indicators.
 
-## Future Enhancements
-
-1. Integrate actual backend API endpoints for real-time data processing.
-2. Implement user authentication and patient history tracking.
-3. Expand the medical database with more conditions and symptoms.
-4. Add multi-language support for broader accessibility.
-5. Enhance mobile experience with native-like features.
-6. Incorporate advanced visualizations for condition data.
-7. Implement real medical image analysis with trained AI models.
-
 ## License
 
 This project is proprietary code. All rights reserved by ACMECorp (as noted in the footer). For use or modification, please contact the project maintainers.
@@ -142,6 +132,3 @@ This project is proprietary code. All rights reserved by ACMECorp (as noted in t
 
 This application is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of a qualified healthcare provider with any questions you may have regarding a medical condition.
 
----
-
-For detailed implementation, refer to the individual HTML files and their inline documentation. The system is modular, with shared components (navbar, footer) maintained consistently across pages.
