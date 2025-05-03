@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
-    <title>DiagnoAI</title>
+    <title>Advanced Medical Symptom Checker</title>
     <link rel="stylesheet" href="Footer.css">
     <script src="Footer.js"></script>
+    <title>DiagnoAI</title>  
     <!-- Include jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -16,7 +16,7 @@
   <link href="https://fonts.cdnfonts.com/css/druk" rel="stylesheet">
   <script src="Navbar.js"></script>
     <style>
-       
+
         :root {
             --primary-color: #3498db;
             --secondary-color: #2c3e50;
@@ -32,11 +32,11 @@
         .A{
             margin-top: 20px;
         }
-        
+
         * {
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #212121;
@@ -45,7 +45,7 @@
             color: var(--text-color);
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -54,29 +54,29 @@
             border-radius: 10px;
             box-shadow: var(--shadow);
         }
-        
+
         h1, h2, h3, h4 {
             color:  #4fc3f7;
             margin-top: 0;
         }
-        
+
         h1 {
             text-align: center;
             margin-bottom: 5px;
         }
-        
+
         .subtitle {
             text-align: center;
             color: white ;
             margin-bottom: 30px;
         }
-        
+
         .search-container {
             margin: 20px 0;
             display: flex;
             gap: 10px;
         }
-        
+
         #search-input {
             flex: 1;
             padding: 12px 15px;
@@ -84,7 +84,7 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        
+
         .search-container button {
             background-color: var(--primary-color);
             color: white;
@@ -94,7 +94,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .search-container button:hover {
             background-color: #2980b9;
         }
@@ -110,17 +110,17 @@
         height: 220px;
         max-width: 180px;
     }
-    
+
     .search-container {
         flex-direction: column;
     }
-    
+
     .search-container button {
         padding: 12px;
     }
 }
-        
-        
+
+
 /* Replace the existing .human-body styles with these: */
 .human-body {
     width: 100%;
@@ -141,18 +141,18 @@
     height: auto;
     max-width: 100%;
 }
-        
-        .human-body svg:hover {
+
+.human-body svg:hover {
             cursor: pointer;
             fill: #ff7d16;
             transform: scale(1.05);
         }
-        
+
         .human-body svg.selected {
             fill: var(--danger-color);
             filter: drop-shadow(0 0 5px rgba(231, 76, 60, 0.5));
         }
-        
+
         .human-body svg.head {
     margin-left: -28.5px;
     top: 0;
@@ -173,7 +173,7 @@
     width: 156.344px;
     height: 119.25px;
 }
-        
+
 .human-body svg.chest {
     margin-left: -43.5px;
     top: 88px;
@@ -201,14 +201,13 @@
     width: 205px;
     height: 38.938px;
 }
-        
 .results-panel {
     flex: 1;
     min-width: 300px;
     max-width: 600px;
     width: 100%;
 }
-        
+
         .selected-area {
             background-color: var(--light-color);
             padding: 15px;
@@ -219,25 +218,25 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        
+
         .selected-area h3 {
             margin-top: 0;
             color: var(--secondary-color);
             border-bottom: 1px solid #bdc3c7;
             padding-bottom: 8px;
         }
-        
+
         #selected-body-part {
             font-weight: bold;
             color: var(--danger-color);
         }
-        
+
         .diseases-list {
             background-color: #f9f9f9;
             border-radius: 5px;
             padding: 15px;
         }
-        
+
         .disease-item {
             background-color: white;
             padding: 15px;
@@ -247,32 +246,32 @@
             border-left: 4px solid var(--primary-color);
             position: relative;
         }
-        
+
         .disease-item.high-severity {
             border-left-color: var(--danger-color);
         }
-        
+
         .disease-item.medium-severity {
             border-left-color: var(--warning-color);
         }
-        
+
         .disease-item.low-severity {
             border-left-color: var(--success-color);
         }
-        
+
         .disease-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
-        
+
         .disease-name {
             font-weight: bold;
             color: var(--secondary-color);
             font-size: 18px;
         }
-        
+
         .severity-badge {
             display: inline-block;
             padding: 3px 8px;
@@ -281,19 +280,19 @@
             font-weight: bold;
             color: white;
         }
-        
+
         .high-severity-badge {
             background-color: var(--danger-color);
         }
-        
+
         .medium-severity-badge {
             background-color: var(--warning-color);
         }
-        
+
         .low-severity-badge {
             background-color: var(--success-color);
         }
-        
+
         .emergency-warning {
             background-color: #ffebee;
             border-left: 4px solid var(--danger-color);
@@ -304,29 +303,29 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .emergency-warning i {
             color: var(--danger-color);
             font-size: 20px;
         }
-        
+
         .disease-symptoms, .disease-medications, .disease-specialist, .disease-firstaid {
             margin-bottom: 8px;
             font-size: 14px;
         }
-        
-        .disease-symptoms strong, .disease-medications strong, 
+
+        .disease-symptoms strong, .disease-medications strong,
         .disease-specialist strong, .disease-firstaid strong {
             color: var(--secondary-color);
         }
-        
+
         .empty-message {
             color: var(--text-light);
             text-align: center;
             padding: 20px;
             font-style: italic;
         }
-        
+
         .btn {
             background-color: var(--primary-color);
             color: white;
@@ -340,30 +339,30 @@
             align-items: center;
             gap: 5px;
         }
-        
+
         .btn:hover {
             background-color: #2980b9;
         }
-        
+
         .btn-danger {
             background-color: var(--danger-color);
         }
-        
+
         .btn-danger:hover {
             background-color: #c0392b;
         }
-        
+
         .btn i {
             font-size: 14px;
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 10px;
             margin-top: 20px;
             justify-content: flex-end;
         }
-        
+
         .specialist-card {
             background-color: white;
             border-radius: 5px;
@@ -372,29 +371,29 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             border-top: 3px solid var(--primary-color);
         }
-        
+
         .specialist-name {
             font-weight: bold;
             color: var(--secondary-color);
             margin-bottom: 5px;
         }
-        
+
         .specialist-details {
             font-size: 14px;
             color: var(--text-light);
         }
-        
+
         .specialist-contact {
             margin-top: 10px;
             font-size: 14px;
         }
-        
+
         .loading {
             display: none;
             text-align: center;
             padding: 20px;
         }
-        
+
         .loading-spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
@@ -404,46 +403,91 @@
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-        
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         @media (max-width: 768px) {
             .content-wrapper {
                 flex-direction: column;
             }
-            
+
             .human-body {
                 margin-bottom: 30px;
             }
-            
+
             .selected-area {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .btn {
                 margin-top: 10px;
                 align-self: flex-end;
             }
-            
+
             .action-buttons {
                 justify-content: flex-start;
             }
         }
 
-        
+        /* Styles for the new backend response section */
+        #backend-response-area {
+            background-color: #f9f9f9; /* A light background */
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px; /* Space above this section */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-top: 3px solid var(--success-color); /* Use a success color border */
+        }
+
+        #backend-response-area h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 8px;
+            margin-bottom: 15px; /* Space below the heading */
+        }
+
+        #backend-response-content p {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-color);
+            word-wrap: break-word; /* Prevent long strings from overflowing */
+        }
+
+        #backend-response-content strong {
+             color: var(--secondary-color);
+        }
+
+        #backend-response-content a {
+             color: var(--primary-color); /* Link color */
+             text-decoration: none;
+        }
+
+        #backend-response-content a:hover {
+             text-decoration: underline;
+        }
+
+        /* Optional: Style for success/error text within the content */
+        .status-success-text {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .status-error-text {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+
+
 
 
 /* footer */
-        
+/* Assuming Footer.css contains styles for the footer */
 
-
-
-
-        
     </style>
 </head>
 <body>
@@ -451,19 +495,19 @@
         <nav class="navbar">
             <div class="navbar-container">
                 <a href="index.html" class="navbar-brand Z">DiagnoAI</a>
-                
+
                 <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarLinks">
                     <span class="sr-only">Menu</span>
                     <i class="fas fa-bars"></i>
                 </button>
-                
+
                 <div class="navbar-links" id="navbarLinks">
                     <ul>
                         <li><a  href="Vision.html">Our Services</a></li>
                         <li><a  href="FrontSYM.html">FrontSymptoms</a></li>
                         <li><a  href="BackSYM.html">BackSymptoms</a></li>
-                        <li><a  href="D.html">Fitness</a></li>
-                    
+                        <li><a  href="verify-trxn.html">Verify Txn</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -473,15 +517,15 @@
 <div class="A"></div>
 
     <div class="container">
-      
+
         <h1>Advanced Medical Symptom Checker</h1>
         <p class="subtitle">Click on a body part or search to see potential conditions and treatments</p>
-        
+
         <div class="search-container">
             <input type="text" id="search-input" placeholder="Search conditions, symptoms or treatments...">
             <button id="search-btn"><i class="fas fa-search"></i> Search</button>
         </div>
-        
+
         <div class="content-wrapper">
             <div class="human-body">
                 <svg data-position="head" class="head" xmlns="http://www.w3.org/2000/svg" width="56.594" height="95.031" viewBox="0 0 56.594 95.031"><path d="M15.92 68.5l8.8 12.546 3.97 13.984-9.254-7.38-4.622-15.848zm27.1 0l-8.8 12.546-3.976 13.988 9.254-7.38 4.622-15.848zm6.11-27.775l.108-11.775-21.16-14.742L8.123 26.133 8.09 40.19l-3.24.215 1.462 9.732 5.208 1.81 2.36 11.63 9.72 11.018 10.856-.324 9.56-10.37 1.918-11.952 5.207-1.81 1.342-9.517zm-43.085-1.84l-.257-13.82L28.226 11.9l23.618 15.755-.216 10.37 4.976-17.085L42.556 2.376 25.49 0 10.803 3.673.002 24.415z"/></svg>
@@ -492,30 +536,42 @@
                 <svg data-position="legs" class="legs" xmlns="http://www.w3.org/2000/svg" width="93.626" height="286.625" viewBox="0 0 93.626 286.625"><path d="M17.143 138.643l-.664 5.99 4.647 5.77 1.55 9.1 3.1 1.33 2.655-13.755 1.77-4.88-1.55-3.107zm20.582.444l-3.32 9.318-7.082 13.755 1.77 12.647 5.09-14.2 4.205-7.982zm-26.557-12.645l5.09 27.29-3.32-1.777-2.656 8.875zm22.795 42.374l-1.55 4.88-3.32 20.634-.442 27.51 4.65 26.847-.223-34.39 4.87-13.754.663-15.087zM23.34 181.24l1.106 41.267 8.853 33.28-9.628-4.55-16.045-57.8 5.533-36.384zm15.934 80.536l-.664 18.415-1.55 6.435h-4.647l-1.327-4.437-1.55-.222.332 4.437-5.864-1.778-1.55-.887-6.64-1.442-.22-5.214 6.418-10.87 4.426-5.548 10.844-4.437zM13.63 3.076v22.476l15.71 31.073 9.923 30.85L38.23 66.1zm25.49 30.248l.118-.148-.793-2.024L21.9 12.992l-1.242-.44L31.642 40.93zM32.865 44.09l6.812 17.6 2.274-21.596-1.344-3.43zM6.395 61.91l.827 25.34 12.816 35.257-3.928 10.136L3.5 88.133zM30.96 74.69l.345.826 6.47 15.48-4.177 38.342-6.594-3.526 5.715-35.7zm45.5 63.953l.663 5.99-4.647 5.77-1.55 9.1-3.1 1.33-2.655-13.755-1.77-4.88 1.55-3.107zm-20.582.444l3.32 9.318 7.08 13.755-1.77 12.647-5.09-14.2-4.2-7.987zm3.762 29.73l1.55 4.88 3.32 20.633.442 27.51-4.648 26.847.22-34.39-4.867-13.754-.67-15.087zm10.623 12.424l-1.107 41.267-8.852 33.28 9.627-4.55 16.046-57.8-5.533-36.384zM54.33 261.777l.663 18.415 1.546 6.435h4.648l1.328-4.437 1.55-.222-.333 4.437 5.863-1.778 1.55-.887 6.638-1.442.222-5.214-6.418-10.868-4.426-5.547-10.844-4.437zm25.643-258.7v22.476L64.26 56.625l-9.923 30.85L55.37 66.1zM54.48 33.326l-.118-.15.793-2.023L71.7 12.993l1.24-.44L61.96 40.93zm6.255 10.764l-6.812 17.6-2.274-21.595 1.344-3.43zm26.47 17.82l-.827 25.342-12.816 35.256 3.927 10.136 12.61-44.51zM62.64 74.693l-.346.825-6.47 15.48 4.178 38.342 6.594-3.527-5.715-35.7zm19.792 51.75l-5.09 27.29 3.32-1.776 2.655 8.875zM9.495-.007l.827 21.373-7.028 42.308-3.306-34.155zm2.068 27.323L26.24 59.707l3.307 26-6.2 36.58L9.91 85.046l-.827-38.342zM84.103-.01l-.826 21.375 7.03 42.308 3.306-34.155zm-2.066 27.325L67.36 59.707l-3.308 26 6.2 36.58 13.436-37.24.827-38.34z"/></svg>
                 <svg data-position="hands" class="hands" xmlns="http://www.w3.org/2000/svg" width="205" height="38.938" viewBox="0 0 205 38.938"><path d="M21.255-.002l2.88 6.9 8.412 1.335.664 12.458-4.427 17.8-2.878-.22 2.8-11.847-2.99-.084-4.676 12.6-3.544-.446 4.4-12.736-3.072-.584-5.978 13.543-4.428-.445 6.088-14.1-2.1-1.25-7.528 12.012-3.764-.445L12.4 12.9l-1.107-1.78L.665 15.57 0 13.124l8.635-7.786zm162.49 0l-2.88 6.9-8.412 1.335-.664 12.458 4.427 17.8 2.878-.22-2.8-11.847 2.99-.084 4.676 12.6 3.544-.446-4.4-12.736 3.072-.584 5.978 13.543 4.428-.445-6.088-14.1 2.1-1.25 7.528 12.012 3.764-.445L192.6 12.9l1.107-1.78 10.628 4.45.665-2.447-8.635-7.786z"/></svg>
             </div>
-            
+
             <div class="results-panel">
                 <div class="selected-area">
                     <div>
                         <h3>Select Body Part: <span id="selected-body-part">None</span></h3>
                     </div>
                     <div class="action-buttons">
-                        <button id="download-btn" class="btn"><i class="fas fa-file-pdf"></i> Download as PDF</button>
-                
+                        <button id="download-btn" class="btn"><i class="fas fa-file-pdf"></i> Send Report</button>
+                        <div id="upload-loading" class="loading" style="display: none;">
+                             <div class="loading-spinner"></div>
+                             <p>Sending...</p>
+                        </div>
                     </div>
                 </div>
-                
+
                 <div class="diseases-list">
                     <h3>Possible Conditions:</h3>
                     <div id="diseases-container">
                         <div class="empty-message">Please select a body part or search to see potential conditions</div>
                     </div>
                 </div>
-                
+
                 <div id="specialist-info" style="display: none;">
                     <h3>Recommended Specialist:</h3>
                     <div id="specialist-container"></div>
                 </div>
-                
+
+                <!-- NEW SECTION TO DISPLAY BACKEND RESPONSE -->
+                <div id="backend-response-area" style="display: none;">
+                    <h3>Report Processing Status:</h3>
+                    <div id="backend-response-content">
+                        <!-- Backend data will be displayed here by JavaScript -->
+                    </div>
+                </div>
+                <!-- END NEW SECTION -->
+
                 <br><br><br><br><br><br><br><br><br><br><br>
             </div>
         </div>
@@ -537,7 +593,7 @@
                         <li><a  href="FrontSYM.html">FrontSymptoms</a></li>
                         <li><a  href="BackSYM.html">BackSymptoms</a></li>
                         <li><a  href="D.html">Fitness</a></li>
-                      
+
                     </ul>
                 </div>
 
@@ -545,7 +601,7 @@
                     <h3>Connect With Us</h3>
                     <p style="margin-top: 17px;">Follow us on social media to stay updated with our latest news and announcements.</p>
                     <div class="social-icons">
-                      
+
                         <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
                         <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
@@ -778,7 +834,7 @@
                 {
                     name: "Dupuytren's Contracture",
                     symptoms: "Thickened palm tissue, fingers (especially ring/pinky) pulled inward, nodules under skin",
-                    medications: "Collagenase injections, Needle aponeurotomy, Physical therapy, Surgery in advanced cases",
+                    medications: "Collagenase injections, Needle aponeurotomy, Physical therapy, Surgery in severe cases",
                     severity: "medium",
                     specialist: "Hand Surgeon",
                     firstAid: "Gentle stretching exercises. Use padded gloves for protection. Avoid tight gripping."
@@ -805,195 +861,195 @@
         // Specialist information database
         const specialistDatabase = {
             "Neurologist": [
-                { 
+                {
                     name: "Dr. Sarah Johnson",
                     specialty: "Neurologist",
-                    hospital: "Apollo Hospitals, Delhi", 
+                    hospital: "Apollo Hospitals, Delhi",
                     address: "21, Greams Lane, Off Greams Road, Chennai - 600006, Tamil Nadu",
-                    phone: "+91 9876543210" 
+                    phone: "+91 9876543210"
                 },
-                { 
+                {
                     name: "Dr. Michael Chen",
                     specialty: "Neurologist",
-                    hospital: "Fortis Hospital, Mumbai", 
+                    hospital: "Fortis Hospital, Mumbai",
                     address: "Mulund Goregaon Link Road, Mulund-West, Mumbai - 400078, Maharashtra",
-                    phone: "+91 8765432109" 
+                    phone: "+91 8765432109"
                 }
             ],
             "Primary Care Physician": [
-                { 
+                {
                     name: "Dr. Emily Wilson",
                     specialty: "Primary Care Physician",
-                    hospital: "Manipal Hospitals, Bangalore", 
+                    hospital: "Manipal Hospitals, Bangalore",
                     address: "98, HAL Old Airport Road, Bangalore - 560017, Karnataka",
-                    phone: "+91 7654321098" 
+                    phone: "+91 7654321098"
                 },
-                { 
+                {
                     name: "Dr. James Rodriguez",
                     specialty: "Primary Care Physician",
-                    hospital: "Max Super Speciality Hospital, Delhi", 
+                    hospital: "Max Super Speciality Hospital, Delhi",
                     address: "1, Press Enclave Road, Saket, Delhi - 110017",
-                    phone: "+91 6543210987" 
+                    phone: "+91 6543210987"
                 }
             ],
             "ENT Specialist": [
-                { 
+                {
                     name: "Dr. Arun Kumar",
                     specialty: "ENT Specialist",
-                    hospital: "PGIMER, Chandigarh", 
+                    hospital: "PGIMER, Chandigarh",
                     address: "Sector 12, Chandigarh - 160012",
-                    phone: "+91 8765432107" 
+                    phone: "+91 8765432107"
                 },
-                { 
+                {
                     name: "Dr. Priya Sharma",
                     specialty: "ENT Specialist",
-                    hospital: "AIIMS, New Delhi", 
+                    hospital: "AIIMS, New Delhi",
                     address: "Ansari Nagar, New Delhi - 110029",
-                    phone: "+91 9876543211" 
+                    phone: "+91 9876543211"
                 }
             ],
             "Orthopedic Surgeon": [
-                { 
+                {
                     name: "Dr. Patricia White",
                     specialty: "Orthopedic Surgeon",
-                    hospital: "Medanta - The Medicity, Gurgaon", 
+                    hospital: "Medanta - The Medicity, Gurgaon",
                     address: "CH Baktawar Singh Rd, Medicity, Islampur Colony, Sector 38, Gurugram, Haryana - 122001",
-                    phone: "+91 5098765432" 
+                    phone: "+91 5098765432"
                 },
-                { 
+                {
                     name: "Dr. Thomas Brown",
                     specialty: "Orthopedic Surgeon",
-                    hospital: "Narayana Health, Bangalore", 
+                    hospital: "Narayana Health, Bangalore",
                     address: "258/A, Bommasandra Industrial Area, Anekal Taluk, Bangalore - 560099, Karnataka",
-                    phone: "+91 4987654321" 
+                    phone: "+91 4987654321"
                 }
             ],
             "Rheumatologist": [
-                { 
+                {
                     name: "Dr. Richard Harris",
                     specialty: "Rheumatologist",
-                    hospital: "Global Hospitals, Chennai", 
+                    hospital: "Global Hospitals, Chennai",
                     address: "439, Cheran Nagar, Perumbakkam, Chennai - 600100, Tamil Nadu",
-                    phone: "+91 1654321098" 
+                    phone: "+91 1654321098"
                 },
-                { 
+                {
                     name: "Dr. Neha Gupta",
                     specialty: "Rheumatologist",
-                    hospital: "Fortis Hospital, Mumbai", 
+                    hospital: "Fortis Hospital, Mumbai",
                     address: "Mulund Goregaon Link Road, Mulund-West, Mumbai - 400078, Maharashtra",
-                    phone: "+91 8765432111" 
+                    phone: "+91 8765432111"
                 }
             ],
             "Emergency Physician": [
-                { 
+                {
                     name: "Dr. David Miller",
                     specialty: "Emergency Physician",
-                    hospital: "AIIMS, New Delhi", 
+                    hospital: "AIIMS, New Delhi",
                     address: "Ansari Nagar, New Delhi - 110029",
-                    phone: "+91 6109876543" 
+                    phone: "+91 6109876543"
                 },
-                { 
+                {
                     name: "Dr. Ananya Reddy",
                     specialty: "Emergency Physician",
-                    hospital: "Apollo Hospitals, Hyderabad", 
+                    hospital: "Apollo Hospitals, Hyderabad",
                     address: "Film Nagar, Jubilee Hills, Hyderabad - 500033, Telangana",
-                    phone: "+91 9876543222" 
+                    phone: "+91 9876543222"
                 }
             ],
             "Gastroenterologist": [
-                { 
+                {
                     name: "Dr. Mark Taylor",
                     specialty: "Gastroenterologist",
-                    hospital: "BLK Super Speciality Hospital, Delhi", 
+                    hospital: "BLK Super Speciality Hospital, Delhi",
                     address: "Pusa Road, New Delhi - 110005",
-                    phone: "+91 6543210986" 
+                    phone: "+91 6543210986"
                 },
-                { 
+                {
                     name: "Dr. Sunita Patel",
                     specialty: "Gastroenterologist",
-                    hospital: "Kokilaben Dhirubhai Ambani Hospital, Mumbai", 
+                    hospital: "Kokilaben Dhirubhai Ambani Hospital, Mumbai",
                     address: "Rao Saheb Achutrao Patwardhan Marg, Four Bungalows, Andheri West, Mumbai - 400053, Maharashtra",
-                    phone: "+91 9876543333" 
+                    phone: "+91 9876543333"
                 }
             ],
             "Cardiologist": [
-                { 
+                {
                     name: "Dr. Susan Baker",
                     specialty: "Cardiologist",
-                    hospital: "Asian Heart Institute, Mumbai", 
+                    hospital: "Asian Heart Institute, Mumbai",
                     address: "G/N Block, Bandra Kurla Complex, Bandra East, Mumbai - 400051, Maharashtra",
-                    phone: "+91 7654321097" 
+                    phone: "+91 7654321097"
                 },
-                { 
+                {
                     name: "Dr. Rajesh Khanna",
                     specialty: "Cardiologist",
-                    hospital: "Escorts Heart Institute, Delhi", 
+                    hospital: "Escorts Heart Institute, Delhi",
                     address: "Okhla Road, New Delhi - 110025",
-                    phone: "+91 9876543444" 
+                    phone: "+91 9876543444"
                 }
             ],
             "Pulmonologist": [
-                { 
+                {
                     name: "Dr. Anil Kumar",
                     specialty: "Pulmonologist",
-                    hospital: "Artemis Hospital, Gurgaon", 
+                    hospital: "Artemis Hospital, Gurgaon",
                     address: "Sector 51, Gurugram, Haryana - 122001",
-                    phone: "+91 9432109876" 
+                    phone: "+91 9432109876"
                 },
-                { 
+                {
                     name: "Dr. Meena Desai",
                     specialty: "Pulmonologist",
-                    hospital: "Lilavati Hospital, Mumbai", 
+                    hospital: "Lilavati Hospital, Mumbai",
                     address: "A-791, Bandra Reclamation, Bandra West, Mumbai - 400050, Maharashtra",
-                    phone: "+91 9876543555" 
+                    phone: "+91 9876543555"
                 }
             ],
             "Vascular Specialist": [
-                { 
+                {
                     name: "Dr. Nancy Green",
                     specialty: "Vascular Specialist",
-                    hospital: "Lilavati Hospital, Mumbai", 
+                    hospital: "Lilavati Hospital, Mumbai",
                     address: "A-791, Bandra Reclamation, Bandra West, Mumbai - 400050, Maharashtra",
-                    phone: "+91 2765432109" 
+                    phone: "+91 2765432109"
                 },
-                { 
+                {
                     name: "Dr. Amit Sharma",
                     specialty: "Vascular Specialist",
-                    hospital: "Max Super Speciality Hospital, Delhi", 
+                    hospital: "Max Super Speciality Hospital, Delhi",
                     address: "1, Press Enclave Road, Saket, Delhi - 110017",
-                    phone: "+91 9876543666" 
+                    phone: "+91 9876543666"
                 }
             ],
             "Sports Medicine Physician": [
-                { 
+                {
                     name: "Dr. Kevin Lee",
                     specialty: "Sports Medicine Physician",
-                    hospital: "Jaslok Hospital, Mumbai", 
+                    hospital: "Jaslok Hospital, Mumbai",
                     address: "15, Dr. G. Deshmukh Marg, Pedder Road, Mumbai - 400026, Maharashtra",
-                    phone: "+91 3876543210" 
+                    phone: "+91 3876543210"
                 },
-                { 
+                {
                     name: "Dr. Priya Reddy",
                     specialty: "Sports Medicine Physician",
-                    hospital: "Apollo Hospitals, Bangalore", 
+                    hospital: "Apollo Hospitals, Bangalore",
                     address: "154/11, Bannerghatta Road, Bangalore - 560076, Karnataka",
-                    phone: "+91 9876543777" 
+                    phone: "+91 9876543777"
                 }
             ],
             "Hand Surgeon": [
-                { 
+                {
                     name: "Dr. Robert Davis",
                     specialty: "Hand Surgeon",
-                    hospital: "Columbia Asia Hospital, Pune", 
+                    hospital: "Columbia Asia Hospital, Pune",
                     address: "Mundhwa - Kharadi Road, Pune - 411014, Maharashtra",
-                    phone: "+91 8321098765" 
+                    phone: "+91 8321098765"
                 },
-                { 
+                {
                     name: "Dr. Sneha Kapoor",
                     specialty: "Hand Surgeon",
-                    hospital: "Fortis Hospital, Mumbai", 
+                    hospital: "Fortis Hospital, Mumbai",
                     address: "Mulund Goregaon Link Road, Mulund-West, Mumbai - 400078, Maharashtra",
-                    phone: "+91 9876543888" 
+                    phone: "+91 9876543888"
                 }
             ]
         };
@@ -1063,8 +1119,10 @@
         const searchInput = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
         const downloadBtn = document.getElementById('download-btn');
-        const emergencyBtn = document.getElementById('emergency-btn');
-        const specialistContainer = document.getElementById('specialist-container');
+        const uploadLoadingElement = document.getElementById('upload-loading'); // Get the loading indicator
+        const backendResponseArea = document.getElementById('backend-response-area'); // Get the new area
+        const backendResponseContent = document.getElementById('backend-response-content'); // Get the content div within the new area
+
 
         // Current state
         let currentBodyPart = null;
@@ -1084,23 +1142,29 @@
             });
 
             searchBtn.addEventListener('click', handleSearch);
-            downloadBtn.addEventListener('click', generatePDF);
-            emergencyBtn.addEventListener('click', showEmergencyProtocols);
+            // Change the event listener for the "Send Report" button
+            downloadBtn.addEventListener('click', sendPdfReport);
+            // If you add an emergency button back, uncomment this:
+            // if (emergencyBtn) { emergencyBtn.addEventListener('click', showEmergencyProtocols); }
         }
 
         // Handle body part selection
         function handleBodyPartClick(e) {
             const bodyPart = e.currentTarget.getAttribute('data-position');
             currentBodyPart = bodyPart;
-            
+
             // Update UI
             bodyParts.forEach(part => {
                 part.classList.remove('selected');
             });
             e.currentTarget.classList.add('selected');
-            
+
             selectedBodyPartElement.textContent = bodyPart.charAt(0).toUpperCase() + bodyPart.slice(1);
-            
+
+            // Hide backend response area when a new body part is selected
+            backendResponseArea.style.display = 'none';
+            backendResponseContent.innerHTML = '';
+
             // Show conditions for selected body part
             showConditions(medicalDatabase[bodyPart]);
         }
@@ -1108,27 +1172,35 @@
         // Handle search functionality
         function handleSearch() {
             const searchTerm = searchInput.value.trim().toLowerCase();
-            
+
             if (!searchTerm) {
                 showConditions([]);
+                 // Hide backend response area
+                backendResponseArea.style.display = 'none';
+                backendResponseContent.innerHTML = '';
                 return;
             }
-            
+
             // Search across all conditions
             const results = Object.values(medicalDatabase).flat().filter(condition => {
-                return condition.name.toLowerCase().includes(searchTerm) || 
+                return condition.name.toLowerCase().includes(searchTerm) ||
                        condition.symptoms.toLowerCase().includes(searchTerm) ||
                        (condition.medications && condition.medications.toLowerCase().includes(searchTerm)) ||
                        (condition.firstAid && condition.firstAid.toLowerCase().includes(searchTerm));
             });
-            
+
             // Update UI
-            currentBodyPart = null;
+            currentBodyPart = null; // Clear selected body part on search
             bodyParts.forEach(part => {
                 part.classList.remove('selected');
             });
-            
+
             selectedBodyPartElement.textContent = "Search Results";
+
+             // Hide backend response area
+            backendResponseArea.style.display = 'none';
+            backendResponseContent.innerHTML = '';
+
             showConditions(results);
         }
 
@@ -1136,17 +1208,23 @@
         function showConditions(conditions) {
             currentConditions = conditions;
             diseasesContainer.innerHTML = '';
-            
+
             if (conditions.length === 0) {
                 diseasesContainer.innerHTML = '<div class="empty-message">No conditions found. Try a different search term or select a body part.</div>';
                 document.getElementById('specialist-info').style.display = 'none';
+                // Disable the "Send Report" button if there are no conditions
+                downloadBtn.disabled = true;
                 return;
             }
-            
+
+            // Enable the "Send Report" button if there are conditions
+            downloadBtn.disabled = false;
+
+
             conditions.forEach(condition => {
                 const diseaseItem = document.createElement('div');
                 diseaseItem.className = `disease-item ${condition.severity}-severity`;
-                
+
                 // Create severity badge
                 let severityText = '';
                 if (condition.severity === 'high') {
@@ -1156,16 +1234,16 @@
                 } else {
                     severityText = 'Mild - Self-care may help';
                 }
-                
+
                 const severityBadgeClass = `${condition.severity}-severity-badge`;
-                
+
                 // Emergency warning for high severity conditions
-                const emergencyWarning = condition.severity === 'high' ? 
+                const emergencyWarning = condition.severity === 'high' ?
                     `<div class="emergency-warning">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div>This condition may require immediate medical attention. Seek emergency care if symptoms are severe.</div>
                     </div>` : '';
-                
+
                 diseaseItem.innerHTML = `
                     <div class="disease-header">
                         <div class="disease-name">${condition.name}</div>
@@ -1177,33 +1255,34 @@
                     <div class="disease-specialist"><strong>Recommended Specialist:</strong> ${condition.specialist}</div>
                     <div class="disease-firstaid"><strong>First Aid:</strong> ${condition.firstAid}</div>
                 `;
-                
+
                 diseasesContainer.appendChild(diseaseItem);
             });
-            
-            // Show specialist information if we have a specific body part
-            if (currentBodyPart && conditions.length > 0) {
-                showSpecialistInfo(conditions[0].specialist);
-            } else {
-                document.getElementById('specialist-info').style.display = 'none';
-            }
+
+            // Show specialist information if we have a specific body part OR search results with specialists
+            const firstConditionSpecialist = conditions.length > 0 ? conditions[0].specialist : null;
+             if (firstConditionSpecialist) {
+                 showSpecialistInfo(firstConditionSpecialist);
+             } else {
+                 document.getElementById('specialist-info').style.display = 'none';
+             }
         }
 
         // Display specialist information
         function showSpecialistInfo(specialistType) {
             const specialists = specialistDatabase[specialistType];
-            
+
             if (!specialists || specialists.length === 0) {
                 document.getElementById('specialist-info').style.display = 'none';
                 return;
             }
-            
+
             specialistContainer.innerHTML = '';
-            
+
             specialists.forEach(specialist => {
                 const specialistCard = document.createElement('div');
                 specialistCard.className = 'specialist-card';
-                
+
                 specialistCard.innerHTML = `
                     <div class="specialist-name">${specialist.name}</div>
                     <div class="specialist-details">
@@ -1215,434 +1294,563 @@
                         <strong>Contact:</strong> ${specialist.phone}
                     </div>
                 `;
-                
+
                 specialistContainer.appendChild(specialistCard);
             });
-            
+
             document.getElementById('specialist-info').style.display = 'block';
         }
 
-       // Generate PDF report with email/password collection
-function generatePDF() {
-    if (currentConditions.length === 0) {
-        alert('No conditions to generate report for. Please select a body part or search first.');
-        return;
-    }
-
-    // Create modal for email/password collection
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '1000';
-    
-    // Create modal content
-    const modalContent = document.createElement('div');
-    modalContent.style.backgroundColor = 'white';
-    modalContent.style.padding = '20px';
-    modalContent.style.borderRadius = '8px';
-    modalContent.style.width = '300px';
-    
-    // Add title
-    const title = document.createElement('h2');
-    title.textContent = 'Download Report';
-    title.style.marginTop = '0';
-    title.style.color = '#3498db';
-    
-    // Add email input
-    const emailLabel = document.createElement('label');
-    emailLabel.textContent = 'Email:';
-    emailLabel.style.display = 'block';
-    emailLabel.style.marginTop = '10px';
-    
-    const emailInput = document.createElement('input');
-    emailInput.type = 'email';
-    emailInput.required = true;
-    emailInput.style.width = '100%';
-    emailInput.style.padding = '8px';
-    emailInput.style.marginBottom = '10px';
-    emailInput.style.boxSizing = 'border-box';
-    
-    // Add password input
-    const passwordLabel = document.createElement('label');
-    passwordLabel.textContent = 'Password:';
-    passwordLabel.style.display = 'block';
-    
-    const passwordInput = document.createElement('input');
-    passwordInput.type = 'password';
-    passwordInput.required = true;
-    passwordInput.style.width = '100%';
-    passwordInput.style.padding = '8px';
-    passwordInput.style.marginBottom = '20px';
-    passwordInput.style.boxSizing = 'border-box';
-    
-    // Add buttons container
-    const buttonsDiv = document.createElement('div');
-    buttonsDiv.style.display = 'flex';
-    buttonsDiv.style.justifyContent = 'space-between';
-    
-    // Add submit button
-    const submitBtn = document.createElement('button');
-    submitBtn.textContent = 'Submit';
-    submitBtn.style.padding = '8px 16px';
-    submitBtn.style.backgroundColor = '#3498db';
-    submitBtn.style.color = 'white';
-    submitBtn.style.border = 'none';
-    submitBtn.style.borderRadius = '4px';
-    submitBtn.style.cursor = 'pointer';
-    
-    // Add cancel button
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.style.padding = '8px 16px';
-    cancelBtn.style.backgroundColor = '#e74c3c';
-    cancelBtn.style.color = 'white';
-    cancelBtn.style.border = 'none';
-    cancelBtn.style.borderRadius = '4px';
-    cancelBtn.style.cursor = 'pointer';
-    
-    // Add error message div
-    const errorDiv = document.createElement('div');
-    errorDiv.style.color = '#e74c3c';
-    errorDiv.style.marginTop = '10px';
-    errorDiv.style.display = 'none';
-    
-    // Assemble modal
-    modalContent.appendChild(title);
-    modalContent.appendChild(emailLabel);
-    modalContent.appendChild(emailInput);
-    modalContent.appendChild(passwordLabel);
-    modalContent.appendChild(passwordInput);
-    modalContent.appendChild(errorDiv);
-    buttonsDiv.appendChild(cancelBtn);
-    buttonsDiv.appendChild(submitBtn);
-    modalContent.appendChild(buttonsDiv);
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    
-    // Focus on email input
-    emailInput.focus();
-    
-    // Cancel button handler
-    cancelBtn.addEventListener('click', () => {
-        document.body.removeChild(modal);
-    });
-    
-    // Submit button handler
-    submitBtn.addEventListener('click', () => {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-        
-        if (!email || !password) {
-            errorDiv.textContent = 'Please enter both email and password';
-            errorDiv.style.display = 'block';
-            return;
-        }
-        
-        // Simple email validation
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            errorDiv.textContent = 'Please enter a valid email address';
-            errorDiv.style.display = 'block';
-            return;
-        }
-        
-        // Create credentials text
-        const credentials = `Email: ${email}\nPassword: ${password}\nTimestamp: ${new Date().toISOString()}\n\n`;
-        
-        // Create blob for download
-        const blob = new Blob([credentials], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        
-        // Create download link for credentials
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'credentials.txt';
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        
-        // Clean up
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            // Close the modal
-            document.body.removeChild(modal);
-            
-            // Proceed with PDF generation
-            generateActualPDF();
-        }, 100);
-    });
-    
-    // Function to generate the actual PDF (moved from original generatePDF function)
-    function generateActualPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        // PDF styling constants
-        const primaryColor = [44, 62, 80];  // Dark blue
-        const secondaryColor = [87, 201, 213];  // Teal
-        const accentColor = [231, 76, 60];  // Red
-
-        // Header Section
-        doc.setFillColor(...primaryColor);
-        doc.rect(0, 0, 210, 30, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(20);
-        doc.setFont('helvetica', 'bold');
-        doc.text('MEDICAL SYMPTOM CHECKER REPORT', 105, 20, { align: 'center' });
-
-        // Body Part Section
-        doc.setFillColor(245, 247, 250);
-        doc.rect(0, 30, 210, 15, 'F');
-        doc.setTextColor(...primaryColor);
-        doc.setFontSize(16);
-        const bodyPartText = currentBodyPart ? 
-            currentBodyPart.replace(/-/g, ' ').toUpperCase() : 
-            'SEARCH RESULTS';
-        doc.text(`Body Part: ${bodyPartText}`, 105, 40, { align: 'center' });
-
-        // Report Details
-        doc.setTextColor(100, 100, 100);
-        doc.setFontSize(10);
-        doc.text(`Report generated on: ${new Date().toLocaleDateString()}`, 15, 50);
-        doc.text('Confidential Patient Report - For Informational Purposes Only', 195, 50, { align: 'right' });
-
-        // Divider Line
-        doc.setDrawColor(...secondaryColor);
-        doc.setLineWidth(0.5);
-        doc.line(15, 55, 195, 55);
-
-        // Conditions Section
-        doc.setTextColor(...primaryColor);
-        doc.setFontSize(14);
-        doc.setFont('helvetica', 'bold');
-        doc.text('POSSIBLE CONDITIONS', 15, 65);
-
-        let yPosition = 75;
-        let pageNumber = 1;
-
-        // Footer Function
-        const addFooter = () => {
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(8);
-            doc.text(`Page ${pageNumber}`, 105, 285, { align: 'center' });
-            doc.text('© Medical Symptom Checker - Not a substitute for professional medical advice', 105, 290, { align: 'center' });
-            pageNumber++;
-        };
-
-        // Add Conditions
-        currentConditions.forEach((condition, index) => {
-            if (yPosition > 250) {
-                addFooter();
-                doc.addPage();
-                yPosition = 30;
-                doc.setFillColor(...primaryColor);
-                doc.rect(0, 0, 210, 20, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
-                doc.text(`MEDICAL REPORT - ${bodyPartText} (CONTINUED)`, 105, 12, { align: 'center' });
-                doc.setTextColor(100, 100, 100);
-                doc.setFontSize(8);
-                doc.text(`Page ${pageNumber}`, 195, 12, { align: 'right' });
-                yPosition = 30;
+        // *** MODIFIED sendPdfReport FUNCTION TO SEND TO BACKEND AND DISPLAY RESPONSE ***
+        async function sendPdfReport() {
+            if (currentConditions.length === 0) {
+                alert('No conditions to generate report for. Please select a body part or search first.');
+                return;
             }
 
-            // Condition styling
-            doc.setFillColor(236, 240, 241);
-            doc.rect(15, yPosition - 5, 180, 8, 'F');
-            
-            // Severity color
-            if (condition.severity === 'high') {
-                doc.setTextColor(...accentColor);
-            } else if (condition.severity === 'medium') {
-                doc.setTextColor(243, 156, 18);
-            } else {
-                doc.setTextColor(39, 174, 96);
-            }
+            // Hide previous backend response if any
+            backendResponseArea.style.display = 'none';
+            backendResponseContent.innerHTML = '';
 
-            // Condition title
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
-            doc.text(`${index + 1}. ${condition.name}`, 20, yPosition);
 
-            // Severity indicator
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(8);
-            doc.setFont('helvetica', 'normal');
-            const severityText = condition.severity === 'high' ? 'High (Emergency)' : 
-                              condition.severity === 'medium' ? 'Moderate' : 'Mild';
-            doc.text(`Severity: ${severityText}`, 170, yPosition, { align: 'right' });
-            yPosition += 10;
+            // Show loading indicator and disable the button
+            downloadBtn.disabled = true;
+            uploadLoadingElement.style.display = 'block'; // Show the loading spinner
 
-            // Symptoms
-            doc.setTextColor(...primaryColor);
-            doc.setFontSize(8);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Symptoms:', 20, yPosition);
-            yPosition += 6;
-            doc.setTextColor(50, 50, 50);
-            doc.setFont('helvetica', 'normal');
-            const symptomsLines = doc.splitTextToSize(condition.symptoms, 170);
-            doc.text(symptomsLines, 25, yPosition);
-            yPosition += (symptomsLines.length * 4) + 3; 
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-            // Treatment
-            doc.setTextColor(...primaryColor);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Recommended Treatment:', 20, yPosition);
-            yPosition += 6;
-            doc.setTextColor(50, 50, 50);
-            doc.setFont('helvetica', 'normal');
-            const treatmentLines = doc.splitTextToSize(condition.medications, 170);
-            doc.text(treatmentLines, 25, yPosition);
-            yPosition += (treatmentLines.length * 4) + 3;
+             // --- PDF Generation Logic ---
+             const primaryColor = [44, 62, 80];  // Dark blue
+             const secondaryColor = [87, 201, 213];  // Teal
+             const accentColor = [231, 76, 60];  // Red
 
-            // First Aid
-            if (condition.firstAid) {
-                doc.setTextColor(26, 82, 118);
-                doc.setFont('helvetica', 'bold');
-                doc.text('First Aid:', 20, yPosition);
-                yPosition += 6;
-                doc.setTextColor(50, 50, 50);
-                doc.setFont('helvetica', 'normal');
-                const firstAidLines = doc.splitTextToSize(condition.firstAid, 170);
-                doc.text(firstAidLines, 25, yPosition);
-                yPosition += (firstAidLines.length * 4) + 3;
-            }
+             // Header Section
+             doc.setFillColor(...primaryColor);
+             doc.rect(0, 0, 210, 30, 'F');
+             doc.setTextColor(255, 255, 255);
+             doc.setFontSize(20);
+             doc.setFont('helvetica', 'bold');
+             doc.text('MEDICAL SYMPTOM CHECKER REPORT', 105, 20, { align: 'center' });
 
-            // Specialist recommendation
-            doc.setTextColor(...primaryColor);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Recommended Specialist:', 20, yPosition);
-            yPosition += 6;
-            doc.setTextColor(50, 50, 50);
-            doc.setFont('helvetica', 'normal');
-            doc.text(condition.specialist, 25, yPosition);
-            yPosition += 10;
+             // Body Part Section
+             doc.setFillColor(245, 247, 250);
+             doc.rect(0, 30, 210, 15, 'F');
+             doc.setTextColor(...primaryColor);
+             doc.setFontSize(16);
+             const bodyPartText = currentBodyPart ?
+                 currentBodyPart.replace(/-/g, ' ').toUpperCase() :
+                 'SEARCH RESULTS';
+             doc.text(`Body Part: ${bodyPartText}`, 105, 40, { align: 'center' });
 
-            // Divider
-            if (index < currentConditions.length - 1) {
-                doc.setDrawColor(200, 200, 200);
-                doc.line(20, yPosition, 190, yPosition);
-                yPosition += 5;
-            }
-        });
+             // Report Details
+             doc.setTextColor(100, 100, 100);
+             doc.setFontSize(10);
+             doc.text(`Report generated on: ${new Date().toLocaleDateString()}`, 15, 50);
+             doc.text('Confidential Patient Report - For Informational Purposes Only', 195, 50, { align: 'right' });
 
-        // Specialist Information Section
-        const specialistTypes = new Set();
-        currentConditions.forEach(condition => {
-            if (condition.specialist) {
-                specialistTypes.add(condition.specialist.trim());
-            }
-        });
+             // Divider Line
+             doc.setDrawColor(...secondaryColor);
+             doc.setLineWidth(0.5);
+             doc.line(15, 55, 195, 55);
 
-        if (specialistTypes.size > 0) {
-            addFooter();
-            doc.addPage();
-            yPosition = 30;
-            doc.setFillColor(...primaryColor);
-            doc.rect(0, 0, 210, 30, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(20);
-            doc.text('RECOMMENDED SPECIALISTS', 105, 20, { align: 'center' });
-            
-            doc.setFillColor(245, 247, 250);
-            doc.rect(0, 30, 210, 15, 'F');
-            doc.setTextColor(...primaryColor);
-            doc.setFontSize(12);
-            doc.text(`For: ${bodyPartText}`, 105, 40, { align: 'center' });
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(8);
-            doc.text(`Page ${pageNumber}`, 195, 45, { align: 'right' });
-            
-            doc.setDrawColor(...secondaryColor);
-            doc.setLineWidth(0.5);
-            doc.line(15, 50, 195, 50);
-            yPosition = 60;
+             // Conditions Section
+             doc.setTextColor(...primaryColor);
+             doc.setFontSize(14);
+             doc.setFont('helvetica', 'bold');
+             doc.text('POSSIBLE CONDITIONS', 15, 65);
 
-            Array.from(specialistTypes).forEach((type, index) => {
-                const specialists = specialistDatabase[type] || [];
-                
-                if (yPosition > 240) {
+             let yPosition = 75;
+             let pageNumber = 1;
+
+             const addFooter = () => {
+                 doc.setTextColor(100, 100, 100);
+                 doc.setFontSize(8);
+                 doc.text(`Page ${pageNumber}`, 105, 285, { align: 'center' });
+                 doc.text('© Medical Symptom Checker - Not a substitute for professional medical advice', 105, 290, { align: 'center' });
+                 pageNumber++;
+             };
+
+
+            currentConditions.forEach((condition, index) => {
+                if (yPosition > 250) {
                     addFooter();
                     doc.addPage();
-                    yPosition = 30;
+                    yPosition = 30; // Adjusted for smaller header on continuation pages
                     doc.setFillColor(...primaryColor);
                     doc.rect(0, 0, 210, 20, 'F');
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(12);
-                    doc.text(`RECOMMENDED SPECIALISTS - CONTINUED`, 105, 12, { align: 'center' });
+                    doc.text(`MEDICAL REPORT - ${bodyPartText} (CONTINUED)`, 105, 12, { align: 'center' });
                     doc.setTextColor(100, 100, 100);
                     doc.setFontSize(8);
                     doc.text(`Page ${pageNumber}`, 195, 12, { align: 'right' });
-                    yPosition = 30;
+                    yPosition = 30; // Adjusted for smaller header on continuation pages
                 }
 
-                doc.setFillColor(249, 249, 249);
+                // Condition styling
+                doc.setFillColor(236, 240, 241);
                 doc.rect(15, yPosition - 5, 180, 8, 'F');
-                doc.setTextColor(...accentColor);
+
+                // Severity color
+                if (condition.severity === 'high') {
+                    doc.setTextColor(...accentColor);
+                } else if (condition.severity === 'medium') {
+                    doc.setTextColor(243, 156, 18);
+                } else {
+                    doc.setTextColor(39, 174, 96);
+                }
+
+                // Condition title
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text(`${String.fromCharCode(65 + index)}. ${type}`, 20, yPosition);
+                doc.text(`${index + 1}. ${condition.name}`, 20, yPosition);
+
+                // Severity indicator
+                doc.setTextColor(100, 100, 100);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                const severityText = condition.severity === 'high' ? 'High (Emergency)' :
+                                  condition.severity === 'medium' ? 'Moderate' : 'Mild';
+                doc.text(`Severity: ${severityText}`, 170, yPosition, { align: 'right' });
                 yPosition += 10;
 
-                if (specialists.length > 0) {
-                    const specialistData = specialists.map(specialist => [
-                        specialist.name,
-                        specialist.hospital,
-                        specialist.phone,
-                        specialist.address
-                    ]);
+                // Symptoms
+                doc.setTextColor(...primaryColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Symptoms:', 20, yPosition);
+                yPosition += 6;
+                doc.setTextColor(50, 50, 50);
+                doc.setFont('helvetica', 'normal');
+                const symptomsLines = doc.splitTextToSize(condition.symptoms, 170);
+                doc.text(symptomsLines, 25, yPosition);
+                yPosition += (symptomsLines.length * 4) + 3;
 
-                    doc.autoTable({
-                        startY: yPosition,
-                        head: [['Name', 'Hospital', 'Contact', 'Address']],
-                        body: specialistData,
-                        margin: { left: 20 },
-                        headStyles: {
-                            fillColor: primaryColor,
-                            textColor: 255,
-                            fontStyle: 'bold',
-                            fontSize: 8
-                        },
-                        alternateRowStyles: {
-                            fillColor: [245, 245, 245]
-                        },
-                        styles: {
-                            fontSize: 8,
-                            cellPadding: 3,
-                            overflow: 'linebreak'
-                        },
-                        columnStyles: {
-                            0: { cellWidth: 35 },
-                            1: { cellWidth: 40 },
-                            2: { cellWidth: 25 },
-                            3: { cellWidth: 60 }
-                        }
-                    });
-                    yPosition = doc.lastAutoTable.finalY + 10;
-                } else {
-                    doc.setTextColor(100, 100, 100);
-                    doc.setFontSize(10);
-                    doc.text('No specific specialists listed in database for this category', 25, yPosition);
-                    yPosition += 15;
+                // Treatment
+                if (condition.medications) { // Check if medications exist
+                     doc.setTextColor(...primaryColor);
+                     doc.setFont('helvetica', 'bold');
+                     doc.text('Recommended Treatment:', 20, yPosition);
+                     yPosition += 6;
+                     doc.setTextColor(50, 50, 50);
+                     doc.setFont('helvetica', 'normal');
+                     const treatmentLines = doc.splitTextToSize(condition.medications, 170);
+                     doc.text(treatmentLines, 25, yPosition);
+                     yPosition += (treatmentLines.length * 4) + 3;
+                }
+
+
+                // First Aid
+                if (condition.firstAid) {
+                    doc.setTextColor(26, 82, 118);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('First Aid:', 20, yPosition);
+                    yPosition += 6;
+                    doc.setTextColor(50, 50, 50);
+                    doc.setFont('helvetica', 'normal');
+                    const firstAidLines = doc.splitTextToSize(condition.firstAid, 170);
+                    doc.text(firstAidLines, 25, yPosition);
+                    yPosition += (firstAidLines.length * 4) + 3;
+                }
+
+                // Specialist recommendation
+                doc.setTextColor(...primaryColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Recommended Specialist:', 20, yPosition);
+                yPosition += 6;
+                doc.setTextColor(50, 50, 50);
+                doc.setFont('helvetica', 'normal');
+                doc.text(condition.specialist, 25, yPosition);
+                yPosition += 10;
+
+                // Divider
+                if (index < currentConditions.length - 1) {
+                    doc.setDrawColor(200, 200, 200);
+                    doc.line(20, yPosition, 190, yPosition);
+                    yPosition += 5;
                 }
             });
+
+             // Specialist Information Section (Simplified for brevity)
+            const specialistTypes = new Set();
+            currentConditions.forEach(condition => {
+                 if (condition.specialist) {
+                      specialistTypes.add(condition.specialist.trim());
+                 }
+            });
+
+             if (specialistTypes.size > 0) {
+                 // Add Specialist Section title only if there are specialists
+                 addFooter(); // Add footer to previous page before adding a new one
+                 doc.addPage(); // Start new page for specialists
+                 yPosition = 30; // Reset yPosition
+                 doc.setFillColor(...primaryColor);
+                 doc.rect(0, 0, 210, 30, 'F');
+                 doc.setTextColor(255, 255, 255);
+                 doc.setFontSize(20);
+                 doc.text('RECOMMENDED SPECIALISTS', 105, 20, { align: 'center' });
+
+                 doc.setFillColor(245, 247, 250);
+                 doc.rect(0, 30, 210, 15, 'F');
+                 doc.setTextColor(...primaryColor);
+                 doc.setFontSize(12);
+                 doc.text(`For: ${bodyPartText}`, 105, 40, { align: 'center' });
+                 doc.setTextColor(100, 100, 100);
+                 doc.setFontSize(8);
+                 // Ensure page number is updated for this new section start
+                 doc.text(`Page ${pageNumber}`, 195, 45, { align: 'right' });
+
+
+                 doc.setDrawColor(...secondaryColor);
+                 doc.setLineWidth(0.5);
+                 doc.line(15, 50, 195, 50);
+                 yPosition = 60;
+
+
+                 Array.from(specialistTypes).forEach((type, index) => {
+                    const specialists = specialistDatabase[type] || [];
+
+                     if (yPosition > 240 && index < specialistTypes.size -1) { // Check if new page needed before drawing specialist block
+                          addFooter();
+                          doc.addPage();
+                          yPosition = 30;
+                          doc.setFillColor(...primaryColor);
+                          doc.rect(0, 0, 210, 20, 'F');
+                          doc.setTextColor(255, 255, 255);
+                          doc.setFontSize(12);
+                          doc.text(`RECOMMENDED SPECIALISTS - CONTINUED`, 105, 12, { align: 'center' });
+                          doc.setTextColor(100, 100, 100);
+                          doc.setFontSize(8);
+                          doc.text(`Page ${pageNumber}`, 195, 12, { align: 'right' });
+                          yPosition = 30;
+                     }
+
+                    doc.setFillColor(249, 249, 249);
+                    doc.rect(15, yPosition - 5, 180, 8, 'F');
+                    doc.setTextColor(...accentColor);
+                    doc.setFontSize(12);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${String.fromCharCode(65 + index)}. ${type}`, 20, yPosition);
+                    yPosition += 10;
+
+                     if (specialists.length > 0) {
+                         const specialistData = specialists.map(specialist => [
+                             specialist.name,
+                             specialist.hospital,
+                             specialist.phone,
+                             doc.splitTextToSize(specialist.address, 60) // Split address if long
+                         ]);
+
+                         doc.autoTable({
+                             startY: yPosition,
+                             head: [['Name', 'Hospital', 'Contact', 'Address']],
+                             body: specialistData,
+                             margin: { left: 20, right: 15 }, // Adjust right margin
+                             headStyles: {
+                                 fillColor: primaryColor,
+                                 textColor: 255,
+                                 fontStyle: 'bold',
+                                 fontSize: 8
+                             },
+                             alternateRowStyles: {
+                                 fillColor: [245, 245, 245]
+                             },
+                             styles: {
+                                 fontSize: 8,
+                                 cellPadding: 3,
+                                 overflow: 'linebreak', // Ensure text wraps
+                                 rowPageBreak: 'avoid' // Avoid breaking rows across pages if possible
+                             },
+                             columnStyles: {
+                                 0: { cellWidth: 35 },
+                                 1: { cellWidth: 40 },
+                                 2: { cellWidth: 25 },
+                                 3: { cellWidth: 60 }
+                             },
+                             didDrawPage: (data) => { // Add footer on pages generated by autoTable
+                                  // This autoTable specific hook might not be needed if the main loop handles footers
+                                  // But it's good practice if autoTable pushes content near the end.
+                                  // Let's rely on the main loop's yPosition check and addFooter call before the autoTable.
+                             }
+                         });
+                         // Update yPosition after autoTable
+                         yPosition = doc.lastAutoTable.finalY + 10;
+                     } else {
+                         doc.setTextColor(100, 100, 100);
+                         doc.setFontSize(10);
+                         doc.text('No specific specialists listed in database for this category', 25, yPosition);
+                         yPosition += 15;
+                     }
+                      // Add a small gap between specialist types if there are multiple
+                     if (index < specialistTypes.size - 1) {
+                          yPosition += 5;
+                     }
+                 });
+            }
+
+             // Ensure footer is added to the last page
+             addFooter();
+
+
+            // --- End of PDF Generation Logic ---
+
+
+            // *** Get PDF data as a Blob ***
+            const pdfBlob = doc.output('blob'); // Output as a Blob
+
+            // *** Prepare FormData matching curl request ***
+            const formData = new FormData();
+            const title = `Report for ${bodyPartText || 'Search Results'}`;
+            formData.append('title', title);
+            const filename = `medical_report_${Date.now()}.pdf`;
+            formData.append('file', pdfBlob, filename);
+
+            const backendPdfUploadUrl = 'http://127.0.0.1:8000/pdf';
+
+            try {
+                // Send the PDF Blob to the backend
+                const response = await fetch(backendPdfUploadUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Handle the backend response (expecting JSON)
+                if (response.ok) {
+                    // *** Get and parse the JSON response ***
+                    const responseData = await response.json(); // <--- CHANGE IS HERE
+                    console.log("Backend Response (JSON):", responseData); // Log for debugging
+
+                    // *** Call new function to display the data ***
+                    displayBackendResponse(responseData); // <--- CALL NEW FUNCTION
+
+                } else {
+                    console.error("Error sending PDF report:", response.status, response.statusText);
+                    const errorDetail = await response.text(); // Get text if JSON parsing fails or is not expected on error
+                    alert(`Error sending report: ${response.status} ${response.statusText}. Details: ${errorDetail.substring(0, 200)}`);
+                    console.error("Backend error details:", errorDetail);
+                    // Optionally display an error message in the backend response area
+                     backendResponseArea.style.display = 'block';
+                     backendResponseContent.innerHTML = `<p><strong class="status-error-text">Error:</strong> Failed to process report on the backend.</p><p>${errorDetail.substring(0, 200)}...</p>`;
+                }
+            } catch (error) {
+                console.error("Network error sending PDF report:", error);
+                alert("Network error: Could not connect to the backend server to send the report.");
+                // Optionally display a network error message in the backend response area
+                 backendResponseArea.style.display = 'block';
+                 backendResponseContent.innerHTML = `<p><strong class="status-error-text">Error:</strong> Network error. Could not reach the server.</p><p>${error}</p>`;
+
+            } finally {
+                // Hide loading indicator and re-enable the button
+                uploadLoadingElement.style.display = 'none';
+                downloadBtn.disabled = false;
+            }
+        }
+        // *** END MODIFIED sendPdfReport FUNCTION ***
+
+
+        // *** NEW FUNCTION TO DISPLAY BACKEND RESPONSE ***
+        function displayBackendResponse(data) {
+            // Ensure the display area is visible
+            backendResponseArea.style.display = 'block';
+            backendResponseContent.innerHTML = ''; // Clear previous content
+
+            let htmlContent = '';
+
+            // Display main status
+            htmlContent += `<p><strong>Status:</strong> ${data.status}</p>`;
+
+            // Display user ID and encryption key
+            if (data.user_id_for_verification) {
+                htmlContent += `<p><strong>User ID for Verification:</strong> ${data.user_id_for_verification}</p>`;
+            }
+            if (data.encryption_key_derived) {
+                 // Consider if you want to display the full key or just a part/status
+                htmlContent += `<p><strong>Encryption Key Derived:</strong> ${data.encryption_key_derived.substring(0, 8)}... (full key not displayed)</p>`; // Display partial key
+            }
+
+
+            // Display IPFS Upload details
+            htmlContent += `<p><strong>IPFS Upload:</strong> ${data.ipfs_upload.success ? '<span class="status-success-text">Success</span>' : '<span class="status-error-text">Failed</span>'}</p>`;
+            if (data.ipfs_upload && data.ipfs_upload.success) { // Added null check for ipfs_upload
+                if (data.ipfs_upload.cid) {
+                    htmlContent += `<p><strong>CID:</strong> ${data.ipfs_upload.cid}</p>`;
+                }
+                if (data.ipfs_upload.ipfs_gateway_url) {
+                     htmlContent += `<p><strong>IPFS Link:</strong> <a href="${data.ipfs_upload.ipfs_gateway_url}" target="_blank">${data.ipfs_upload.ipfs_gateway_url}</a></p>`;
+                }
+            } else if (data.ipfs_upload && data.ipfs_upload.error) { // Added null check
+                htmlContent += `<p><strong class="status-error-text">IPFS Error:</strong> ${data.ipfs_upload.error}</p>`;
+            }
+
+            // Display Blockchain Storage details
+            htmlContent += `<p><strong>Blockchain Storage:</strong> ${data.blockchain_storage.success ? '<span class="status-success-text">Success</span>' : '<span class="status-error-text">Failed</span>'}</p>`;
+            if (data.blockchain_storage && data.blockchain_storage.success) { // Added null check for blockchain_storage
+                if (data.blockchain_storage.tx_hash) {
+                    htmlContent += `<p><strong>Transaction Hash:</strong> ${data.blockchain_storage.tx_hash}</p>`;
+                }
+                if (data.blockchain_storage.block_explorer_url) {
+                    htmlContent += `<p><strong>Block Explorer Link:</strong> <a href="${data.blockchain_storage.block_explorer_url}" target="_blank">${data.blockchain_storage.block_explorer_url}</a></p>`;
+                }
+            } else if (data.blockchain_storage && data.blockchain_storage.error) { // Added null check
+                htmlContent += `<p><strong class="status-error-text">Blockchain Error:</strong> ${data.blockchain_storage.error}</p>`;
+            }
+
+
+            // Set the generated HTML content
+            backendResponseContent.innerHTML = htmlContent;
+        }
+        // *** END NEW FUNCTION ***
+
+
+        // Show emergency protocols (existing function)
+        function showEmergencyProtocols() {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            modal.style.display = 'flex';
+            modal.style.justifyContent = 'center';
+            modal.style.alignItems = 'center';
+            modal.style.zIndex = '1000';
+
+            // Create modal content
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = 'white';
+            modalContent.style.padding = '20px';
+            modalContent.style.borderRadius = '8px';
+            modalContent.style.maxWidth = '800px';
+            modalContent.style.maxHeight = '90vh';
+            modalContent.style.overflowY = 'auto';
+            modalContent.style.width = '90%';
+            modalContent.style.color = '#333'; // Ensure text is readable
+
+            // Add close button
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'Close';
+            closeButton.style.padding = '8px 16px';
+            closeButton.style.backgroundColor = '#e74c3c';
+            closeButton.style.color = 'white';
+            closeButton.style.border = 'none';
+            closeButton.style.borderRadius = '4px';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.marginTop = '20px';
+            closeButton.style.float = 'right';
+            closeButton.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+
+            // Add title
+            const title = document.createElement('h2');
+            title.textContent = 'Emergency Medical Protocols';
+            title.style.color = '#e74c3c';
+            title.style.marginTop = '0';
+
+            // Add emergency protocols
+            const protocolsContainer = document.createElement('div');
+
+            for (const [condition, info] of Object.entries(emergencyProtocols)) {
+                const protocolItem = document.createElement('div');
+                protocolItem.style.marginBottom = '20px';
+                protocolItem.style.paddingBottom = '20px';
+                protocolItem.style.borderBottom = '1px solid #eee';
+
+                const conditionTitle = document.createElement('h3');
+                conditionTitle.textContent = condition;
+                conditionTitle.style.color = '#c0392b';
+
+                const symptomsTitle = document.createElement('h4');
+                symptomsTitle.textContent = 'Symptoms:';
+                symptomsTitle.style.marginBottom = '5px';
+                symptomsTitle.style.color = '#333';
+
+
+                const symptomsText = document.createElement('p');
+                symptomsText.textContent = info.symptoms;
+                symptomsText.style.marginTop = '0';
+                symptomsText.style.color = '#555';
+
+
+                const actionsTitle = document.createElement('h4');
+                actionsTitle.textContent = 'Immediate Actions:';
+                actionsTitle.style.marginBottom = '5px';
+                 actionsTitle.style.color = '#333';
+
+
+                const actionsList = document.createElement('ol');
+                actionsList.style.marginTop = '0';
+                actionsList.style.paddingLeft = '20px';
+                actionsList.style.color = '#555';
+
+
+                info.actions.forEach(action => {
+                    const li = document.createElement('li');
+                    li.textContent = action;
+                    actionsList.appendChild(li);
+                });
+
+                protocolItem.appendChild(conditionTitle);
+                protocolItem.appendChild(symptomsTitle);
+                protocolItem.appendChild(symptomsText);
+                protocolItem.appendChild(actionsTitle);
+                protocolItem.appendChild(actionsList);
+
+                protocolsContainer.appendChild(protocolItem);
+            }
+
+            // Add emergency contact info
+            const emergencyContact = document.createElement('div');
+            emergencyContact.style.marginTop = '30px';
+            emergencyContact.style.padding = '15px';
+            emergencyContact.style.backgroundColor = '#ffebee';
+            emergencyContact.style.borderRadius = '4px';
+            emergencyContact.style.borderLeft = '4px solid #e74c3c';
+
+            const contactTitle = document.createElement('h3');
+            contactTitle.textContent = 'Emergency Contacts';
+            contactTitle.style.marginTop = '0';
+            contactTitle.style.color = '#e74c3c';
+
+            const contactList = document.createElement('ul');
+            contactList.style.paddingLeft = '20px';
+            contactList.style.color = '#555';
+
+
+            const contacts = [
+                'United States/Canada: 911',
+                'European Union: 112',
+                'United Kingdom: 999 or 112',
+                'Australia: 000',
+                'New Zealand: 111',
+                'Japan: 119 (Ambulance) or 110 (Police)',
+                'India: 102 (Ambulance) or 100 (Police)'
+            ];
+
+            contacts.forEach(contact => {
+                const li = document.createElement('li');
+                li.textContent = contact;
+                contactList.appendChild(li);
+            });
+
+            emergencyContact.appendChild(contactTitle);
+            emergencyContact.appendChild(contactList);
+
+            // Assemble modal content
+            modalContent.appendChild(title);
+            modalContent.appendChild(protocolsContainer);
+            modalContent.appendChild(emergencyContact);
+            modalContent.appendChild(closeButton);
+
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
         }
 
-        addFooter();
-        doc.save(`Medical_Report_${bodyPartText.replace(/ /g, '_')}_${new Date().toISOString().slice(0,10)}.pdf`);
-    }
-}
         // Initialize the application
         init();
+
     </script>
 </body>
 </html>
