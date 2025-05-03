@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Upload</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      #uploadForm > div {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input[type="text"],
+      input[type="file"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #messageArea {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 4px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Upload Image</h1>
+
+    <form id="uploadForm">
+      <div>
+        <label for="titleInput">Title (Optional but recommended):</label>
+        <input type="text" id="titleInput" name="title" />
+      </div>
+      <div>
+        <label for="imageInput">Select Image:</label>
+        <input
+          type="file"
+          id="imageInput"
+          name="image"
+          accept="image/*"
+          required
+        />
+      </div>
+      <button type="submit">Upload Image</button>
+    </form>
+
+    <div id="messageArea"></div>
+
+    <script>
+      const form = document.getElementById("uploadForm");
+      const imageInput = document.getElementById("imageInput");
+      const titleInput = document.getElementById("titleInput");
+      const messageArea = document.getElementById("messageArea");
+      const uploadUrl = "http://127.0.0.1:8000/upload";
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const file = imageInput.files[0];
+        const title = titleInput.value;
+        if (!file) {
+          showMessage("Please select an image file to upload.", "error");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("image_url", file);
+        if (title) {
+          formData.append("title", title);
+        }
+
+        showMessage("Uploading...", null);
+
+        try {
+          const response = await fetch(uploadUrl, {
+            method: "POST",
+            body: formData,
+          });
+
+          const responseData = await response.json();
+
+          if (response.ok) {
+            console.log("Success:", responseData);
+            const imageUrl =
+              responseData.image_url || "(URL not provided in response)";
+            showMessage(`Upload successful! Image URL: ${imageUrl}`, "success");
+            form.reset();
+          } else {
+            console.error("Upload failed:", response.status, responseData);
+            let errorDetails = JSON.stringify(responseData);
+            showMessage(`Error ${response.status}: ${errorDetails}`, "error");
+          }
+        } catch (error) {
+          console.error("Network or other error:", error);
+          showMessage(
+            `Network error or server unreachable: ${error.message}`,
+            "error"
+          );
+        }
+      });
+
+      function showMessage(message, type) {
+        messageArea.textContent = message;
+        messageArea.className = "";
+        if (type) {
+          messageArea.classList.add(type);
+        }
+      }
+    </script>
+  </body>
+</html>
