@@ -1,4 +1,4 @@
-# DiagnoAI - Backend API
+# Catalyst - Backend API
 
 ## Overview
 
