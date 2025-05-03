@@ -16,7 +16,7 @@
                         }, 50);
                     }, index * 100);
                 });
-            }, 500)
+            }, 500);
            
             // Current year for copyright
             const year = new Date().getFullYear();
