@@ -128,7 +128,4 @@ DiagnoAI is a comprehensive web-based medical diagnosis platform that combines i
 
 This project is proprietary code. All rights reserved by ACMECorp (as noted in the footer). For use or modification, please contact the project maintainers.
 
-## Disclaimer
-
-This application is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of a qualified healthcare provider with any questions you may have regarding a medical condition.
 
