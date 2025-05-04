@@ -61,9 +61,9 @@ DiagnoAI is a comprehensive web-based medical diagnosis platform that integrates
    - Text-based symptom analysis via a chat-style interface.
    - Disease probability percentages with educational explanations.
 
-6. **Report Generation and Blockchain Integration**:
+6. **Report Generation and Blockchain Integration for securing sensitive input data(image/video) for user input history**:
    - Generate PDF reports of selected conditions using jsPDF.
-   - Upload reports to backend for IPFS/Blockchain storage via `/pdf` endpoint.
+   - Upload video/image/reports to backend for IPFS/Blockchain storage via `/pdf` endpoint.
    - Display processing status, including IPFS CID and blockchain transaction hash.
    - Transaction verification interface (`verify-trxn.html`) for validating transaction hashes, showing status, block number, and addresses.
 
@@ -83,7 +83,7 @@ DiagnoAI is a comprehensive web-based medical diagnosis platform that integrates
    - Serializers and services for data processing and validation.
 
 2. **Blockchain Integration**:
-   - Secures medical reports using Ethereum smart contracts (SimpleBackendRegistry).
+   - Secures medical video/image input reports using Ethereum smart contracts (SimpleBackendRegistry).
    - Generates verification IDs for patient records.
 
 3. **IPFS Storage**:
