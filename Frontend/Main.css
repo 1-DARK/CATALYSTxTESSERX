@@ -1,0 +1,173 @@
+/* --- Basic Container Styling (Include if not defined elsewhere) --- */
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  @media (min-width: 576px) { .container { max-width: 540px; } }
+  @media (min-width: 768px) { .container { max-width: 720px; } }
+  @media (min-width: 992px) { .container { max-width: 960px; } }
+  @media (min-width: 1200px) { .container { max-width: 1140px; } }
+  
+  
+  /* --- Vision Section Styling --- */
+  .vision {
+    padding: 60px 0; /* Vertical padding */
+    background-color: #fff; /* Or choose a light background like #f8f9fa */
+    border-top: 1px solid #e9ecef; /* Optional separator line */
+  }
+  
+  /* --- Section Header --- */
+  .section-header {
+    text-align: center;
+    margin-bottom: 50px; /* Space below the header */
+  }
+  
+  .section-header h2 {
+    font-size: 2.8rem;   /* Adjust size */
+    font-weight: 700;    /* Adjust weight for Druk font */
+    color: #212529;      /* Dark text color */
+    margin-bottom: 15px;
+    line-height: 1.2;
+  }
+  
+  /* Apply the Druk font specifically */
+  .section-header .druk-font {
+    font-family: 'Druk', sans-serif; /* Use Druk font with a fallback */
+    /* Add specific Druk styles if needed (e.g., letter-spacing) */
+  }
+  
+  .section-header p {
+    font-size: 1.1rem;
+    color: #6c757d;      /* Lighter text color for subtitle */
+    max-width: 700px;    /* Limit width for better readability */
+    margin: 0 auto;      /* Center the paragraph */
+    line-height: 1.6;
+    font-family: sans-serif; /* Use a standard readable font for the paragraph */
+  }
+  
+  /* Style for .dark header variant (adjust if needed based on background) */
+  .section-header.dark h2 {
+    color: #212529; /* Ensure dark text on light background */
+  }
+  .section-header.dark p {
+    color: #6c757d; /* Ensure lighter text on light background */
+  }
+  
+  /* --- Vision Grid Layout --- */
+  .vision-grid {
+    display: grid;
+    gap: 30px; /* Space between grid items */
+  }
+  
+  /* --- Vision Item Styling --- */
+  .vision-item {
+    background-color: #f8f9fa; /* Slightly off-white background for items */
+    padding: 35px 30px;       /* Padding inside each item */
+    text-align: center;
+    border-radius: 8px;       /* Rounded corners */
+    border: 1px solid #dee2e6; /* Subtle border */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    /* Add smooth transition for hover effects */
+  }
+  
+  .vision-item:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+    border-color: #007bff; /* Optional: Highlight border on hover */
+  }
+  
+  /* --- Vision Icon Styling --- */
+  .vision-icon {
+    margin: 0 auto 25px auto; /* Center horizontally, add space below icon */
+    width: 65px;             /* Icon container width */
+    height: 65px;            /* Icon container height */
+    border-radius: 50%;      /* Make it circular */
+    background-color: #eaf2ff; /* Light blue background for icon container */
+    display: flex;           /* Use flexbox for centering */
+    justify-content: center; /* Center icon horizontally */
+    align-items: center;     /* Center icon vertically */
+    color: #007bff;          /* Icon color (e.g., primary blue) */
+    font-size: 1.8rem;       /* Icon size */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+  }
+  
+  /* Change icon style on parent hover */
+  .vision-item:hover .vision-icon {
+    background-color: #007bff; /* Primary color background on hover */
+    color: #fff;              /* White icon color on hover */
+  }
+  
+  /* --- Vision Item Text Styling --- */
+  .vision-item h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #343a40;      /* Slightly darker text for heading */
+    margin-bottom: 10px;
+    font-family: sans-serif; /* Use a standard readable font */
+  }
+  
+  .vision-item p {
+    font-size: 0.95rem;
+    color: #6c757d;      /* Lighter text color for paragraph */
+    line-height: 1.6;
+    font-family: sans-serif; /* Use a standard readable font */
+  }
+  
+  
+  /* --- Responsiveness --- */
+  
+  /* Default: 1 column (Mobile First approach) */
+  .vision-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Medium devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    .vision-grid {
+      grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    }
+     .section-header h2 {
+       font-size: 3rem;
+     }
+     .section-header p {
+       font-size: 1.15rem;
+     }
+  }
+  
+  /* Large devices (desktops, 992px and up) */
+  @media (min-width: 992px) {
+    .vision-grid {
+      grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    }
+     .section-header h2 {
+       font-size: 3.2rem;
+     }
+  }
+  
+  /* Optional: Adjustments for very small screens */
+  @media (max-width: 575.98px) {
+     .section-header h2 {
+       font-size: 2.2rem; /* Smaller heading on small screens */
+     }
+      .section-header p {
+       font-size: 1rem;
+     }
+     .vision-item {
+       padding: 25px 20px; /* Reduce padding slightly */
+     }
+     .vision-icon {
+       width: 60px;
+       height: 60px;
+       font-size: 1.7rem;
+     }
+     .vision-item h3 {
+       font-size: 1.15rem;
+     }
+     .vision-item p {
+       font-size: 0.9rem;
+     }
+  }

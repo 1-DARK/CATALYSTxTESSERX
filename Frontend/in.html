@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DiagnoAI - Video Analysis</title>
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Apollo-Inspired Color Palette */
+      :root {
+          --primary-color: #0B4F6C;       /* Professional Dark Blue */
+          --primary-dark: #005f73;       /* Darker Blue/Teal for hover */
+          --secondary-color: #01BAEF;   /* Bright Cyan/Blue Accent */
+          --light-color: #ffffff;        /* White */
+          --bg-light-gray: #f8f9fa;    /* Very Light Gray Background */
+          --bg-medium-gray: #e9ecef;   /* Slightly Darker Gray (for user message) */
+          --dark-color: #343a40;         /* Dark Gray */
+          --text-color: #212529;         /* Near Black for body text */
+          --text-light: #6c757d;         /* Medium Gray for secondary text */
+          --success-color: #2A9D8F;      /* Calming Green */
+          --warning-color: #F7B801;      /* Yellow/Gold */
+          --danger-color: #D7263D;       /* Clear Red */
+          --border-color: #dee2e6;       /* Light Gray for borders */
+          --border-radius-lg: 12px;
+          --border-radius-md: 8px;
+          --border-radius-sm: 4px;
+          --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      html {
+          height: 100%;
+      }
+
+      body {
+        background-color: var(--bg-light-gray);
+        color: var(--text-color);
+        height: 100vh; /* Use full viewport height */
+        display: flex;
+        flex-direction: column; /* Stack potential header/footer */
+        overflow: hidden; /* Prevent body scroll */
+      }
+
+      /* Main Application Wrapper */
+      .app-wrapper {
+        flex-grow: 1; /* Take available space */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 15px; /* Padding around the container */
+         overflow: hidden; /* Prevent wrapper scroll */
+      }
+
+
+      .container {
+        max-width: 1200px;
+        width: 100%; /* Full width within wrapper */
+        height: 100%; /* Full height within wrapper */
+        max-height: 850px; /* Max height if needed */
+        background-color: var(--light-color);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--box-shadow);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 12px 20px; /* Slightly reduced padding */
+        border-bottom: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .header h1 {
+        color: white;
+        font-size: 1.3rem; /* Adjusted size */
+        font-weight: 600;
+      }
+
+      .recording-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .recording-indicator.active { opacity: 1; }
+
+      .recording-dot {
+        width: 10px; height: 10px;
+        background-color: var(--danger-color);
+        border-radius: 50%;
+        animation: pulse-rec 1.5s infinite;
+      }
+       @keyframes pulse-rec {
+         0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(215, 38, 61, 0.7); }
+         70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(215, 38, 61, 0); }
+         100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(215, 38, 61, 0); }
+       }
+
+      .recording-text {
+        color: white;
+        font-weight: 500;
+        font-size: 0.85rem; /* Slightly smaller */
+      }
+
+      .main-container {
+        display: flex;
+        flex-grow: 1;
+        overflow: hidden; /* Prevent its own scrollbars */
+        /* Height managed by flex-grow */
+      }
+
+      .chat-area {
+        flex: 1 1 40%; /* Takes 40% initially, can grow/shrink */
+        min-width: 280px; /* Minimum width before wrapping */
+        background-color: var(--light-color);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-right: 1px solid var(--border-color);
+      }
+
+      .video-area {
+        flex: 1 1 60%; /* Takes 60% initially */
+        min-width: 300px;
+        background-color: #f0f2f5;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .messages {
+        flex-grow: 1;
+        padding: 15px; /* Reduced padding */
+        overflow-y: auto; /* Enable scrolling */
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* Reduced gap */
+      }
+
+      .message {
+        max-width: 85%; /* Slightly wider max */
+        padding: 10px 15px;
+        border-radius: var(--border-radius-md);
+        animation: fadeIn 0.3s ease-in-out;
+        word-wrap: break-word;
+        font-size: 0.9rem; /* Base message font size */
+        line-height: 1.5;
+        border: 1px solid transparent;
+      }
+      @keyframes fadeIn { /* Keep animation */ }
+
+      .user-message {
+        align-self: flex-end;
+        background-color: var(--bg-medium-gray);
+        color: var(--text-color);
+        border-color: #d1d9e0;
+        border-bottom-right-radius: var(--border-radius-sm);
+      }
+
+      .bot-message {
+        align-self: flex-start;
+        background-color: var(--primary-color);
+        color: white;
+        border-color: var(--primary-dark);
+        border-bottom-left-radius: var(--border-radius-sm);
+        overflow-x: auto; /* For wide tables */
+      }
+
+      .video-message {
+        max-width: 85%; /* Match text message width */
+        align-self: flex-end;
+        background-color: var(--bg-medium-gray);
+        color: var(--text-color);
+        padding: 8px;
+        border-radius: var(--border-radius-md);
+        border-color: #d1d9e0;
+        border-bottom-right-radius: var(--border-radius-sm);
+        overflow: hidden;
+        animation: fadeIn 0.3s ease-in-out;
+        border: 1px solid #d1d9e0;
+      }
+       /* Label inside video message */
+      .video-message p {
+         font-size: 0.8rem;
+         margin-bottom: 5px;
+         color: var(--text-light);
+      }
+      .video-message video {
+        width: 100%;
+        max-width: 250px; /* Smaller max preview */
+        display: block;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--border-color);
+      }
+
+      .video-container {
+        flex-grow: 1; position: relative; background-color: #000;
+        display: flex; align-items: center; justify-content: center;
+        min-height: 200px; /* Ensure minimum height */
+      }
+
+      #videoElement {
+        display: block; max-width: 100%; max-height: 100%;
+        width: auto; height: auto; object-fit: contain;
+      }
+
+      .video-controls {
+        display: flex; padding: 12px 15px; /* Adjusted padding */
+        background-color: var(--light-color);
+        border-top: 1px solid var(--border-color);
+        justify-content: center; gap: 15px; /* Adjusted gap */
+        flex-shrink: 0; flex-wrap: wrap; /* Allow buttons to wrap */
+      }
+
+      .video-button {
+        padding: 8px 20px; /* Adjusted padding */
+        background-color: var(--primary-color);
+        color: white; border: none;
+        border-radius: var(--border-radius-md); cursor: pointer;
+        transition: var(--transition); display: flex; align-items: center;
+        justify-content: center; gap: 6px; /* Reduced gap */
+        font-weight: 500; font-size: 0.9rem; /* Adjusted font size */
+      }
+      .video-button:hover:not(:disabled) {
+        background-color: var(--primary-dark); transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      }
+      .video-button:active:not(:disabled) { transform: translateY(0); }
+      .video-button:disabled {
+        background-color: var(--bg-medium-gray); color: var(--text-light);
+        cursor: not-allowed; transform: none; box-shadow: none;
+      }
+      .video-button.stop { background-color: var(--danger-color); }
+      .video-button.stop:hover:not(:disabled) { background-color: #b02032; }
+
+      .button-icon { width: 16px; height: 16px; fill: currentColor; } /* Smaller icon */
+
+      .status-message {
+        position: absolute; bottom: 10px; /* Closer to bottom */
+        left: 50%; transform: translateX(-50%); background-color: rgba(0, 0, 0, 0.75);
+        color: white; padding: 6px 12px; /* Smaller padding */
+        border-radius: 15px; font-size: 0.85rem; /* Smaller font */
+        opacity: 0; transition: opacity 0.3s ease;
+        pointer-events: none; z-index: 10;
+      }
+      .status-message.visible { opacity: 1; }
+
+      /* Table Styles inside bot-message */
+      .bot-message table {
+        width: 100%; border-collapse: collapse; margin: 10px 0; /* Removed top/bottom margins */
+        font-size: 0.9em; line-height: 1.4; color: white;
+      }
+      .bot-message th, .bot-message td {
+        border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 8px; /* Reduced padding */
+        text-align: left; vertical-align: top; word-wrap: break-word; white-space: normal;
+      }
+      .bot-message th {
+        background-color: rgba(255, 255, 255, 0.1); font-weight: 600;
+        color: var(--secondary-color);
+      }
+      .bot-message tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
+      .bot-message tr:hover { background-color: rgba(1, 186, 239, 0.1); }
+
+      /* Adjust spacing for other raw HTML elements */
+       .bot-message p { margin-bottom: 0.7em; color: inherit;} /* Ensure text color */
+       .bot-message p:last-of-type { margin-bottom: 0; }
+       .bot-message ul, .bot-message ol { margin: 10px 0 10px 20px; padding: 0; color: inherit;}
+       .bot-message li { margin-bottom: 5px; }
+
+        /* Scrollbar Styles */
+        ::-webkit-scrollbar { width: 6px; height: 6px;} /* Adjust height for horizontal */
+        ::-webkit-scrollbar-track { background: var(--bg-light-gray); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+
+      /* --- Responsive Design --- */
+
+      /* Tablet and Smaller Desktops */
+      @media (max-width: 1024px) {
+          .container {
+              height: calc(100vh - 30px); /* Adjust height slightly */
+              max-height: none; /* Allow full height */
+          }
+          .header h1 { font-size: 1.2rem; }
+          .messages { padding: 15px; }
+          .message { font-size: 0.9rem; }
+          .video-controls { padding: 12px; gap: 15px; }
+          .video-button { padding: 8px 20px; font-size: 0.9rem; }
+      }
+
+
+      /* Mobile Devices */
+      @media (max-width: 768px) {
+         body { padding: 0; height: 100vh; overflow: hidden; } /* Lock body scroll */
+         .app-wrapper { padding: 0; height: 100%; }
+         .container {
+            width: 100%; height: 100%; max-width: 100%; margin: 0; padding: 0;
+            border-radius: 0; border: none; box-shadow: none; max-height: none;
+         }
+        .main-container {
+          flex-direction: column; /* Stack vertically */
+        }
+        .chat-area, .video-area {
+          flex: 1 1 50%; /* Share height equally */
+          border-radius: 0; width: 100%;
+          border-right: none; /* Remove side border */
+        }
+        .chat-area {
+          border-bottom: 1px solid var(--border-color); /* Separator */
+          min-height: 150px; /* Minimum chat height */
+        }
+        .video-area {
+          border-left: none; border-top: none;
+          min-height: 200px; /* Minimum video height */
+        }
+         .messages { padding: 10px; gap: 10px;}
+         .message { font-size: 0.85rem; padding: 8px 12px; max-width: 90%;}
+         .bot-message table { font-size: 0.8em; }
+         .bot-message th, .bot-message td { padding: 5px 7px; }
+         .video-controls { padding: 10px; gap: 10px; }
+         .video-button { padding: 8px 15px; font-size: 0.85rem; }
+         .header h1 { font-size: 1.1rem; }
+         .recording-text { font-size: 0.8rem; }
+      }
+
+        /* Very Small Mobile Devices */
+       @media (max-width: 480px) {
+           .header { padding: 10px 15px; }
+           .header h1 { font-size: 1rem; }
+           .messages { padding: 10px; }
+           .video-controls { gap: 8px; flex-wrap: nowrap; } /* Prevent wrapping if possible */
+           .video-button { padding: 6px 12px; font-size: 0.8rem; }
+           .button-icon { width: 14px; height: 14px; }
+           .status-message { font-size: 0.8rem; padding: 5px 10px; bottom: 5px;}
+       }
+
+    </style>
+  </head>
+  <body>
+
+
+
+    
+    <!-- Added App Wrapper -->
+    <div class="app-wrapper">
+        <div class="container">
+        <div class="header">
+            <h1>Video Analysis</h1>
+            <div class="recording-indicator" id="recordingIndicator">
+            <div class="recording-dot"></div>
+            <span class="recording-text">Recording</span>
+            </div>
+        </div>
+        <div class="main-container">
+            <div class="chat-area">
+            <div class="messages" id="messages">
+                <!-- Initial bot message added by JS -->
+            </div>
+            </div>
+            <div class="video-area">
+            <div class="video-container">
+                <video id="videoElement" autoplay playsinline muted></video>
+                <div class="status-message" id="statusMessage"></div>
+            </div>
+            <div class="video-controls">
+                    <button class="video-button" id="startButton">
+                        <svg class="button-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"></path></svg>
+                        Record
+                    </button>
+                    <button class="video-button stop" id="stopButton" disabled>
+                        <svg class="button-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"></path></svg>
+                        Stop & Analyze
+                    </button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+      // DOM Elements
+      const messagesContainer = document.getElementById("messages");
+      const videoElement = document.getElementById("videoElement");
+      const startButton = document.getElementById("startButton");
+      const stopButton = document.getElementById("stopButton");
+      const recordingIndicator = document.getElementById("recordingIndicator");
+      const statusMessage = document.getElementById("statusMessage");
+
+      // Backend endpoint URL - UPDATE THIS
+      const BACKEND_URL = "http://127.0.0.1:8000/video";
+
+      // Variables for video recording
+      let stream = null;
+      let mediaRecorder = null;
+      let recordedChunks = [];
+
+      // --- Utility Functions ---
+
+      function addMessage(contentHtml, isUser) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+        messageDiv.classList.add(isUser ? "user-message" : "bot-message");
+        messageDiv.innerHTML = contentHtml;
+        messagesContainer.appendChild(messageDiv);
+        scrollToBottom();
+      }
+
+      function addVideoMessage(videoBlob) {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", "user-message", "video-message");
+
+        const videoEl = document.createElement("video");
+        videoEl.controls = true;
+        videoEl.src = URL.createObjectURL(videoBlob);
+
+        const label = document.createElement('p');
+        label.textContent = `Your video submission (${new Date().toLocaleTimeString()}):`;
+        // label styling is handled by CSS now
+
+        messageDiv.appendChild(label);
+        messageDiv.appendChild(videoEl);
+        messagesContainer.appendChild(messageDiv);
+        scrollToBottom();
+      }
+
+      function scrollToBottom() {
+        // Using requestAnimationFrame for smoother scroll after DOM update
+        requestAnimationFrame(() => {
+             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+      }
+
+      function showStatusMessage(text) {
+        statusMessage.textContent = text;
+        statusMessage.classList.add("visible");
+        if (statusMessage._timer) clearTimeout(statusMessage._timer);
+        statusMessage._timer = setTimeout(() => {
+          statusMessage.classList.remove("visible");
+        }, 3000);
+      }
+
+      // --- Core Functionality ---
+
+      async function startVideoRecording() {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          videoElement.srcObject = stream;
+          videoElement.muted = true;
+          videoElement.play().catch(e => console.warn("Autoplay prevented:", e));
+
+          // --- MimeType Selection ---
+          const supportedTypes = [
+             'video/webm; codecs=vp9,opus','video/webm; codecs=vp8,opus',
+             'video/webm; codecs=h264,opus','video/mp4; codecs=h264,aac',
+             'video/webm','video/mp4',
+          ];
+          let selectedMimeType = '';
+          for (const type of supportedTypes) {
+             if (MediaRecorder.isTypeSupported(type)) { selectedMimeType = type; break; }
+          }
+          if (!selectedMimeType) { throw new Error("No supported mimeType found"); }
+          const options = { mimeType: selectedMimeType };
+          // --- End MimeType ---
+
+          mediaRecorder = new MediaRecorder(stream, options);
+          recordedChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) recordedChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+             if (recordedChunks.length === 0) { console.warn("No video chunks recorded."); return; }
+            const videoBlob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
+            addVideoMessage(videoBlob);
+            sendVideoToBackend(videoBlob);
+            recordedChunks = [];
+          };
+
+          mediaRecorder.start(1000);
+          startButton.disabled = true;
+          stopButton.disabled = false;
+          recordingIndicator.classList.add("active");
+          showStatusMessage("Recording Started");
+          addMessage(`<p><i>Recording started...</i></p>`, false);
+
+        } catch (err) {
+          console.error("Error accessing media devices:", err);
+          let userMessage = "Error accessing camera/microphone. Please check permissions.";
+           if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') { userMessage = "Permission denied. Please allow access to camera/microphone."; }
+           else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') { userMessage = "No camera or microphone found."; }
+           else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') { userMessage = "Could not start camera/microphone. Is it already in use?"; }
+           else if (err.name === 'OverconstrainedError' || err.name === 'ConstraintNotSatisfiedError') { userMessage = "Device doesn't support requested settings."; }
+          addMessage(`<p style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> ${userMessage}</p>`, false);
+          showStatusMessage("Error starting recording");
+          startButton.disabled = false;
+          stopButton.disabled = true;
+          recordingIndicator.classList.remove("active"); // Ensure indicator is off on error
+        }
+      }
+
+      function stopVideoRecording() {
+        let stoppedGracefully = false;
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+          stoppedGracefully = true;
+        }
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          stream = null;
+        }
+        videoElement.srcObject = null;
+        startButton.disabled = false;
+        stopButton.disabled = true;
+        recordingIndicator.classList.remove("active");
+        if (stoppedGracefully) {
+             showStatusMessage("Recording Stopped");
+             addMessage(`<p><i>Recording stopped. Sending for analysis...</i></p>`, false);
+        } else {
+             console.warn("Stop called but recorder wasn't active.");
+        }
+      }
+
+      async function sendVideoToBackend(videoBlob) {
+        showStatusMessage("Sending for Analysis...");
+
+        const formData = new FormData();
+        const mimeType = videoBlob.type || 'video/webm';
+        const fileExtension = mimeType.split('/')[1]?.split(';')[0] || 'webm';
+        const filename = `recording_${Date.now()}.${fileExtension}`;
+        formData.append("title", "Video Analysis Request");
+        formData.append("video", videoBlob, filename);
+
+        const placeholderMessage = document.createElement("div");
+        placeholderMessage.classList.add("message", "bot-message");
+        placeholderMessage.innerHTML = `<p><i><i class="fas fa-spinner fa-spin"></i> Analyzing video... please wait.</i></p>`;
+        messagesContainer.appendChild(placeholderMessage);
+        scrollToBottom();
+
+        try {
+          const response = await fetch(BACKEND_URL, { method: "POST", body: formData });
+          const responseHtml = await response.text();
+
+          if (!response.ok) {
+             console.error("Backend Error:", response.status, responseHtml);
+             placeholderMessage.innerHTML = `<p style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Analysis Error (Status ${response.status}).</p><p style="font-size: 0.8em; color: #ffcfcf;">${responseHtml.substring(0, 150)}...</p>`;
+             showStatusMessage("Analysis Failed");
+          } else {
+             if (!responseHtml || !responseHtml.trim()) {
+                 placeholderMessage.innerHTML = "<p>Analysis complete, but no specific details were returned by the server.</p>";
+                 console.warn("Received empty but successful response.");
+             } else {
+                 placeholderMessage.innerHTML = responseHtml;
+             }
+             showStatusMessage("Analysis Complete");
+          }
+          scrollToBottom();
+        } catch (error) {
+          console.error("Network/Fetch Error:", error);
+          placeholderMessage.innerHTML = `<p style="color: var(--danger-color);"><i class="fas fa-wifi"></i> Network Error: Could not reach analysis server.</p>`;
+          showStatusMessage("Network Error");
+          scrollToBottom();
+        }
+      }
+
+      // --- Initial Setup ---
+      function initializeApp() {
+           startButton.disabled = false;
+           stopButton.disabled = true;
+           addMessage(
+               `<p><i class="fas fa-info-circle"></i> Welcome! Click 'Record Video' to start. Show or describe your symptoms clearly. Click 'Stop & Analyze' when done.</p>`,
+               false // Add as a bot message
+           );
+       }
+
+      // --- Event Listeners ---
+      startButton.addEventListener("click", startVideoRecording);
+      stopButton.addEventListener("click", stopVideoRecording);
+
+      // --- Run Initialization ---
+      initializeApp();
+
+    </script>
+  </body>
+</html>

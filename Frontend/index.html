@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+    <title>DiagnoAI</title>  
+    <script src="Footer.js"></script>
+   <link rel="stylesheet" href="Main.css">
+    <link rel="stylesheet" href="Feature.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/SplitText.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.cdnfonts.com/css/druk" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/brigends-expanded');
+        @import url(https://db.onlinewebfonts.com/c/57b4f5e63d8291afbed1091f97645d52?family=Phonk+Regular+DEMO);
+        
+        /* General Styles */
+        body {
+            background-color:#f8f9fa;
+            color:  #3094bf;
+            margin: 0;
+            font-family: 'Druk', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+         
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            position: relative;
+            margin-top: 56px; /* Height of navbar */
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-text {
+            font-weight: bold;
+            font-size: 6.5rem;
+            color:  #3094bf;;
+            line-height: 1;
+            font-family: 'Phonk Regular DEMO';
+            position: absolute;
+            z-index: 2;
+            transition: all 0.3s ease-in-out;
+            pointer-events: none;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: fadeInUp 1s ease-out forwards;
+            overflow: hidden;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #heroText {
+            width: 60%;
+            margin-left: 20%;
+            padding-top: 3%;
+        }
+
+        .hero-img {
+            width: 20%;
+            height: 30%;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            
+        }
+
+        .hero-img.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .hero-img img {
+  border-radius: 20px; /* Adjust this value for desired roundness */
+}
+        /* Image Positioning */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(1fr);
+            grid-template-rows: repeat(1fr);
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+       
+            position: relative;
+        }
+
+        .img1, .img2, .img3, .img4 {
+            position: absolute;
+            
+        }
+
+        .img1 {
+            top: 10%;
+            left: 10%;
+        
+        }
+
+        .img2 {
+            top: 10%;
+            right: 10%;
+        }
+
+        .img3 {
+            bottom: 10%;
+            left: 10%;
+        }
+
+        .img4 {
+            bottom: 10%;
+            right: 10%;
+        }
+
+        #hero-img1, #hero-img2, #hero-img3, #hero-img4 {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 2px #4f4f4f;
+            font-weight: 200;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1;
+            text-align: left;
+            font-family: 'Phonk Regular DEMO';
+        }
+
+        h4 {
+            line-height: 1;
+            width: 200%;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .title {
+          font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .olive {
+            width: 200%;
+        }
+       
+
+        .hidden-text {
+            opacity: 0;
+        }
+
+        .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .image {
+            display: block;
+            transition: 0.3s;
+        }
+
+        .outline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .diagonal {
+            position: absolute;
+            width: 141%;
+            height: 2px;
+            background: transparent;
+            top: 50%;
+            left: -20%;
+            transform-origin: center;
+            transition: 0.3s;
+            color: #4f4f4f;
+            border: 1px solid transparent;
+        }
+
+        .diagonal:first-child {
+            transform: rotate(45deg);
+        }
+
+        .diagonal:last-child {
+            transform: rotate(-45deg);
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #343a40;
+            padding: 60px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-brand {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 2rem;
+            font-family: 'Phonk Regular DEMO';
+            margin-bottom: 15px;
+        }
+
+        .footer-tagline {
+            color: #aaa;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .footer-nav .nav-item {
+            list-style: none;
+        }
+
+        .footer-nav .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .footer-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color:  #212121;
+            transition: width 0.3s ease;
+        }
+
+        .footer-nav .nav-link:hover {
+            color: #4f4f4f;
+        }
+
+        .footer-nav .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: #4f4f4f;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        /* Tablet Devices (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .hero-text {
+                font-size: 4.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h4 {
+                font-size: 0.9rem;
+            }
+            
+            .footer-nav {
+                gap: 30px;
+            }
+            .navbar-nav {
+                background-color: whitesmoke;
+                align-items: center;
+                color: #3498db;
+            }
+        }
+
+        /* Mobile Devices (up to 767px) */
+        @media (max-width: 767px) {
+            .hero-text {
+                font-size: 2.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h4 {
+                font-size: 0.8rem;
+                width: 100%;
+            }
+
+            .hero-img {
+                width: 40%;
+            }
+            
+            .navbar-nav {
+                background-color: whitesmoke;
+                align-items: center;
+
+            }
+            
+            #heroText {
+                width: 90%;
+                margin-left: 5%;
+                padding-top: 10%;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+     
+                
+            }
+
+            .img1, .img2, .img3, .img4 {
+                position: static;
+                margin: 10px auto;
+             
+            }
+            
+            .footer-nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .footer-title {
+                font-size: 1.5rem;
+            }
+            .social-icons{
+                display: flex
+;
+            }
+        }
+
+
+
+
+
+        .content {
+    flex: 1;
+    padding: 20px;
+}
+
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 40px 0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+
+
+
+
+
+.footer-logo {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-logo h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+
+
+.footer-logo p {
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.footer-links {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-links h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+
+    position: relative;
+}
+
+
+
+
+
+
+
+
+
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 12px;
+}
+
+.footer-links ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+    color: #3498db;
+    padding-left: 5px;
+}
+
+.footer-social {
+    flex: 1;
+    min-width: 250px;
+}
+
+.footer-social h3 {
+    font-size: 18px;
+ 
+
+    position: relative;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.social-icons {
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #222;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background-color: #3498db;
+    transform: translateY(-5px);
+}
+
+.footer-bottom {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #222;
+    text-align: center;
+}
+
+.footer-bottom p {
+    color: #ccc;
+}
+
+.footer-bottom p a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+    }
+   
+    .footer-logo, .footer-links, .footer-social {
+        width: 100%;
+    }
+}
+
+
+
+
+
+
+
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand title me-auto" href="index.html" style="color: #0b4f6c;"> DiagnoAI</a> 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav" >
+                    <li class="nav-item mx-4" ><a class="nav-link" style="color: #212529;" href="Vision.html">Our Services</a></li>
+                    <li class="nav-item mx-4"><a class="nav-link" style="color: #212529;" href="FrontSYM.html">FrontSymptoms</a></li>
+                    <li class="nav-item mx-4"><a class="nav-link" style="color:#212529;" href="BackSYM.html">BackSymptoms</a></li>
+                    <li class="nav-item mx-4"><a class="nav-link" style="color: #212529;" href="verify-trxn.html">Verify Txn</a></li>
+
+             
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="hero">
+            <div class="hero-text" id="heroText">
+                DiagnoAI
+               
+            </div>   
+           
+            <div class="container">
+                <div id="img1" class="hero-img img1">
+                    <div class="image-wrapper">
+                        <img id="hero-img1" src="img1.png" class="image" alt="Image 1">
+                        <div class="outline">
+                            <div class="diagonal"></div>
+                            <div class="diagonal"></div>
+                        </div>
+                    </div>
+                    <div id="text1" class="hidden-text">
+                        <h1>Customized Diet Plan<h1>
+                        <h4>Eat Right for Your Health</h4>
+                    </div>
+                </div>
+                <div id="img2" class="hero-img img2">
+                    <div class="image-wrapper">
+                        <img id="hero-img2" src="img2.png" class="image" alt="Image 2">
+                        <div class="outline">
+                            <div class="diagonal"></div>
+                            <div class="diagonal"></div>
+                        </div>
+                    </div>
+                    <div id="text2" class="hidden-text">
+                        <h1>Personalized Wellness</h1>
+                        <h4>Fitness & Nutrition Model</h4>
+                    </div>
+                </div>
+                <div id="img3" class="hero-img img3">
+                    <div class="image-wrapper">
+                        <img id="hero-img3" src="img3.jpg" class="image" alt="Image 3">
+                        <div class="outline">
+                            <div class="diagonal"></div>
+                            <div class="diagonal"></div>
+                        </div>
+                    </div>
+                    <div id="text3" class="hidden-text">
+                        <h1>Interactive Body Map</h1>
+                        <h4>Front & Back Symptom Checker</h4>
+                    </div>
+                </div>
+                <div id="img4" class="hero-img img4">
+                    <div class="image-wrapper">
+                        <img id="hero-img4" src="img4.png" class="image" alt="Image 4">
+                        <div class="outline">
+                            <div class="diagonal"></div>
+                            <div class="diagonal"></div>
+                        </div>
+                    </div>
+                    <div id="text4" class="hidden-text">
+                        <h1 class="olive">Natural Language Diagnostics</h1>
+                        <h4>Interactive Installation/ Real Time</h4>
+                    </div>
+                </div>
+            </div>
+            
+            
+        </div>
+       
+        </div>
+      
+        <section id="vision" class="vision">
+            <div class="container">
+              <div class="section-header dark">
+                <!-- Added .druk-font class -->
+                <h2 class="druk-font" style="color: #3094bf;">Our Services</h2>
+             
+              </div>
+              <div class="vision-grid">
+                <div class="vision-item">
+                  <div class="vision-icon">
+                    <a href="FrontSYM.html">
+                    <i class="fas fa-map-marked-alt"></i>
+                </a>
+                
+                </div>
+                  <h3>Interactive Body Map</h3>
+                  <p>
+                    Instantly address health concerns through an intuitive body map.
+                    Click specific parts for insights into potential diseases,
+                    symptoms, and solutions.
+                  </p>
+                </div>
+                <div class="vision-item">
+                  <div class="vision-icon">
+                    <a href="NewImageText.html">
+                    <i class="fas fa-utensils"></i>
+                </a>
+                </div>
+                  <h3>Personalized Wellnes</h3>
+                  <p>
+                    Receive personalized nutrition and fitness plans tailored to
+                    specific medical conditions, helping you manage your health
+                    proactively.
+                  </p>
+                </div>
+                <div class="vision-item">
+                  <div class="vision-icon">
+                    
+                    <a href="NewTextVoice.html">
+                    <i class="fas fa-x-ray"></i>
+                </a>
+                
+                </div>
+                  <h3>AI Image Analysis</h3>
+                  <p>
+                    Upload X-rays, MRIs, or other scans for AI-powered analysis.
+                    Receive instant insights highlighting potential areas of concern.
+                  
+                  </p>
+                </div>
+                <div class="vision-item">
+                  <div class="vision-icon">
+                    <a href="in.html">
+                    <i class="fas fa-video"></i>
+                </a>
+                </div>
+                  <h3>Video Analysis</h3>
+                  <p>
+                    Engage with our AI assistant through video messaging for a more
+                    dynamic and potentially visual symptom reporting experience.
+                  </p>
+                </div>
+              </div>
+              <br>   <br>   <br>   <br>   <br>   
+            </div> 
+
+       
+  
+
+  
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <h2><span>DiagnoAI</span></h2>
+                        <p>Providing preliminary health insights based on symptoms. Always consult a healthcare professional for diagnosis.</p>
+                    </div>
+    
+                    <div class="footer-links">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="Vision.html">Our Services</a></li>
+                            <li><a href="FrontSYM.html">Front Symptoms</a></li>
+                            <li><a href="BackSYM.html">Back Symptoms</a></li>
+                            <li ><a href="verify-trxn.html">Verify Txn</a></li>
+                        </ul>
+                    </div>
+    
+                    <div class="footer-social">
+                        <h3>Connect With Us</h3>
+                        <p style="margin-top: 17px;">Stay updated through our channels.</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="footer-bottom">
+                    <p>© 2024 <a href="#">DiagnoAI</a>. All Rights Reserved. <span style="display: block; font-size: 0.8em; margin-top: 5px;">Disclaimer: This tool is for informational purposes only and does not constitute medical advice.</span></p>
+                </div>
+            </div>
+        </footer>
+
+
+   
+       
+
+
+
+
+
+
+
+
+    
+
+
+
+    <script>
+        window.onload = () => {
+            const images = document.querySelectorAll(".hero-img");
+            setTimeout(() => {
+                images.forEach((img) => {
+                    img.classList.add("visible");
+                });
+            }, 100); 
+        };
+        
+        const images = document.querySelectorAll(".hero-img");
+        const heroText = document.getElementById("heroText");
+        
+        images.forEach((img) => {
+            img.addEventListener("mouseenter", () => {
+                heroText.classList.add("text-outline");
+                gsap.to(heroText, { zIndex: 0, duration: 0.3 });
+                gsap.to(img.querySelector(".hidden-text"), { opacity: 1});
+                
+                images.forEach((otherImg) => {
+                    if (otherImg !== img) {
+                        gsap.to(otherImg.querySelector(".image"), { opacity: 0, duration: 0.3 });
+                        gsap.to(otherImg.querySelector(".outline"), { borderColor: "#4f4f4f", duration: 0.3 });
+                        gsap.to(otherImg.querySelectorAll(".diagonal"), { background: "#4f4f4f", duration: 0.3 });
+                        heroText.classList.add("text-outline");
+                        gsap.to(heroText, { zIndex: 0, duration: 0.3 });
+                        gsap.to(otherImg.querySelector(".hidden-text"), { opacity: 0, duration: 0.1});
+                    }
+                });
+            });
+
+            img.addEventListener("mouseleave", () => {
+                images.forEach((otherImg) => {
+                    gsap.to(otherImg.querySelector(".image"), { opacity: 1, duration: 0.3 });
+                    gsap.to(otherImg.querySelector(".outline"), { borderColor: "rgba(255, 255, 255, 0)", duration: 0.3 });
+                    gsap.to(otherImg.querySelectorAll(".diagonal"), { background: "rgba(255, 255, 255, 0)", duration: 0.3 });
+                    heroText.classList.remove("text-outline");
+                    gsap.to(heroText, { zIndex: 2, duration: 0.3 });
+                    gsap.to(".hidden-text", { opacity: 0});
+                });
+            });
+
+            img.addEventListener("mousemove", (e) => {
+                const { left, top, width, height } = img.getBoundingClientRect();
+                const x = (e.clientX - (left + width / 2)) / width * 480;
+                const y = (e.clientY - (top + height / 2)) / height * 480;
+
+                gsap.to(img, {
+                    x: x,
+                    y: y,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+
+            img.addEventListener("mouseleave", () => {
+                gsap.to(img, { x: 0, y: 0, duration: 0.5, ease: "power2.out" });
+            });
+        });
+        // newwwwwwwwwwwwwwwwwwwwwwww
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (message) {
+                // Add user message
+                addMessage(message, 'user');
+                
+                // Simulate bot response
+                setTimeout(() => {
+                    addMessage('This is a simulated response.', 'bot');
+                }, 1000);
+                
+                // Clear input
+                userInput.value = '';
+            }
+        }
+
+        function addMessage(text, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.parentElement.scrollTop = chatMessages.parentElement.scrollHeight;
+        }
+
+        // Handle Enter key
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+
+
+        
+    </script>
+</body>
+</html>
+
+

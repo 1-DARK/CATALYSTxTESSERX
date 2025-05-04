@@ -1,0 +1,126 @@
+@import url('https://fonts.cdnfonts.com/css/brigends-expanded');
+@import url(https://db.onlinewebfonts.com/c/57b4f5e63d8291afbed1091f97645d52?family=Phonk+Regular+DEMO);
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+ 
+    line-height: 1.6;
+}
+
+/* Navbar styles */
+.navbar {
+ 
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-family: 'Druk', sans-serif;
+
+}
+
+
+.navbar-container {
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    padding: 0rem 0rem;
+}
+
+.navbar-brand {
+ 
+  
+    color: white;
+   
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.navbar-links ul {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+      justify-content: flex-end !important;
+}
+li{
+    padding: 10px;
+}
+
+.navbar-links a {
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    font-size: 1.1rem;
+}
+
+.navbar-links a:hover {
+    color: #c0c4cb;
+}
+
+.navbar-toggler {
+    display: none;
+    background: none;
+    border: none;
+  
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Main content styles */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .navbar-container {
+        padding: 1rem;
+       
+    }
+
+    .navbar-toggler {
+        display: block;
+    }
+
+    .navbar-links {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: white;
+   
+        padding: 1rem 0;
+        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+        transition: clip-path 0.4s ease-out;
+    }
+
+    .navbar-links.active {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .navbar-links ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+}
