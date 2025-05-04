@@ -11,6 +11,10 @@ from .web3 import pdfencrypt, uploadToIPFS
 from .web3.blockchain_handler import store_report_hash_on_chain, initialize_web3, w3
 from .web3.transactionVerification import Verify
 import hashlib
+from zipfile import ZipFile
+import os
+import pyminizip
+from .zipfolder import zip
 
 @api_view(['POST'])
 def query(request):
@@ -20,14 +24,40 @@ def query(request):
     responseFromLLM = Q.generateResponse(question)
     prettifiedStr = prettify.Prettify()
     prettyString = prettifiedStr.prettify_llm_json_string(responseFromLLM)
-    count = 0
-    for i in prettyString:
-        if i == '<':
-            break
-        count += 1
-    prettyString = prettyString[count:]
-    print(prettyString)
+    # print(prettyString)
+    # resDict = {'response': f'{prettyString}'}
     return HttpResponse(prettyString, status=200)
+
+@api_view(['POST'])
+@parser_classes([parsers.MultiPartParser, parsers.FormParser])
+def ImgViewSet(request):
+    print(request.data)
+    img_loc =  request.data['image_url']
+    print(img_loc)
+    serializer = ImgSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        poss = image_handler.PossibleDisease()
+        diseases = poss.getDisease(img_loc)
+        return HttpResponse(diseases, status=201)
+    else:
+        return HttpResponse(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def VideoViewSet(request):
+    print(request.data)
+    video_loc = request.data['video']
+    serializer = VideoSerializer(data=request.data)
+    request.session.save()
+    user_unique_id = request.session.session_key
+    if serializer.is_valid():
+        serializer.save()
+        res = video_handler.VideoHandler()
+        possibleDisease = res.Response(video_loc)
+        prettifiedStr = prettify.Prettify()
+        prettyString = prettifiedStr.prettify_llm_json_string(possibleDisease)
+        return HttpResponse(prettyString, status=201)
 
 
 @api_view(['POST'])
@@ -44,10 +74,11 @@ def PdfViewSet(request):
         e = pdfencrypt.EncryptPdf()
         encryption_key_string = hashlib.sha256(user_unique_id.encode()).hexdigest()[:32]
         
+        z = zip.zip_folder_with_password('folder path', f'zip_file_path.zip', 'pass', 5)
         loc = e.encrypt(pdf_name)
         jwt = ''
         p = uploadToIPFS.PinataUpload()
-        pinata_result = p.uploadPinata(loc, jwt)
+        pinata_result = p.uploadPinata(z, jwt)
         print(pinata_result)
         if pinata_result and 'IpfsHash' in pinata_result:
             ipfs_cid = pinata_result['IpfsHash']
@@ -86,13 +117,13 @@ def PdfViewSet(request):
                 "success": ipfs_cid is not None,
                 "cid": ipfs_cid,
                 "error": pinata_upload_error,
-                "ipfs_gateway_url": f"https://ipfs.io/ipfs/{ipfs_cid}" if ipfs_cid else None
+                "ipfs_gateway_url": f"https://ipfs.io/ipfs/{ipfs_cid}" if ipfs_cid else None # Helpful URL
             },
             "blockchain_storage": {
                 "success": tx_hash is not None,
                 "tx_hash": tx_hash,
                 "error": blockchain_storage_error,
-                "block_explorer_url": f"https://holesky.etherscan.io/tx/{tx_hash}" if tx_hash else None 
+                "block_explorer_url": f"https://holesky.etherscan.io/tx/{tx_hash}" if tx_hash else None # Helpful URL
             }
         }
 

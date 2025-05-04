@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <title>DiagnoAI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
-  
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -482,7 +482,6 @@
         <div class="chat-input-wrapper">
           <div class="attachment-buttons">
             <label for="image-upload">
-            
               <input type="file" id="image-upload" accept="image/*" hidden />
             </label>
             <button id="voice-record" class="attachment-button" type="button">
@@ -537,10 +536,7 @@
         const backendUrl = "http://127.0.0.1:8000/"; // This is where your backend should be listening
 
         // Add initial bot message dynamically
-        addMessage(
-          "Hello! I'm your AI assistant. Provide these following detalis about you: Age, Weight, Diseases, anything you're allergic to.",
-          "bot"
-        );
+        addMessage("Hello! I'm your AI assistant. State your symptoms.", "bot");
 
         // Speech Recognition Setup
         const SpeechRecognition =
