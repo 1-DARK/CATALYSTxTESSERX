@@ -76,7 +76,7 @@ def PdfViewSet(request):
         
         z = zip.zip_folder_with_password('/home/linuxer77/Programs/Hackathon-Project/Backend/media/', f'/home/linuxer77/Programs/Hackathon-Project/Backend/{encryption_key_string}.zip', 'pass', 5)
         loc = e.encrypt(pdf_name)
-        jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJkOTc3YTllYy04MGIxLTQwY2MtOWY0Ny0zNDllNTA0NDFhMTMiLCJlbWFpbCI6ImpkZG9raWppaWZmdUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNTY1NmI3NjIxZTNlMWU3ZTRhNGQiLCJzY29wZWRLZXlTZWNyZXQiOiJkNDVlNzVkYzA3OWFmYmEwM2RlYWIyMmUyMjBiNjBiYmRmYjg4YWI0ZTVlODgxYzg4OTdmOTAzNzZhOWE5Yzc3IiwiZXhwIjoxNzc3Mjg2NjYwfQ.upx0PI1yV4sfKSzq1pjt75OzDJcogQKzlcWrPwcVFlc'
+        jwt = ''
         p = uploadToIPFS.PinataUpload()
         pinata_result = p.uploadPinata(z, jwt)
         print(pinata_result)
