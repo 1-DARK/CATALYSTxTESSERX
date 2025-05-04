@@ -35,7 +35,7 @@
       --bg-medium-gray: #e9ecef; /* Slightly Darker Gray */
       --dark-color: #343a40; /* Dark Gray (for text on light bg) */
       --text-color: #212529; /* Near Black for body text */
-   
+
       --success-color: #2a9d8f; /* Calming Green */
       --warning-color: #f7b801; /* Yellow/Gold */
       --danger-color: #d7263d; /* Clear Red */
@@ -62,12 +62,10 @@
       background-color: var(--bg-light-gray); /* Light gray background */
       overflow-x: hidden;
       margin: 0;
-           
-            padding-bottom: 20px;
-            padding-left: 20px;
-            padding-right: 20px;
-            
-           
+
+      padding-bottom: 20px;
+      padding-left: 20px;
+      padding-right: 20px;
     }
 
     .container {
@@ -226,7 +224,7 @@
 
     /* Navbar styles assumed to be in Navbar.css, ensure they match light theme */
     /* Example overrides if needed */
-   
+
     .navbar-brand.Z {
       /* Applied druk-font class in HTML */
       color: var(--primary-color);
@@ -1498,29 +1496,32 @@
     <!-- Navbar -->
     <div>
       <nav class="navbar">
-          <div class="navbar-container">
-              <a href="index.html" class="navbar-brand Z">DiagnoAI</a>
-              <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarLinks">
-                  <span class="sr-only">Menu</span>
-                  <i class="fas fa-bars"></i>
-              </button>
-              <div class="navbar-links" id="navbarLinks">
-                  <ul>
-                      <li><a href="Vision.html">Our Services</a></li>
-                      <li><a href="FrontSYM.html">Front Symptoms</a></li>
-                      <li><a href="BackSYM.html">Back Symptoms</a></li>
-                      <li><a href="verify-trxn.html">Verify Txn</a></li>
-                  </ul>
-              </div>
+        <div class="navbar-container">
+          <a href="index.html" class="navbar-brand Z">DiagnoAI</a>
+          <button
+            class="navbar-toggler"
+            aria-expanded="false"
+            aria-controls="navbarLinks"
+          >
+            <span class="sr-only">Menu</span>
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="navbar-links" id="navbarLinks">
+            <ul>
+              <li><a href="Vision.html">Our Services</a></li>
+              <li><a href="FrontSYM.html">Front Symptoms</a></li>
+              <li><a href="BackSYM.html">Back Symptoms</a></li>
+              <li><a href="verify-trxn.html">Verify Txn</a></li>
+              <li><a href="interactions.html">Download your data</a></li>
+            </ul>
           </div>
+        </div>
       </nav>
-  </div>
+    </div>
 
     <!-- Hero Section -->
-  
 
     <!-- Stats Section -->
-
 
     <!-- Features Section -->
     <section id="features" class="features">
@@ -1592,7 +1593,6 @@
         <!-- Feature: Personalized Wellness -->
         <div class="feature-card reverse" id="fitness-model">
           <div class="feature-image">
-         
             <!-- Example relevant image -->
             <div class="nutrition-cards">
               <div class="nutrition-card">
@@ -1673,7 +1673,6 @@
           </div>
           <div class="feature-image">
             <div class="xray-analysis">
-             
               <div class="analysis-results">
                 <div class="result-item">
                   <div class="result-icon">
@@ -1695,8 +1694,6 @@
             </div>
           </div>
         </div>
-
-     
 
         <!-- Feature: Video Chatbot -->
         <div class="feature-card" id="video-chatbot">
@@ -1734,7 +1731,8 @@
               </div>
               <div class="nutrition-card">
                 <div class="nutrition-icon">
-                  <i class="fas fa-allergies"></i></div>
+                  <i class="fas fa-allergies"></i>
+                </div>
                 <h5>Skin Issues</h5>
               </div>
               <div class="nutrition-card">
@@ -1793,28 +1791,27 @@
           </div>
         </div>
       </div>
-      
     </section>
     <section class="stats">
-        <div class="container">
-          <div class="stat-item">
-            <h2>95%</h2>
-            <p>Symptom Analysis Accuracy</p>
-          </div>
-          <div class="stat-item">
-            <h2>5M+</h2>
-            <p>Conditions Analyzed</p>
-          </div>
-          <div class="stat-item">
-            <h2>24/7</h2>
-            <p>Accessible Health Support</p>
-          </div>
-          <div class="stat-item">
-            <h2>50%</h2>
-            <p>Faster Diagnostic Aid</p>
-          </div>
+      <div class="container">
+        <div class="stat-item">
+          <h2>95%</h2>
+          <p>Symptom Analysis Accuracy</p>
         </div>
-      </section>
+        <div class="stat-item">
+          <h2>5M+</h2>
+          <p>Conditions Analyzed</p>
+        </div>
+        <div class="stat-item">
+          <h2>24/7</h2>
+          <p>Accessible Health Support</p>
+        </div>
+        <div class="stat-item">
+          <h2>50%</h2>
+          <p>Faster Diagnostic Aid</p>
+        </div>
+      </div>
+    </section>
 
     <!-- Impact Section -->
     <section id="impact" class="impact">
@@ -1899,46 +1896,59 @@
       </div>
     </section>
 
-   
- 
-
-
     <!-- Footer -->
-  
+
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2><span>DiagnoAI</span></h2>
-                    <p>Providing preliminary health insights based on symptoms. Always consult a healthcare professional for diagnosis.</p>
-                </div>
+      <div class="footer-container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2><span>DiagnoAI</span></h2>
+            <p>
+              Providing preliminary health insights based on symptoms. Always
+              consult a healthcare professional for diagnosis.
+            </p>
+          </div>
 
-                <div class="footer-links">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="Vision.html">Our Services</a></li>
-                        <li><a href="FrontSYM.html">Front Symptoms</a></li>
-                        <li><a href="BackSYM.html">Back Symptoms</a></li>
-                        <li ><a href="verify-trxn.html">Verify Txn</a></li>
-                    </ul>
-                </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="Vision.html">Our Services</a></li>
+              <li><a href="FrontSYM.html">Front Symptoms</a></li>
+              <li><a href="BackSYM.html">Back Symptoms</a></li>
+              <li><a href="verify-trxn.html">Verify Txn</a></li>
+            </ul>
+          </div>
 
-                <div class="footer-social">
-                    <h3>Connect With Us</h3>
-                    <p style="margin-top: 17px;">Stay updated through our channels.</p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
+          <div class="footer-social">
+            <h3>Connect With Us</h3>
+            <p style="margin-top: 17px">Stay updated through our channels.</p>
+            <div class="social-icons">
+              <a href="#" class="social-icon" title="Twitter"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="social-icon" title="Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-icon" title="LinkedIn"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="#" class="social-icon" title="YouTube"
+                ><i class="fab fa-youtube"></i
+              ></a>
             </div>
-
-            <div class="footer-bottom">
-                <p>© 2024 <a href="#">DiagnoAI</a>. All Rights Reserved. <span style="display: block; font-size: 0.8em; margin-top: 5px;">Disclaimer: This tool is for informational purposes only and does not constitute medical advice.</span></p>
-            </div>
+          </div>
         </div>
+
+        <div class="footer-bottom">
+          <p>
+            © 2024 <a href="#">DiagnoAI</a>. All Rights Reserved.
+            <span style="display: block; font-size: 0.8em; margin-top: 5px"
+              >Disclaimer: This tool is for informational purposes only and does
+              not constitute medical advice.</span
+            >
+          </p>
+        </div>
+      </div>
     </footer>
     <script>
       document.addEventListener("DOMContentLoaded", function () {

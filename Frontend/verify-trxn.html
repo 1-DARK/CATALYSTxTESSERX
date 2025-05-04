@@ -4,162 +4,385 @@
     <meta charset="UTF-8" />
     <title>DiagnoAI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon" />
 
-
-    <!-- Inline CSS - ONLY THIS SECTION IS MODIFIED -->
+    <!-- Inline CSS with Animation Enhancements -->
     <style>
+      /* Define the new primary color */
+      :root {
+        --primary-color: #3094bf; /* Blue */
+        --primary-dark: #2a82a7; /* Darker blue */
+        --primary-darker: #246f8f; /* Even darker blue */
+        --primary-light: #58aed4; /* Lighter blue */
+        --primary-lighter: #80c1e5; /* Even lighter blue */
+        --primary-transparent: rgba(48, 148, 191, 0.1); /* Transparent blue */
+        --primary-transparent-light: rgba(
+          48,
+          148,
+          191,
+          0.08
+        ); /* Lighter transparent blue */
+        --primary-transparent-dark: rgba(
+          48,
+          148,
+          191,
+          0.2
+        ); /* Darker transparent blue */
+        --primary-transparent-pulse: rgba(
+          48,
+          148,
+          191,
+          0.5
+        ); /* Pulse transparent blue */
+        --secondary-color: #ffffff; /* White */
+        --text-color: #333; /* Dark text */
+        --border-color-light: #ddd; /* Light grey border */
+      }
+
       /* Basic Reset and Body Styling */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: all 0.3s ease-out; /* Keep subtle transitions */
+      }
+
+      /* Subtle background pattern animation */
+      @keyframes patternAnimation {
+        0% {
+          background-position: 0 0;
+        }
+        100% {
+          background-position: 50px 50px;
+        }
+      }
+
       body {
         font-family: "Roboto", sans-serif;
         margin: 0;
         padding: 20px;
         /* background-color: #e1f5fe; /* Lightest blue */
         /* Use a subtle gradient background for a more modern feel */
-        background:  white; /* linear-gradient(135deg, #aac3cc 0%, var(--darkreader-background-2980b9, #216694) 100%) */
+        background: #212121; /* linear-gradient(135deg, #aac3cc 0%, var(--darkreader-background-2980b9, #216694) 100%) */
         color: #333;
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        box-sizing: border-box; /* Include padding in element's total width and height */
+        box-sizing: border-box;
+        overflow-x: hidden;
       }
 
-      /* Container for the main content */
+      /* Container for the main content with fade-in animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       .container {
-        background-color: whitesmoke; /* White background for clarity */
+        background-color: #121212; /* White background for clarity */
         padding: 30px;
-        border-radius: 12px; /* Slightly larger border-radius */
-        /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
-        /* Enhance shadow for better depth */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
-          0 6px 6px rgba(0, 0, 0, 0.23);
+        border-radius: 12px;
+        /* Adjust shadow for light background */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1),
+          0 5px 10px rgba(0, 0, 0, 0.08);
         text-align: center;
-        max-width: 700px; /* Increased max-width for potentially long hashes/addresses */
+        max-width: 700px;
         width: 100%;
         box-sizing: border-box;
+        animation: fadeIn 0.8s ease-out forwards;
+        border: 1px solid var(--border-color-light); /* Light grey border */
+        position: relative;
+        overflow: hidden;
+        z-index: 1; /* Ensure content is above pseudo-element */
       }
 
-      /* Heading */
+      .container::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(48, 148, 191, 0.3) 0%,
+          /* Transparent blue */ rgba(48, 148, 191, 0.2) 40%,
+          /* Transparent blue */ rgba(48, 148, 191, 0.1) 70%,
+          /* Transparent blue */ transparent 100%
+        );
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        animation: radialPulse 6s ease-out infinite;
+        transform: scale(0.8);
+      }
+
+      .container:hover::before {
+        opacity: 0.6;
+        transform: scale(1);
+      }
+
+      @keyframes radialPulse {
+        0% {
+          transform: scale(0.8);
+          opacity: 0.3;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.6;
+        }
+        100% {
+          transform: scale(0.8);
+          opacity: 0.3;
+        }
+      }
+
+      /* Heading with text animation */
+      @keyframes textGlow {
+        0% {
+          text-shadow: 0 0 5px rgba(48, 148, 191, 0.3); /* Blue glow */
+        }
+        50% {
+          text-shadow: 0 0 15px rgba(48, 148, 191, 0.6); /* Blue glow */
+        }
+        100% {
+          text-shadow: 0 0 5px rgba(48, 148, 191, 0.3); /* Blue glow */
+        }
+      }
+
       h1 {
-        /* color: #0277bd; /* Darker blue */
-        color: #3498db; /* A slightly deeper, richer blue */
+        color: var(--primary-darker); /* Darker blue */
         margin-bottom: 30px;
-        font-size: 2.2em; /* Slightly larger heading */
+        font-size: 2.2em;
         font-weight: 700;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* Subtle text shadow */
+        animation: textGlow 3s infinite alternate; /* Use alternate */
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
       }
 
       /* Input and Button Area */
       .input-area {
         display: flex;
-        gap: 15px; /* Increased space */
+        gap: 15px;
         margin-bottom: 30px;
-        flex-wrap: wrap; /* Allow wrapping on smaller screens */
-        justify-content: center; /* Center items when wrapped */
+        flex-wrap: wrap;
+        justify-content: center;
         align-items: center;
+        animation: fadeIn 1s ease-out 0.3s both;
       }
 
-      /* Input Field Styling */
+      /* Input Field Styling with focus animation */
+      @keyframes errorShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
       #transactionHashInput {
-        flex-grow: 1; /* Allow input to take most space */
+        flex-grow: 1;
         padding: 14px 20px;
-        /* border: 1px solid #b0bec5; /* Light grey-blue border */
-        border: 1px solid #cfd8dc; /* Softer border color */
+        border: 1px solid var(--border-color-light); /* Light grey border */
+        background-color: var(--secondary-color); /* White background */
+        color: var(--text-color); /* Dark text */
         border-radius: 5px;
         font-size: 1.1rem;
         outline: none;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        min-width: 250px; /* Ensure input is not too small */
+        transition: all 0.3s ease;
+        min-width: 250px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      #transactionHashInput::placeholder {
+        color: #888; /* Placeholder color */
       }
 
       #transactionHashInput:focus {
-        /* border-color: #0288d1; /* Medium blue highlight */
-        /* box-shadow: 0 0 5px rgba(2, 136, 209, 0.3); */
-        border-color: #1e88e5; /* Brighter blue focus */
-        box-shadow: 0 0 8px rgba(30, 136, 229, 0.4); /* More prominent shadow */
+        border-color: var(--primary-color); /* Blue border */
+        box-shadow: 0 0 10px rgba(48, 148, 191, 0.3),
+          /* Blue glow shadow */ inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
       }
 
-      /* Button Styling */
+      #transactionHashInput.error-shake {
+        border-color: #e74c3c; /* Red border */
+        box-shadow: 0 0 8px rgba(231, 76, 60, 0.4); /* Red glow */
+        animation: errorShake 0.5s;
+      }
+
+      /* Button Styling with animations */
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 var(--primary-transparent-pulse); /* Blue pulse */
+        }
+        70% {
+          box-shadow: 0 0 0 15px rgba(48, 148, 191, 0); /* Larger pulse, fading */
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(48, 148, 191, 0);
+        }
+      }
+
+      @keyframes pressEffect {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        100% {
+          transform: scale(0.98);
+          box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+        }
+      }
+
       #verifyButton {
-        /* background-color: #0288d1; /* Medium blue */
         background: linear-gradient(
           45deg,
-          #2196f3 0%,
-          #1976d2 100%
-        ); /* Blue gradient button */
+          var(--primary-color) 0%,
+          var(--primary-dark) 100%
+        ); /* Blue gradient */
         color: white;
         padding: 14px 25px;
         border: none;
         border-radius: 5px;
         font-size: 1.1rem;
         cursor: pointer;
-        transition: background-color 0.3s ease, opacity 0.3s ease,
-          transform 0.1s ease; /* Add transform for press effect */
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 10px; /* Space between icon and text */
+        gap: 10px;
         font-weight: 700;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle button shadow */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+        animation: pulse 2s infinite; /* Keep pulse */
+      }
+
+      /* Shimmer effect */
+      #verifyButton::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        ); /* White shimmer */
+        transition: 0.6s; /* Slower shimmer */
+      }
+
+      #verifyButton:hover::before {
+        left: 100%;
       }
 
       #verifyButton:hover:not(:disabled) {
-        /* background-color: #01579b; /* Darker blue on hover */
         background: linear-gradient(
           45deg,
-          #1976d2 0%,
-          #a9ccff 100%
-        ); /* Darker gradient on hover */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+          var(--primary-dark) 0%,
+          var(--primary-light) 100%
+        ); /* Lighter blue hover */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-3px);
       }
 
       #verifyButton:active:not(:disabled) {
-        /* background-color: #003f72; /* Even darker on active */
         background: linear-gradient(
           45deg,
-          #0d47a1 0%,
-          #1976d2 100%
-        ); /* Shift gradient on active */
-        transform: translateY(1px); /* Press down effect */
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+          var(--primary-darker) 0%,
+          var(--primary-dark) 100%
+        ); /* Darker blue active */
+        animation: pressEffect 0.2s ease forwards; /* Add press effect */
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
       }
 
       #verifyButton:disabled {
-        background-color: #b0bec5; /* Greyed out when disabled */
+        background: linear-gradient(
+          45deg,
+          #bdbdbd 0%,
+          #9e9e9e 100%
+        ); /* Grey disabled */
         cursor: not-allowed;
         opacity: 0.7;
         box-shadow: none;
+        animation: none; /* Remove pulse when disabled */
       }
 
-      /* Results Display Area */
+      /* Style for the button text span */
+      #verifyButton .button-text {
+        display: inline-block; /* Ensure correct layout with icon */
+      }
+
+      /* Results Display Area with slide-in animation */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       .results-area {
         text-align: left;
         margin-top: 25px;
         padding: 25px;
-        /* border: 1px solid #e0e0e0; /* Light grey border */
-        border: 1px solid #bdbdbd; /* Slightly darker border */
+        border: 1px solid var(--border-color-light); /* Light grey border */
         border-radius: 8px;
-        /* background-color: #f5f5f5; /* Light grey background */
-        background-color: #eceff1; /* Slightly cooler grey background */
-        min-height: 50px; /* Ensure it has visible space */
+        background-color: var(--secondary-color); /* White background */
+        min-height: 50px;
         box-sizing: border-box;
-        word-wrap: break-word; /* Prevent long strings from overflowing */
+        word-wrap: break-word;
         overflow-wrap: break-word;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05); /* Softer inset shadow */
+        animation: slideIn 0.6s ease-out 0.5s both;
+        transition: all 0.4s ease;
+        position: relative;
+      }
+
+      .results-area:hover {
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1); /* Softer hover shadow */
+        border-color: var(--primary-color); /* Blue border on hover */
       }
 
       .results-area p {
         margin: 0 0 15px 0;
         line-height: 1.6;
         font-size: 1rem;
-       /* Slightly darker text for body content */
+        color: var(--text-color); /* Dark text */
+        transition: all 0.3s ease;
       }
 
       .results-area p:last-child {
-        margin-bottom: 0; /* Remove bottom margin from the last paragraph */
+        margin-bottom: 0;
       }
 
-      /* Styling for the definition list within results */
+      /* Styling for the definition list with staggered animation */
       .results-area dl {
         margin: 0;
         padding: 0;
@@ -167,146 +390,296 @@
 
       .results-area dt {
         font-weight: bold;
-        /* color: #0277bd; /* Darker blue for labels */
-        color: #1a237e; /* Even darker, deeper blue for labels */
-        float: left; /* Align labels to the left */
-        clear: left; /* Ensure label starts on a new line */
-        width: 180px; /* Fixed width for labels */
+        color: var(--primary-color); /* Blue */
+        float: left;
+        clear: left;
+        width: 180px;
         margin-right: 15px;
         padding: 5px 0;
         box-sizing: border-box;
         font-size: 1rem;
-        text-transform: uppercase; /* Make labels uppercase for emphasis */
+        text-transform: uppercase;
         letter-spacing: 0.5px;
+        opacity: 0;
+        animation: fadeIn 0.5s ease forwards; /* Staggered fade in */
+        animation-delay: calc(var(--index) * 0.1s);
+        position: relative; /* Needed for glow/hover effect */
       }
 
       .results-area dd {
-        margin-left: 200px; /* Space for the fixed-width label + margin */
+        margin-left: 200px;
         padding: 5px 0;
-        margin-bottom: 10px; /* Increased space between items */
+        margin-bottom: 10px;
         font-size: 1rem;
         line-height: 1.6;
-        color: #333; /* Standard text color for values */
+        color: var(--text-color); /* Dark text */
+        opacity: 0;
+        animation: fadeIn 0.5s ease forwards; /* Staggered fade in */
+        animation-delay: calc((var(--index) * 0.1s) + 0.05s);
+        position: relative; /* Needed for glow/hover effect */
       }
 
       .results-area dd:last-child {
-        margin-bottom: 0; /* Remove bottom margin from the last dd */
+        margin-bottom: 0;
       }
 
-      /* Specific styling for hashes and addresses */
+      /* Add subtle hover effects to dt and dd */
+      .results-area dt:hover,
+      .results-area dd:hover {
+        background-color: #e3f2fd; /* Very light blue background on hover */
+        border-radius: 4px;
+      }
+      .results-area dt:hover::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 80%;
+        width: 3px;
+        background-color: var(--primary-lighter); /* Lighter blue accent */
+        border-radius: 2px;
+        animation: highlightFadeIn 0.3s ease-out;
+      }
+      @keyframes highlightFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-50%) translateX(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(-50%) translateX(0);
+        }
+      }
+
+      /* Specific styling for hashes and addresses with hover effect */
+      @keyframes codeGlow {
+        0% {
+          box-shadow: 0 0 3px rgba(48, 148, 191, 0.3); /* Blue glow */
+        }
+        50% {
+          box-shadow: 0 0 8px rgba(48, 148, 191, 0.6); /* Blue glow */
+        }
+        100% {
+          box-shadow: 0 0 3px rgba(48, 148, 191, 0.3); /* Blue glow */
+        }
+      }
+
       .hex-bytes,
       .address {
-        font-family: "Courier New", Courier, monospace; /* Monospace font for hex/addresses */
-        /* background-color: #e3f2fd; /* Very light blue background */
-        background-color: #bbdefb; /* Slightly richer light blue */
+        font-family: "Courier New", Courier, monospace;
+        background-color: var(--primary-transparent); /* Transparent blue */
         padding: 3px 7px;
         border-radius: 4px;
-        word-break: break-all; /* Break long strings */
-        display: inline-block; /* Ensures padding/margin works */
-        color: #0d47a1; /* Darker text color for values */
+        word-break: break-all;
+        display: inline-block;
+        color: var(--primary-darker); /* Darker blue text */
         font-weight: bold;
+        transition: all 0.3s ease;
+        border-left: 3px solid var(--primary-color); /* Blue border */
       }
 
-      /* Success/Error Messages */
+      .hex-bytes:hover,
+      .address:hover {
+        background-color: var(
+          --primary-transparent-dark
+        ); /* More transparent blue */
+        transform: translateX(3px);
+        animation: codeGlow 1.5s infinite alternate; /* Add glow animation on hover */
+      }
+
+      /* Success/Error Messages with animations */
+      /* Keep standard green for success, red for error, but use blue/white theme backgrounds/borders */
+      @keyframes successPulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.3); /* Slightly softer green pulse */
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+        }
+      }
+
       .success-message {
-        /* color: #4caf50; /* Green */
-        color: #4e9b52; /* Darker green */
+        color: #2ecc71; /* Standard Green */
         font-weight: bold;
-        margin-bottom: 20px; /* More space */
-        font-size: 1.2rem; /* Slightly larger font */
-        text-align: center; /* Center the main status message */
-        display: flex; /* Use flexbox for icon alignment */
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        text-align: center;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px; /* Space between icon and text */
+        gap: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: var(
+          --primary-transparent-light
+        ); /* Light transparent blue background */
+        border: 1px solid var(--primary-lighter); /* Light blue border */
+        animation: successPulse 2s infinite, fadeIn 0.5s;
       }
 
       .error-message {
-        /* color: #f44336; /* Red */
-        color: #c62828; /* Darker red */
+        color: #e74c3c; /* Standard Red */
         font-weight: bold;
-        margin-bottom: 20px; /* More space */
-        font-size: 1.2rem; /* Slightly larger font */
-        text-align: center; /* Center the main error message */
-        display: flex; /* Use flexbox for icon alignment */
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        text-align: center;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px; /* Space between icon and text */
+        gap: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: rgba(
+          231,
+          76,
+          60,
+          0.1
+        ); /* Light transparent red background */
+        border: 1px solid #ef9a9a; /* Light red border */
+        animation: errorShake 0.5s, fadeIn 0.5s;
       }
 
       /* Style for the initial prompt text */
       .results-area p:first-child:not(.success-message):not(.error-message) {
         font-style: italic;
-        color: #757575; /* Grey out the initial message */
+        color: #666; /* Darker grey */
       }
 
-      /* Loading spinner style */
+      /* Loading spinner animation (color will be inherited) */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
       .fas.fa-spinner {
-        margin-right: 5px; /* Space between spinner and text */
+        margin-right: 5px;
+        animation: spin 1s linear infinite;
+        color: var(--primary-color); /* Explicitly set spinner color to blue */
+      }
+
+      /* Typing animation for initial message */
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .typing-animation {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        animation: typing 2s steps(40, end);
+        border-right: 2px solid var(--primary-color); /* Blue cursor */
+        padding-right: 5px;
+      }
+
+      /* Loading message color */
+      .loading-message {
+        color: var(
+          --primary-color
+        ) !important; /* Ensure blue for loading text */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      /* Ripple effect CSS - Keep white for contrast */
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 600ms linear;
+        background-color: rgba(255, 255, 255, 0.5); /* White ripple */
+        pointer-events: none; /* Don't block button */
+      }
+
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
       }
 
       /* Media Queries for responsiveness */
       @media (max-width: 600px) {
         body {
-          padding: 10px; /* Reduce body padding */
+          padding: 10px;
         }
+
         .container {
           padding: 20px;
-          border-radius: 8px; /* Smaller radius on small screens */
+          border-radius: 8px;
         }
 
         h1 {
-          font-size: 1.8em; /* Adjust heading size */
+          font-size: 1.8em;
           margin-bottom: 20px;
         }
 
         .input-area {
           flex-direction: column;
-          gap: 15px; /* Keep gap reasonable */
+          gap: 15px;
         }
 
         #transactionHashInput,
         #verifyButton {
-          width: 100%; /* Full width on small screens */
+          width: 100%;
           min-width: auto;
           box-sizing: border-box;
-          font-size: 1rem; /* Slightly smaller font */
+          font-size: 1rem;
           padding: 12px 15px;
         }
 
         .results-area {
-          padding: 15px; /* Reduced padding */
+          padding: 15px;
         }
 
         .results-area dt {
-          width: 100%; /* Labels take full width */
+          width: 100%;
           float: none;
           clear: none;
           margin-right: 0;
-          text-align: left; /* Align labels left */
-          padding-bottom: 2px; /* Reduced padding between dt and dd */
-          font-size: 0.95rem; /* Slightly smaller font */
-          text-transform: none; /* Revert uppercase on small screens */
+          text-align: left;
+          padding-bottom: 2px;
+          font-size: 0.95rem;
+          text-transform: none;
           letter-spacing: normal;
+          /* Disable hover animation for dt on small screens if it interferes */
+          &:hover::before {
+            content: none;
+          }
         }
 
         .results-area dd {
-          margin-left: 0; /* Remove left margin for dd */
-          margin-bottom: 15px; /* Add space below each item */
+          margin-left: 0;
+          margin-bottom: 15px;
           padding-top: 0;
-          font-size: 0.95rem; /* Slightly smaller font */
+          font-size: 0.95rem;
         }
 
         .success-message,
         .error-message {
-          font-size: 1rem; /* Adjust message font size */
-          flex-direction: column; /* Stack icon and text */
+          font-size: 1rem;
+          flex-direction: column;
           gap: 5px;
+          padding: 8px;
         }
       }
     </style>
 
-    <!-- External Fonts and Icons (still need to link externally) -->
+    <!-- External Fonts and Icons -->
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
@@ -321,32 +694,80 @@
       <h1>Verify Blockchain Transaction</h1>
 
       <div class="input-area">
+        <!-- Modified button structure -->
         <input
           type="text"
           id="transactionHashInput"
           placeholder="Enter Transaction Hash..."
         />
-        <button id="verifyButton"><i class="fas fa-search"></i> Verify</button>
+        <button id="verifyButton">
+          <i class="fas fa-search"></i> <span class="button-text">Verify</span>
+        </button>
       </div>
 
       <div id="resultsArea" class="results-area">
         <!-- Transaction details will be displayed here -->
         <p>
-          Enter a transaction hash above and click "Verify" to see its details.
+          <span class="typing-animation"
+            >Enter a transaction hash above and click "Verify" to see its
+            details.</span
+          >
         </p>
       </div>
     </div>
 
-    <!-- Inline JavaScript -->
+    <!-- Inline JavaScript with Animation Enhancements -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const hashInput = document.getElementById("transactionHashInput");
         const verifyButton = document.getElementById("verifyButton");
+        // Get references to the icon and text span inside the button
+        const buttonIcon = verifyButton.querySelector("i");
+        const buttonText = verifyButton.querySelector(".button-text");
+
         const resultsArea = document.getElementById("resultsArea");
 
-        // Function to update the results area
+        // Add focus to input field with slight delay for better UX
+        setTimeout(() => {
+          hashInput.focus();
+        }, 800);
+
+        // Function to update the results area with animations
         const updateResults = (htmlContent) => {
-          resultsArea.innerHTML = htmlContent;
+          // Fade out effect
+          resultsArea.style.opacity = "0";
+          resultsArea.style.transform = "translateY(10px)";
+
+          setTimeout(() => {
+            resultsArea.innerHTML = htmlContent;
+
+            // Apply staggered animation to definition list items if they exist
+            const dlExists = resultsArea.querySelector("dl");
+            if (dlExists) {
+              const dtElements = resultsArea.querySelectorAll("dt");
+              const ddElements = resultsArea.querySelectorAll("dd");
+
+              dtElements.forEach((dt, index) => {
+                dt.style.setProperty("--index", index + 1);
+                dt.style.animationDelay = `${(index + 1) * 0.1}s`; // Apply delay directly
+                dt.style.opacity = 0; // Reset opacity before animation
+              });
+
+              ddElements.forEach((dd, index) => {
+                dd.style.setProperty("--index", index + 1);
+                dd.style.animationDelay = `${(index + 1) * 0.1 + 0.05}s`; // Apply delay directly
+                dd.style.opacity = 0; // Reset opacity before animation
+              });
+              // Re-trigger animation by forcing reflow
+              resultsArea.offsetWidth;
+              dtElements.forEach((dt) => (dt.style.opacity = 1));
+              ddElements.forEach((dd) => (dd.style.opacity = 1));
+            }
+
+            // Fade in effect for the whole area
+            resultsArea.style.opacity = "1";
+            resultsArea.style.transform = "translateY(0)";
+          }, 300);
         };
 
         // Add event listener to the button
@@ -357,21 +778,34 @@
             updateResults(
               '<p class="error-message"><i class="fas fa-exclamation-circle"></i> Please enter a transaction hash.</p>'
             );
+            // Add focus with shake animation to input
+            hashInput.focus();
+            hashInput.classList.add("error-shake");
+            setTimeout(() => {
+              hashInput.classList.remove("error-shake");
+            }, 500);
             return;
           }
 
-          // Show loading state
+          // Show loading state with animation
           updateResults(
-            '<p><i class="fas fa-spinner fa-spin"></i> Verifying transaction...</p>'
+            '<p class="loading-message"><i class="fas fa-spinner fa-spin"></i> Verifying transaction...</p>'
           );
           verifyButton.disabled = true; // Disable button during fetch
 
+          // Update button content using specific elements
+          buttonIcon.className = "fas fa-spinner fa-spin";
+          buttonText.textContent = "Verifying...";
+          // Stop button pulse animation while loading
+          verifyButton.style.animation = "none";
+          // Clear any existing ripple spans just in case
+          verifyButton.querySelectorAll(".ripple").forEach((r) => r.remove());
+
           // Prepare data for the POST request
-          // The backend expects form data with key "hash"
           const formData = new URLSearchParams();
           formData.append("hash", hash);
 
-          const endpoint = "http://127.0.0.1:8000/verify-trxn";
+          const endpoint = "http://127.0.0.1:8000/verify-trxn"; // Assuming your backend is running here
 
           try {
             const response = await fetch(endpoint, {
@@ -382,9 +816,9 @@
               body: formData,
             });
 
-            // Check for HTTP errors (e.g., 404, 500)
+            // Check for HTTP errors
             if (!response.ok) {
-              const errorText = await response.text(); // Get potential error message from backend
+              const errorText = await response.text();
               updateResults(
                 `<p class="error-message"><i class="fas fa-times-circle"></i> Error verifying transaction: ${
                   response.status
@@ -392,41 +826,35 @@
                   errorText || "No specific error message."
                 }</p>`
               );
-              return; // Stop here if HTTP error
+              return;
             }
 
-            // Backend returns a string representation of a Python object (AttributeDict).
-            // This is NOT standard JSON. We need to parse the string manually.
             const responseText = await response.text();
 
-            // --- Manual String Parsing ---
-            // This is a simplified parser assuming the format is consistent like the example.
-            // It is brittle and might fail if the format varies significantly.
-            // A robust solution requires the backend to return proper JSON.
+            // Manual String Parsing (Keep the existing robust parsing logic)
             let transactionDetails = {};
             try {
-              // Basic cleanup: remove 'AttributeDict(' and the trailing ')'
               const innerString = responseText
                 .replace(/^AttributeDict\(/, "")
                 .replace(/\)$/, "");
 
-              // Use regex or careful string splitting to extract key-value pairs
-              // This regex looks for 'key': value pairs. It's still basic.
-              // This version is slightly improved to handle potential commas within values
+              // Refined regex to handle potential nested structures or complex values if needed,
+              // but keeping the original structure as it worked for the provided format.
+              // The original regex seems tailored to the AttributeDict string format.
               const keyValueRegex =
-                /'([^']+)'\s*:\s*((?:HexBytes\('[^']*'\)|'[^']*'|None|True|False|-?\d+(\.\d+)?(?:\w+)?|\[.*?\]|\{.*?\})[^,]*)(?:,|$)/g;
+                /'([^']+)'\s*:\s*((?:HexBytes\('[^']*'\)|'[^']*'|None|True|False|-?\d+(\.\d+)?(?:e[+-]?\d+)?|\[.*?\]|\{.*?\})[^,]*)(?:,|$)/g;
 
               let match;
               while ((match = keyValueRegex.exec(innerString)) !== null) {
                 const key = match[1];
                 let valueStr = match[2].trim();
 
-                // Remove trailing comma if present (regex might include it)
+                // Clean up trailing comma from the captured value string
                 if (valueStr.endsWith(",")) {
                   valueStr = valueStr.slice(0, -1).trim();
                 }
 
-                // Attempt to convert common Python types from string representation
+                // Attempt to parse common types
                 if (
                   valueStr.startsWith("HexBytes('") &&
                   valueStr.endsWith("')")
@@ -434,36 +862,68 @@
                   transactionDetails[key] = valueStr.substring(
                     10,
                     valueStr.length - 2
-                  ); // Extract hex
+                  );
                 } else if (valueStr.startsWith("'") && valueStr.endsWith("'")) {
                   transactionDetails[key] = valueStr.substring(
                     1,
                     valueStr.length - 1
-                  ); // Extract string
+                  );
                 } else if (valueStr === "None") {
                   transactionDetails[key] = null;
                 } else if (valueStr === "True") {
                   transactionDetails[key] = true;
                 } else if (valueStr === "False") {
                   transactionDetails[key] = false;
-                } else if (!isNaN(parseFloat(valueStr)) && isFinite(valueStr)) {
-                  // Check if it's a number (including potential scientific notation like '2315128')
+                } else if (/^-?\d+(\.\d+)?(?:e[+-]?\d+)?$/.test(valueStr)) {
+                  // Check for number format including scientific notation
                   transactionDetails[key] = Number(valueStr);
+                } else if (valueStr.startsWith("[") && valueStr.endsWith("]")) {
+                  // Simple array parsing (could be more robust)
+                  try {
+                    transactionDetails[key] = JSON.parse(
+                      valueStr.replace(/'/g, '"')
+                    );
+                  } catch (e) {
+                    transactionDetails[key] = valueStr; // Fallback to string
+                  }
+                } else if (valueStr.startsWith("{") && valueStr.endsWith("}")) {
+                  // Simple object parsing (could be more robust)
+                  try {
+                    transactionDetails[key] = JSON.parse(
+                      valueStr.replace(/'/g, '"')
+                    );
+                  } catch (e) {
+                    transactionDetails[key] = valueStr; // Fallback to string
+                  }
                 } else {
-                  // For complex types like lists/nested dicts (logs), store as raw string
-                  transactionDetails[key] = valueStr;
+                  transactionDetails[key] = valueStr; // Default to string
                 }
               }
 
-              // Check if essential data was extracted
+              // Basic check if parsing was successful
               if (
                 Object.keys(transactionDetails).length === 0 &&
-                responseText.length > 0
+                responseText.length > 0 &&
+                !responseText.includes("Error")
               ) {
-                // Only consider it a parsing failure if the response wasn't empty
-                throw new Error(
-                  "Parsed no key-value pairs from the response string."
+                console.warn(
+                  "Parsed no key-value pairs, raw response:",
+                  responseText
                 );
+                // If no key-value pairs but no explicit error, display raw text or a specific message
+                updateResults(
+                  `<p class="error-message"><i class="fas fa-times-circle"></i> Could not parse transaction details.</p><p><small>Raw response might be invalid or empty.</small></p>`
+                );
+                return;
+              } else if (
+                Object.keys(transactionDetails).length === 0 &&
+                responseText.includes("Error")
+              ) {
+                // Backend returned an error string not in AttributeDict format
+                updateResults(
+                  `<p class="error-message"><i class="fas fa-times-circle"></i> Backend Error: ${responseText}</p>`
+                );
+                return;
               }
             } catch (parseError) {
               console.error(
@@ -472,17 +932,20 @@
                 parseError
               );
               updateResults(
-                `<p class="error-message"><i class="fas fa-times-circle"></i> Failed to parse transaction details from backend response.</p><p><small>Raw response: ${responseText}</small></p>`
+                `<p class="error-message"><i class="fas fa-times-circle"></i> Failed to parse transaction details from backend response.</p><p><small>Parsing error: ${
+                  parseError.message
+                }. Raw response: ${responseText.substring(
+                  0,
+                  200
+                )}...</small></p>`
               );
-              return; // Stop if parsing fails
+              return;
             }
-            // --- End Manual String Parsing ---
 
-            // --- Display Results ---
+            // Display Results with animations
             let resultsHtml = "";
 
             // Display transaction status prominently
-            // Assuming status 1 is success, 0 is failure, or check for the key's existence
             if (transactionDetails.hasOwnProperty("status")) {
               if (transactionDetails.status === 1) {
                 resultsHtml +=
@@ -491,53 +954,67 @@
                 resultsHtml +=
                   '<p class="error-message"><i class="fas fa-times-circle"></i> Transaction Status: Failed</p>';
               } else {
-                // Handle other potential status values
-                resultsHtml += `<p>Transaction Status: ${transactionDetails.status}</p>`;
+                resultsHtml += `<p>Transaction Status: ${transactionDetails.status}</p>`; // Handle other status codes if any
               }
             } else {
-              resultsHtml +=
-                '<p class="error-message"><i class="fas fa-info-circle"></i> Status information not available in response.</p>';
+              // Check if there are *any* details before showing a specific error
+              if (Object.keys(transactionDetails).length > 0) {
+                resultsHtml +=
+                  '<p class="error-message"><i class="fas fa-info-circle"></i> Status information not available in response.</p>';
+              } else {
+                // If no details at all, likely a bad hash or no record found
+                resultsHtml =
+                  '<p class="error-message"><i class="fas fa-times-circle"></i> No transaction details found for this hash.</p>';
+              }
             }
 
-            // Use a definition list (<dl>) for structured key-value display
-            resultsHtml += "<dl>";
+            // Use a definition list for structured key-value display if details exist
+            if (Object.keys(transactionDetails).length > 0) {
+              resultsHtml += "<dl>";
 
-            const addDetail = (label, value, className = "") => {
-              // Check explicitly for undefined or null, allow 0, false etc.
-              if (value !== undefined && value !== null) {
-                // Ensure value is not empty string if className implies it's a hash/address
-                if (
-                  (className === "hex-bytes" || className === "address") &&
-                  value === ""
-                ) {
-                  // Do nothing or display a placeholder like "N/A"
-                  // For now, skip if empty string for hex/address
-                  return;
+              const addDetail = (label, value, className = "") => {
+                if (value !== undefined && value !== null && value !== "") {
+                  // Also check for empty string
+                  // Simple formatting for addresses/hashes if className is not provided but format looks like it
+                  let displayValue = value;
+                  let appliedClass = className;
+                  if (!appliedClass && typeof value === "string") {
+                    if (value.startsWith("0x") && value.length >= 40)
+                      appliedClass = "address";
+                    else if (value.length === 64) appliedClass = "hex-bytes"; // Common hash length
+                  }
+
+                  resultsHtml += `<dt>${label}</dt><dd><span class="${appliedClass}">${displayValue}</span></dd>`;
+                } else {
+                  resultsHtml += `<dt>${label}</dt><dd>N/A</dd>`;
                 }
-                resultsHtml += `<dt>${label}</dt><dd><span class="${className}">${value}</span></dd>`;
-              } else {
-                // Display "N/A" for null/undefined values
-                resultsHtml += `<dt>${label}</dt><dd>N/A</dd>`;
-              }
-            };
+              };
 
-            // Add key details in a desired order
-            // Added checks for undefined/null before adding
-            addDetail(
-              "Transaction Hash",
-              transactionDetails.transactionHash,
-              "hex-bytes"
-            );
-            addDetail("Block Number", transactionDetails.blockNumber);
-            addDetail("Block Hash", transactionDetails.blockHash, "hex-bytes");
-            addDetail("From Address", transactionDetails.from, "address");
-            addDetail("To Address", transactionDetails.to, "address"); // Note: 'to' can be null for contract creation
-            addDetail("Gas Used", transactionDetails.gasUsed);
-            addDetail("Transaction Index", transactionDetails.transactionIndex);
-            // Add 'logs' if present, though it might be the raw string representation
-            // Adding logs as a raw string detail
+              // Add key details in a desired order (or iterate through parsed keys)
+              // Adding specific keys first for structure, then potentially others
+              addDetail(
+                "Transaction Hash",
+                transactionDetails.transactionHash,
+                "hex-bytes"
+              );
+              addDetail("Block Number", transactionDetails.blockNumber);
+              addDetail(
+                "Block Hash",
+                transactionDetails.blockHash,
+                "hex-bytes"
+              );
+              addDetail("From Address", transactionDetails.from, "address");
+              addDetail("To Address", transactionDetails.to, "address");
+              addDetail("Gas Used", transactionDetails.gasUsed);
+              addDetail(
+                "Transaction Index",
+                transactionDetails.transactionIndex
+              );
 
-            resultsHtml += "</dl>";
+              // Add any other keys found in the response
+
+              resultsHtml += "</dl>";
+            }
 
             updateResults(resultsHtml);
           } catch (error) {
@@ -546,9 +1023,68 @@
               `<p class="error-message"><i class="fas fa-times-circle"></i> An unexpected error occurred. Please try again later.</p><p><small>${error.message}</small></p>`
             );
           } finally {
-            verifyButton.disabled = false; // Re-enable button regardless of success/failure
+            // Reset button with animation
+            setTimeout(() => {
+              verifyButton.disabled = false;
+              // Restore button content using specific elements
+              buttonIcon.className = "fas fa-search";
+              buttonText.textContent = "Verify";
+              verifyButton.style.animation = "pulse 2s infinite"; // Resume pulse
+            }, 500);
           }
         });
+
+        // Add keyboard event listener for better UX
+        hashInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter" && !verifyButton.disabled) {
+            verifyButton.click();
+          }
+        });
+
+        // Add ripple effect on button click (simple version)
+        verifyButton.addEventListener("mousedown", function (e) {
+          if (verifyButton.disabled) return;
+          const ripple = document.createElement("span");
+          const diameter = Math.max(this.clientWidth, this.clientHeight);
+          const radius = diameter / 2;
+
+          ripple.style.width = ripple.style.height = `${diameter}px`;
+          ripple.style.left = `${
+            e.clientX - this.getBoundingClientRect().left - radius
+          }px`;
+          ripple.style.top = `${
+            e.clientY - this.getBoundingClientRect().top - radius
+          }px`;
+          ripple.classList.add("ripple");
+
+          // Removed the removal of existing ripple here.
+          // The animationend listener handles removal, and
+          // updating child elements instead of innerHTML is safer.
+          // verifyButton.querySelectorAll('.ripple').forEach(r => r.remove()); // This was the original line, maybe remove is delayed? Let's trust the animationend listener now that innerHTML isn't replaced. If issues persist, add a specific clear function before adding the new ripple.
+
+          this.appendChild(ripple);
+
+          // Remove ripple after animation
+          // Use a fixed timeout as a fallback in case animationend doesn't fire reliably
+          const animationDuration = 600; // Match CSS animation duration
+          setTimeout(() => {
+            if (ripple.parentNode === this) {
+              ripple.remove();
+            }
+          }, animationDuration + 50); // Small buffer
+        });
+        // The CSS for the ripple effect is already in the style block above.
+
+        // Add initial container scale animation
+        const container = document.querySelector(".container");
+        container.style.transform = "scale(0.95)";
+        container.style.opacity = "0";
+        setTimeout(() => {
+          container.style.transition =
+            "transform 0.5s ease-out, opacity 0.5s ease-out";
+          container.style.transform = "scale(1)";
+          container.style.opacity = "1";
+        }, 100); // Small delay after DOMContentLoad for visibility
       });
     </script>
   </body>

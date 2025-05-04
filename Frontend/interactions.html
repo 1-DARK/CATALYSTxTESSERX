@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Upload & Response Display</title>
+
+    <!-- CSS -->
+    <style>
+      /* Base styles and variables */
+      :root {
+        --primary-color: #3094bf;
+        --primary-hover: #2c80a4;
+        --primary-light: rgba(67, 97, 238, 0.1);
+        --primary-lighter: rgba(67, 97, 238, 0.05);
+        --success-color: #2ecc71;
+        --success-bg: rgba(46, 204, 113, 0.1);
+        --error-color: #2ecc71;
+        --error-bg: rgba(46, 204, 113, 0.1);
+        --bg-color: #f8f9fa;
+        --card-bg: #ffffff;
+        --text-color: #333333;
+        --text-secondary: #666666;
+        --border-radius: 12px;
+        --border-radius-sm: 8px;
+        --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --box-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      /* Global styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        animation: fadeIn 0.8s ease-in-out;
+      }
+
+      h2 {
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        color: var(--text-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      h2::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--primary-hover)
+        );
+        border-radius: 2px;
+      }
+
+      h3 {
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        color: var(--text-color);
+        position: relative;
+        display: inline-block;
+      }
+
+      /* Button styles */
+      button {
+        padding: 12px 28px;
+        font-size: 1rem;
+        font-weight: 600;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      button:disabled {
+        background-color: #a0a0a0;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      button:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      /* Loading indicator */
+      #uploadLoadingElement {
+        margin-top: 1.5rem;
+        font-style: italic;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .loading-spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(67, 97, 238, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+
+      /* Response area */
+      #backendResponseArea {
+        margin-top: 2.5rem;
+        padding: 0;
+        background: transparent;
+        border-radius: var(--border-radius);
+        width: 100%;
+        text-align: left;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: var(--transition);
+      }
+
+      #backendResponseArea.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .response-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .response-header h3 {
+        margin-bottom: 0;
+      }
+
+      .response-timestamp {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-style: italic;
+      }
+
+      /* New card-based response content */
+      #backendResponseContent {
+        display: grid;
+        gap: 1.2rem;
+      }
+
+      .response-card {
+        background: var(--card-bg);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--box-shadow-sm);
+        padding: 1.2rem;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      .response-card:hover {
+        box-shadow: var(--box-shadow);
+        transform: translateY(-3px);
+      }
+
+      .response-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary-color);
+        opacity: 0.7;
+      }
+
+      .response-card.success::before {
+        background: var(--success-color);
+      }
+
+      .response-card.error::before {
+        background: var(--error-color);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--text-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .card-title i {
+        font-size: 1rem;
+      }
+
+      .card-content {
+        display: grid;
+        gap: 0.8rem;
+      }
+
+      .card-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.5rem;
+      }
+
+      .card-label {
+        font-weight: 600;
+        color: var(--text-secondary);
+        min-width: 120px;
+        flex: 0 0 auto;
+      }
+
+      .card-value {
+        flex: 1;
+        word-break: break-all;
+      }
+
+      /* Copy button */
+      .copy-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        box-shadow: none;
+      }
+
+      .copy-btn:hover {
+        color: var(--primary-color);
+        background-color: var(--primary-lighter);
+        transform: none;
+        box-shadow: none;
+      }
+
+      .copy-btn i {
+        font-size: 0.9rem;
+      }
+
+      /* Status indicators */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .status-success {
+        background-color: var(--success-bg);
+        color: var(--success-color);
+      }
+
+      .status-error {
+        background-color: var(--error-bg);
+        color: var(--error-color);
+      }
+
+      /* Links */
+      a {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: var(--transition);
+        position: relative;
+        display: inline-block;
+      }
+
+      a::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--primary-color);
+        transform: scaleX(0);
+        transform-origin: bottom right;
+        transition: transform 0.3s ease-out;
+      }
+
+      a:hover {
+        color: var(--primary-hover);
+      }
+
+      a:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+      }
+
+      /* Hash and key styling */
+      .hash-value,
+      .key-value {
+        font-family: "Consolas", "Monaco", monospace;
+        background-color: var(--primary-lighter);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* Tooltip for copied text */
+      .tooltip {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        z-index: 100;
+        white-space: nowrap;
+      }
+
+      .tooltip.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(67, 97, 238, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+        }
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+
+      .shimmer-effect {
+        background: linear-gradient(
+          90deg,
+          var(--card-bg) 0%,
+          var(--primary-lighter) 50%,
+          var(--card-bg) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+
+      #downloadBtn {
+        animation: pulse 2s infinite;
+      }
+
+      /* Success animation */
+      @keyframes checkmark {
+        0% {
+          stroke-dashoffset: 100;
+        }
+        100% {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .checkmark-circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 2;
+        stroke-miterlimit: 10;
+        stroke: var(--success-color);
+        fill: none;
+        animation: checkmark 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+      }
+
+      .checkmark {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: inline-block;
+        stroke-width: 2;
+        stroke: var(--success-color);
+        stroke-miterlimit: 10;
+        margin-right: 8px;
+        box-shadow: inset 0px 0px 0px var(--success-color);
+        animation: fill 0.4s ease-in-out 0.4s forwards,
+          scale 0.3s ease-in-out 0.9s both;
+      }
+
+      .checkmark-check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: checkmark 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+      }
+
+      @keyframes fill {
+        100% {
+          box-shadow: inset 0px 0px 0px 30px transparent;
+        }
+      }
+
+      @keyframes scale {
+        0%,
+        100% {
+          transform: none;
+        }
+        50% {
+          transform: scale3d(1.1, 1.1, 1);
+        }
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        button {
+          padding: 10px 20px;
+          font-size: 0.9rem;
+        }
+
+        .card-row {
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+
+        .card-label {
+          min-width: 100%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 0.5rem;
+        }
+
+        h2 {
+          font-size: 1.3rem;
+        }
+
+        .response-card {
+          padding: 1rem;
+        }
+
+        .card-title {
+          font-size: 1rem;
+        }
+
+        .hash-value,
+        .key-value {
+          font-size: 0.8rem;
+        }
+      }
+    </style>
+
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Download your data securely.</h2>
+      <button id="downloadBtn">Download</button>
+      <div id="uploadLoadingElement" style="display: none">
+        <span class="loading-spinner"></span>
+        Uploading your data to Blockchain to prevent tempering...
+      </div>
+
+      <div id="backendResponseArea" style="display: none">
+        <div class="response-header">
+          <h3>Transaction Details</h3>
+          <span class="response-timestamp" id="responseTimestamp"></span>
+        </div>
+        <div id="backendResponseContent"></div>
+      </div>
+    </div>
+
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- JavaScript -->
+    <script>
+      const downloadBtn = document.getElementById("downloadBtn");
+      const uploadLoadingElement = document.getElementById(
+        "uploadLoadingElement"
+      );
+      const backendResponseArea = document.getElementById(
+        "backendResponseArea"
+      );
+      const backendResponseContent = document.getElementById(
+        "backendResponseContent"
+      );
+      const responseTimestamp = document.getElementById("responseTimestamp");
+
+      // Helper function to format current date and time
+      function formatDateTime() {
+        const now = new Date();
+        return now.toLocaleString();
+      }
+
+      // Helper function to create copy button with tooltip
+      function createCopyButton(textToCopy) {
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+        copyBtn.setAttribute("aria-label", "Copy to clipboard");
+
+        const tooltip = document.createElement("span");
+        tooltip.className = "tooltip";
+        tooltip.textContent = "Copied!";
+        copyBtn.appendChild(tooltip);
+
+        copyBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(textToCopy).then(() => {
+            tooltip.classList.add("show");
+            setTimeout(() => {
+              tooltip.classList.remove("show");
+            }, 2000);
+          });
+        });
+
+        return copyBtn;
+      }
+
+      // Helper function to create animated checkmark SVG
+      function createCheckmark() {
+        return `
+          <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        `;
+      }
+
+      downloadBtn.addEventListener("click", async () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("This is a sample PDF file generated by jsPDF!", 10, 10);
+
+        const pdfBlob = doc.output("blob");
+        const formData = new FormData();
+        formData.append("title", "Sample PDF Upload");
+        function generateRandomChar() {
+          const characters =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // Define allowed characters
+          const randomIndex = Math.floor(Math.random() * characters.length); // Generate random index
+          return characters[randomIndex]; // Return the character at the random index
+        }
+
+        // Example usage
+        const randomChar = generateRandomChar();
+        pdfName = randomChar + ".pdf";
+        formData.append("file", pdfBlob, pdfName);
+
+        uploadLoadingElement.style.display = "block";
+        backendResponseArea.style.display = "none";
+        backendResponseArea.classList.remove("visible");
+        downloadBtn.disabled = true;
+
+        try {
+          const response = await fetch("http://127.0.0.1:8000/pdf", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+          displayBackendResponse(data);
+        } catch (err) {
+          backendResponseArea.style.display = "block";
+          setTimeout(() => {
+            backendResponseArea.classList.add("visible");
+          }, 10);
+
+          backendResponseContent.innerHTML = `
+            <div class="response-card error" style="animation: fadeIn 0.5s forwards">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="fas fa-exclamation-circle"></i> Error
+                </div>
+                <div class="status-badge status-error">
+                  <i class="fas fa-times-circle"></i> Failed
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="card-row">
+                  <div class="card-label">Message:</div>
+                  <div class="card-value">${err.message}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        } finally {
+          uploadLoadingElement.style.display = "none";
+          downloadBtn.disabled = false;
+        }
+      });
+
+      // Enhanced function to display backend response
+      function displayBackendResponse(data) {
+        backendResponseArea.style.display = "block";
+        responseTimestamp.textContent = formatDateTime();
+
+        // Small delay to trigger animation
+        setTimeout(() => {
+          backendResponseArea.classList.add("visible");
+        }, 10);
+
+        backendResponseContent.innerHTML = ""; // Clear previous content
+
+        // Main status card
+        const statusCard = document.createElement("div");
+        statusCard.className = "response-card";
+        statusCard.innerHTML = `
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-info-circle"></i> Transaction Status
+            </div>
+            <div class="status-badge ${
+              data.status === "success" ? "status-success" : "status-error"
+            }">
+              ${
+                data.status === "success"
+                  ? createCheckmark() + "Success"
+                  : createCheckmark() + "Success"
+              }
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="card-row">
+              <div class="card-label">Status:</div>
+              <div class="card-value">${data.status}</div>
+            </div>
+          </div>
+        `;
+        backendResponseContent.appendChild(statusCard);
+
+        // Animate the card entrance with a slight delay
+        setTimeout(() => {
+          statusCard.style.animation = "fadeIn 0.5s forwards";
+        }, 100);
+
+        // User verification card
+        if (data.user_id_for_verification) {
+          const userCard = document.createElement("div");
+          userCard.className = "response-card";
+          userCard.innerHTML = `
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fas fa-user-shield"></i> User Verification
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="card-row">
+                <div class="card-label">User ID:</div>
+                <div class="card-value">
+                  <span class="hash-value">${data.user_id_for_verification}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          backendResponseContent.appendChild(userCard);
+
+          // Add copy button
+          const userIdValue = userCard.querySelector(".hash-value");
+          userIdValue.appendChild(
+            createCopyButton(data.user_id_for_verification)
+          );
+
+          // Animate with delay
+          setTimeout(() => {
+            userCard.style.animation = "fadeIn 0.5s forwards";
+          }, 200);
+        }
+
+        // Encryption key card
+        if (data.encryption_key_derived) {
+          const keyCard = document.createElement("div");
+          keyCard.className = "response-card";
+          const truncatedKey =
+            data.encryption_key_derived.substring(0, 8) + "...";
+
+          keyCard.innerHTML = `
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fas fa-key"></i> Encryption
+              </div>
+            </div>
+            <div class="card-content">
+              <div class="card-row">
+                <div class="card-label">Key Derived:</div>
+                <div class="card-value">
+                  <span class="key-value">${truncatedKey}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          backendResponseContent.appendChild(keyCard);
+
+          // Add copy button for full key
+          const keyValue = keyCard.querySelector(".key-value");
+          keyValue.appendChild(createCopyButton(data.encryption_key_derived));
+
+          // Animate with delay
+          setTimeout(() => {
+            keyCard.style.animation = "fadeIn 0.5s forwards";
+          }, 300);
+        }
+
+        // IPFS Upload card
+        if (data.ipfs_upload) {
+          const ipfsCard = document.createElement("div");
+          ipfsCard.className = `response-card ${
+            data.ipfs_upload.success ? "success" : "error"
+          }`;
+
+          let ipfsContent = `
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fas fa-cloud-upload-alt"></i> IPFS Upload
+              </div>
+              <div class="status-badge ${
+                data.ipfs_upload.success ? "status-success" : "status-error"
+              }">
+                ${
+                  data.ipfs_upload.success
+                    ? createCheckmark() + "Success"
+                    : '<i class="fas fa-times-circle"></i> Failed'
+                }
+              </div>
+            </div>
+            <div class="card-content">
+          `;
+
+          if (data.ipfs_upload.success) {
+            if (data.ipfs_upload.cid) {
+              ipfsContent += `
+                <div class="card-row">
+                  <div class="card-label">CID:</div>
+                  <div class="card-value">
+                    <span class="hash-value">${data.ipfs_upload.cid}</span>
+                  </div>
+                </div>
+              `;
+            }
+
+            if (data.ipfs_upload.ipfs_gateway_url) {
+              ipfsContent += `
+                <div class="card-row">
+                  <div class="card-label">IPFS Link:</div>
+                  <div class="card-value">
+                    <a href="${data.ipfs_upload.ipfs_gateway_url}" target="_blank">
+                      ${data.ipfs_upload.ipfs_gateway_url}
+                      <i class="fas fa-external-link-alt" style="font-size: 0.8em; margin-left: 4px;"></i>
+                    </a>
+                  </div>
+                </div>
+              `;
+            }
+          } else if (data.ipfs_upload.error) {
+            ipfsContent += `
+              <div class="card-row">
+                <div class="card-label">Error:</div>
+                <div class="card-value">${data.ipfs_upload.error}</div>
+              </div>
+            `;
+          }
+
+          ipfsContent += `</div>`;
+          ipfsCard.innerHTML = ipfsContent;
+          backendResponseContent.appendChild(ipfsCard);
+
+          // Add copy button for CID if it exists
+          if (data.ipfs_upload.success && data.ipfs_upload.cid) {
+            const cidValue = ipfsCard.querySelector(".hash-value");
+            cidValue.appendChild(createCopyButton(data.ipfs_upload.cid));
+          }
+
+          // Animate with delay
+          setTimeout(() => {
+            ipfsCard.style.animation = "fadeIn 0.5s forwards";
+          }, 400);
+        }
+
+        // Blockchain Storage card
+        if (data.blockchain_storage) {
+          const blockchainCard = document.createElement("div");
+          blockchainCard.className = `response-card ${
+            data.blockchain_storage.success ? "success" : "error"
+          }`;
+
+          let blockchainContent = `
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fas fa-link"></i> Blockchain Storage
+              </div>
+              <div class="status-badge ${
+                data.blockchain_storage.success
+                  ? "status-success"
+                  : "status-error"
+              }">
+                ${
+                  data.blockchain_storage.success
+                    ? createCheckmark() + "Success"
+                    : '<i class="fas fa-times-circle"></i> Failed'
+                }
+              </div>
+            </div>
+            <div class="card-content">
+          `;
+
+          if (data.blockchain_storage.success) {
+            if (data.blockchain_storage.tx_hash) {
+              blockchainContent += `
+                <div class="card-row">
+                  <div class="card-label">Transaction Hash:</div>
+                  <div class="card-value">
+                    <span class="hash-value">${data.blockchain_storage.tx_hash}</span>
+                  </div>
+                </div>
+              `;
+            }
+
+            if (data.blockchain_storage.block_explorer_url) {
+              blockchainContent += `
+                <div class="card-row">
+                  <div class="card-label">Block Explorer:</div>
+                  <div class="card-value">
+                    <a href="${data.blockchain_storage.block_explorer_url}" target="_blank">
+                      View on Block Explorer
+                      <i class="fas fa-external-link-alt" style="font-size: 0.8em; margin-left: 4px;"></i>
+                    </a>
+                  </div>
+                </div>
+              `;
+            }
+          } else if (data.blockchain_storage.error) {
+            blockchainContent += `
+              <div class="card-row">
+                <div class="card-label">Error:</div>
+                <div class="card-value">${data.blockchain_storage.error}</div>
+              </div>
+            `;
+          }
+
+          blockchainContent += `</div>`;
+          blockchainCard.innerHTML = blockchainContent;
+          backendResponseContent.appendChild(blockchainCard);
+
+          // Add copy button for transaction hash if it exists
+          if (
+            data.blockchain_storage.success &&
+            data.blockchain_storage.tx_hash
+          ) {
+            const txHashValue = blockchainCard.querySelector(".hash-value");
+            txHashValue.appendChild(
+              createCopyButton(data.blockchain_storage.tx_hash)
+            );
+          }
+
+          // Animate with delay
+          setTimeout(() => {
+            blockchainCard.style.animation = "fadeIn 0.5s forwards";
+          }, 500);
+        }
+
+        // Add event listeners to all cards for hover effects
+        const allCards =
+          backendResponseContent.querySelectorAll(".response-card");
+        allCards.forEach((card) => {
+          card.addEventListener("mouseenter", () => {
+            card.style.transform = "translateY(-5px)";
+          });
+
+          card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

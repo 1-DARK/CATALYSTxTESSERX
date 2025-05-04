@@ -1,912 +1,1522 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon" />
     <title>DiagnoAI</title>
-    <link rel="stylesheet" href="Footer.css"> <!-- Assumes Footer.css adapted -->
+    <link rel="stylesheet" href="Footer.css" />
+    <!-- Assumes Footer.css adapted -->
     <script src="Footer.js"></script>
     <!-- Include jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <!-- Include Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="Navbar.css"> <!-- Assumes Navbar.css adapted -->
-    <link href="https://fonts.cdnfonts.com/css/druk" rel="stylesheet"> <!-- Consider replacing if needed -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="Navbar.css" />
+    <!-- Assumes Navbar.css adapted -->
+    <link href="https://fonts.cdnfonts.com/css/druk" rel="stylesheet" />
+    <!-- Consider replacing if needed -->
     <script src="Navbar.js"></script>
     <style>
-        /* Apollo-inspired Color Palette */
-        :root {
-            --primary-color: #0B4F6C; /* Professional Dark Blue */
-            --secondary-color: #01BAEF; /* Bright Cyan/Blue Accent */
-            --accent-color: #F7B801; /* Yellow/Gold Accent */
-            --danger-color: #D7263D; /* Clear Red */
-            --warning-color: #F7B801; /* Using Accent Yellow for warning */
-            --success-color: #2A9D8F; /* Calming Green */
-            --light-color: #ffffff; /* White */
-            --bg-light-gray: #f8f9fa; /* Very Light Gray Background */
-            --bg-medium-gray: #e9ecef; /* Slightly Darker Gray */
-            --dark-color: #343a40; /* Dark Gray for text */
-            --text-color: #212529; /* Near Black for body text */
-            --text-light: #6c757d; /* Medium Gray for secondary text */
-            --border-color: #dee2e6; /* Light Gray for borders */
-            --shadow: 0 4px 12px rgba(0,0,0,0.08); /* Softer shadow */
+      /* Apollo-inspired Color Palette */
+      :root {
+        --primary-color: #0b4f6c; /* Professional Dark Blue */
+        --secondary-color: #01baef; /* Bright Cyan/Blue Accent */
+        --accent-color: #f7b801; /* Yellow/Gold Accent */
+        --danger-color: #d7263d; /* Clear Red */
+        --warning-color: #f7b801; /* Using Accent Yellow for warning */
+        --success-color: #2a9d8f; /* Calming Green */
+        --light-color: #ffffff; /* White */
+        --bg-light-gray: #f8f9fa; /* Very Light Gray Background */
+        --bg-medium-gray: #e9ecef; /* Slightly Darker Gray */
+        --dark-color: #343a40; /* Dark Gray for text */
+        --text-color: #212529; /* Near Black for body text */
+        --text-light: #6c757d; /* Medium Gray for secondary text */
+        --border-color: #dee2e6; /* Light Gray for borders */
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Softer shadow */
 
-             /* Severity Specific Colors */
-             --severity-high-bg: #f8d7da;
-             --severity-high-border: #d7263d;
-             --severity-high-text: #721c24;
+        /* Severity Specific Colors */
+        --severity-high-bg: #f8d7da;
+        --severity-high-border: #d7263d;
+        --severity-high-text: #721c24;
 
-             --severity-medium-bg: #fff3cd;
-             --severity-medium-border: #F7B801;
-             --severity-medium-text: #856404;
+        --severity-medium-bg: #fff3cd;
+        --severity-medium-border: #f7b801;
+        --severity-medium-text: #856404;
 
-             --severity-low-bg: #d4edda;
-             --severity-low-border: #2A9D8F;
-             --severity-low-text: #155724;
+        --severity-low-bg: #d4edda;
+        --severity-low-border: #2a9d8f;
+        --severity-low-text: #155724;
+      }
+
+      .A {
+        margin-top: 20px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Arial", sans-serif; /* Consider 'Roboto', 'Open Sans' */
+        background-color: var(--bg-light-gray); /* Light background */
+        margin: 0;
+
+        padding-bottom: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background-color: var(--light-color); /* White container */
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: var(--primary-color);
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.2rem;
+        /* Use Druk font if loaded and desired, otherwise fallback */
+        font-family: "Druk", sans-serif;
+        letter-spacing: 1px; /* Adjust spacing for Druk */
+        font-weight: 500; /* Druk might need specific weight */
+      }
+
+      .subtitle {
+        text-align: center;
+        color: var(--text-light);
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+      }
+
+      .search-container {
+        margin: 30px 0;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap; /* Allow wrapping on small screens */
+      }
+
+      #search-input {
+        flex: 1 1 300px; /* Allow shrinking but base width 300px */
+        padding: 12px 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+      #search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(11, 79, 108, 0.25);
+        outline: none;
+      }
+
+      .search-container button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 20px; /* Adjust padding */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0; /* Prevent button from shrinking too much */
+      }
+
+      .search-container button:hover {
+        background-color: #083c52;
+      }
+
+      /* Content Wrapper */
+      .content-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        /* Adjust gap based on visual preference with new body size */
+        gap: 40px; /* Start with previous gap, adjust if needed */
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 20px;
+      }
+
+      /* Human Body Container - Keep Positioning */
+      .human-body {
+        width: 100%;
+        /* Match max-width with SVG width */
+        max-width: 207px;
+        position: relative;
+        /* Height should contain the tallest element (legs) */
+        height: 495px; /* Approx. 205 (legs top) + 287 (legs height) + small buffer */
+        display: block;
+        margin: 0 auto;
+        /* Optional: add border for visual debugging */
+        /* border: 1px dashed #ccc; */
+        flex-shrink: 0; /* Prevent shrinking */
+      }
+
+      /* Individual SVG Positioning Styles (Keep these from original) */
+      .human-body svg.head {
+        margin-left: -28.5px;
+        top: 0;
+        width: 56.594px;
+        height: 95.031px;
+      }
+      .human-body svg.shoulder {
+        margin-left: -53.5px;
+        top: 69px;
+        width: 109.532px;
+        height: 46.594px;
+      }
+      .human-body svg.arm {
+        margin-left: -78px;
+        top: 112px;
+        width: 156.344px;
+        height: 119.25px;
+      }
+      .human-body svg.chest {
+        margin-left: -43.5px;
+        top: 88px;
+        width: 86.594px;
+        height: 45.063px;
+      }
+      .human-body svg.stomach {
+        margin-left: -37.5px;
+        top: 130px;
+        width: 75.25px;
+        height: 107.594px;
+      }
+      .human-body svg.legs {
+        margin-left: -46.5px;
+        top: 205px;
+        z-index: 1; /* Ensure legs don't overlap hands weirdly */
+        width: 93.626px;
+        height: 286.625px;
+      }
+      .human-body svg.hands {
+        margin-left: -102.5px;
+        top: 224px;
+        z-index: 2; /* Hands slightly above legs if needed */
+        width: 205px;
+        height: 38.938px;
+      }
+
+      /* General SVG Theming Styles */
+      .human-body svg {
+        position: absolute; /* Keep absolute positioning */
+        left: 50%; /* Keep centering logic */
+        fill: #b8d8e4; /* Default fill: Light, desaturated blue */
+        stroke: var(--primary-color); /* Stroke for definition */
+        stroke-width: 0.5px;
+        transition: fill 0.3s ease, transform 0.2s ease, filter 0.3s ease;
+        cursor: pointer;
+        /* Sizing is handled by specific classes above */
+        max-width: 100%; /* Ensure responsive scaling within bounds */
+        height: auto;
+      }
+
+      .human-body svg:hover {
+        fill: var(--secondary-color); /* Bright cyan hover */
+        transform: scale(1.05); /* Slight zoom effect */
+        filter: drop-shadow(0 2px 4px rgba(1, 186, 239, 0.4));
+      }
+
+      .human-body svg.selected {
+        fill: var(--danger-color); /* Danger color when selected */
+        stroke: #a31b2d; /* Darker stroke for selected */
+        stroke-width: 0.8px;
+        filter: drop-shadow(0 0 6px rgba(215, 38, 61, 0.6));
+        transform: scale(
+          1.02
+        ); /* Optional: slightly different scale when selected */
+      }
+
+      /* Results Panel Styling */
+      .results-panel {
+        flex: 1;
+        min-width: 300px;
+        /* Allow panel to grow, but set max width */
+        max-width: 650px;
+        width: 100%;
+      }
+
+      .selected-area {
+        background-color: var(--bg-medium-gray);
+        padding: 15px 20px;
+        border-radius: 5px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        border: 1px solid var(--border-color);
+      }
+
+      .selected-area h3 {
+        margin: 0;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+      }
+
+      #selected-body-part {
+        font-weight: bold;
+        color: var(--dark-color);
+      }
+
+      .diseases-list {
+        background-color: var(--light-color);
+        border-radius: 5px;
+        padding: 0; /* Remove outer padding */
+        border: 1px solid var(--border-color);
+        margin-bottom: 25px; /* Space before specialist */
+      }
+      .diseases-list h3 {
+        padding: 15px 20px 10px;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 0; /* Remove bottom margin, use item margin */
+        font-size: 1.2rem;
+      }
+
+      .disease-item {
+        background-color: var(--light-color);
+        padding: 20px;
+        margin: 15px; /* Margin inside list */
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        border-left-width: 5px;
+        position: relative;
+        transition: box-shadow 0.3s ease;
+      }
+      .disease-item:hover {
+        box-shadow: var(--shadow);
+      }
+
+      .disease-item.high-severity {
+        border-left-color: var(--severity-high-border);
+      }
+      .disease-item.medium-severity {
+        border-left-color: var(--severity-medium-border);
+      }
+      .disease-item.low-severity {
+        border-left-color: var(--severity-low-border);
+      }
+
+      .disease-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        gap: 10px;
+      }
+
+      .disease-name {
+        font-weight: bold;
+        color: var(--primary-color);
+        font-size: 1.15rem;
+      }
+
+      .severity-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        flex-shrink: 0; /* Prevent badge text from causing wrap */
+      }
+
+      .high-severity-badge {
+        background-color: var(--severity-high-bg);
+        color: var(--severity-high-text);
+        border: 1px solid var(--severity-high-border);
+      }
+      .medium-severity-badge {
+        background-color: var(--severity-medium-bg);
+        color: var(--severity-medium-text);
+        border: 1px solid var(--severity-medium-border);
+      }
+      .low-severity-badge {
+        background-color: var(--severity-low-bg);
+        color: var(--severity-low-text);
+        border: 1px solid var(--severity-low-border);
+      }
+
+      .emergency-warning {
+        background-color: var(--severity-high-bg);
+        border: 1px solid var(--severity-high-border);
+        border-left-width: 4px;
+        padding: 12px 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--severity-high-text);
+        font-size: 0.9rem;
+      }
+      .emergency-warning i {
+        color: var(--danger-color);
+        font-size: 22px;
+      }
+
+      .disease-symptoms,
+      .disease-medications,
+      .disease-specialist,
+      .disease-firstaid {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        color: var(--text-color);
+      }
+      .disease-symptoms strong,
+      .disease-medications strong,
+      .disease-specialist strong,
+      .disease-firstaid strong {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-right: 5px;
+      }
+
+      .empty-message {
+        color: var(--text-light);
+        text-align: center;
+        padding: 30px 20px;
+        font-style: italic;
+        font-size: 1rem;
+      }
+
+      .btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        white-space: nowrap; /* Prevent button text wrapping */
+      }
+      .btn:hover {
+        background-color: #083c52;
+      }
+      .btn-danger {
+        background-color: var(--danger-color);
+      }
+      .btn-danger:hover {
+        background-color: #a31b2d;
+      }
+      .btn i {
+        font-size: 14px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        justify-content: flex-end;
+        flex-basis: 100%;
+      }
+      @media (min-width: 500px) {
+        .action-buttons {
+          flex-basis: auto;
+          margin-top: 0;
         }
+      }
 
-        .A{
-            margin-top: 20px;
-        }
+      /* Specialist Section Styling */
+      #specialist-info {
+        margin-top: 25px;
+        padding: 20px;
+        background-color: var(--light-color);
+        border: 1px solid var(--border-color);
+        border-top: 4px solid var(--secondary-color); /* Accent border */
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+      #specialist-info h3 {
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+      /* Individual specialist card within the container */
+      .specialist-card {
+        background-color: var(--light-color); /* White card */
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 15px; /* Space between cards */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      .specialist-card:last-child {
+        margin-bottom: 0;
+      }
 
-        body {
-            font-family: 'Arial', sans-serif; /* Consider 'Roboto', 'Open Sans' */
-            background-color: var(--bg-light-gray); /* Light background */
-            margin: 0;
-           
-            padding-bottom: 20px;
-            padding-left: 20px;
-            padding-right: 20px;
-            color: var(--text-color);
-            line-height: 1.6;
-        }
+      .specialist-name {
+        font-weight: bold;
+        color: var(--dark-color);
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
 
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            background-color: var(--light-color); /* White container */
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
+      .specialist-details p,
+      .specialist-contact {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 4px;
+        line-height: 1.5;
+      }
+      .specialist-details strong,
+      .specialist-contact strong {
+        color: var(--text-color);
+        font-weight: 600;
+      }
 
-        h1, h2, h3, h4 {
-            color: var(--primary-color);
-            margin-top: 0;
-            margin-bottom: 0.75rem;
+      .loading {
+        /* Keep as is, controlled by JS */
+        display: none;
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--primary-color);
+      }
+      .loading-spinner {
+        /* Keep as is */
+        border: 4px solid rgba(11, 79, 108, 0.2);
+        border-radius: 50%;
+        border-top: 4px solid var(--primary-color);
+        width: 35px;
+        height: 35px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.2rem;
-             /* Use Druk font if loaded and desired, otherwise fallback */
-             font-family: 'Druk', sans-serif;
-             letter-spacing: 1px; /* Adjust spacing for Druk */
-             font-weight: 500; /* Druk might need specific weight */
-        }
-
-        .subtitle {
-            text-align: center;
-            color: var(--text-light);
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
-
-        .search-container {
-            margin: 30px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap; /* Allow wrapping on small screens */
-        }
-
-        #search-input {
-            flex: 1 1 300px; /* Allow shrinking but base width 300px */
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        #search-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(11, 79, 108, 0.25);
-            outline: none;
-        }
-
-        .search-container button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px; /* Adjust padding */
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0; /* Prevent button from shrinking too much */
-        }
-
-        .search-container button:hover {
-            background-color: #083c52;
-        }
-
-        /* Content Wrapper */
+      /* Responsive Adjustments */
+      @media (max-width: 992px) {
+        /* Adjust breakpoint if needed */
         .content-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            /* Adjust gap based on visual preference with new body size */
-            gap: 40px; /* Start with previous gap, adjust if needed */
-            justify-content: center;
-            align-items: flex-start;
-            margin-top: 20px;
+          gap: 30px; /* Reduce gap */
+          flex-direction: column; /* Stack earlier */
+          align-items: center; /* Center items when stacked */
         }
-
-        /* Human Body Container - Keep Positioning */
         .human-body {
-            width: 100%;
-            /* Match max-width with SVG width */
-            max-width: 207px;
-            position: relative;
-            /* Height should contain the tallest element (legs) */
-            height: 495px; /* Approx. 205 (legs top) + 287 (legs height) + small buffer */
-            display: block;
-            margin: 0 auto;
-             /* Optional: add border for visual debugging */
-             /* border: 1px dashed #ccc; */
-             flex-shrink: 0; /* Prevent shrinking */
+          margin-bottom: 20px; /* Space below body when stacked */
         }
-
-        /* Individual SVG Positioning Styles (Keep these from original) */
-         .human-body svg.head { margin-left: -28.5px; top: 0; width: 56.594px; height: 95.031px; }
-         .human-body svg.shoulder { margin-left: -53.5px; top: 69px; width: 109.532px; height: 46.594px; }
-         .human-body svg.arm { margin-left: -78px; top: 112px; width: 156.344px; height: 119.25px; }
-         .human-body svg.chest { margin-left: -43.5px; top: 88px; width: 86.594px; height: 45.063px; }
-         .human-body svg.stomach { margin-left: -37.5px; top: 130px; width: 75.25px; height: 107.594px; }
-         .human-body svg.legs { margin-left: -46.5px; top: 205px; z-index: 1; /* Ensure legs don't overlap hands weirdly */ width: 93.626px; height: 286.625px; }
-         .human-body svg.hands { margin-left: -102.5px; top: 224px; z-index: 2; /* Hands slightly above legs if needed */ width: 205px; height: 38.938px; }
-
-
-        /* General SVG Theming Styles */
-        .human-body svg {
-            position: absolute; /* Keep absolute positioning */
-            left: 50%; /* Keep centering logic */
-            fill: #b8d8e4; /* Default fill: Light, desaturated blue */
-            stroke: var(--primary-color); /* Stroke for definition */
-            stroke-width: 0.5px;
-            transition: fill 0.3s ease, transform 0.2s ease, filter 0.3s ease;
-            cursor: pointer;
-            /* Sizing is handled by specific classes above */
-            max-width: 100%; /* Ensure responsive scaling within bounds */
-            height: auto;
-        }
-
-        .human-body svg:hover {
-            fill: var(--secondary-color); /* Bright cyan hover */
-            transform: scale(1.05); /* Slight zoom effect */
-            filter: drop-shadow(0 2px 4px rgba(1, 186, 239, 0.4));
-        }
-
-        .human-body svg.selected {
-            fill: var(--danger-color); /* Danger color when selected */
-            stroke: #a31b2d; /* Darker stroke for selected */
-            stroke-width: 0.8px;
-            filter: drop-shadow(0 0 6px rgba(215, 38, 61, 0.6));
-             transform: scale(1.02); /* Optional: slightly different scale when selected */
-        }
-
-
-        /* Results Panel Styling */
         .results-panel {
-            flex: 1;
-            min-width: 300px;
-            /* Allow panel to grow, but set max width */
-            max-width: 650px;
-            width: 100%;
+          max-width: 100%; /* Take full width when stacked */
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding-top: 60px;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .subtitle {
+          font-size: 1rem;
+          margin-bottom: 30px;
         }
 
         .selected-area {
-            background-color: var(--bg-medium-gray);
-            padding: 15px 20px;
-            border-radius: 5px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            border: 1px solid var(--border-color);
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
         }
-
-        .selected-area h3 {
-            margin: 0;
-            color: var(--primary-color);
-            font-size: 1.1rem;
+        .action-buttons {
+          width: 100%;
+          justify-content: flex-end;
         }
+      }
 
-        #selected-body-part {
-            font-weight: bold;
-            color: var(--dark-color);
+      @media (max-width: 480px) {
+        .container {
+          padding: 15px;
         }
-
-        .diseases-list {
-            background-color: var(--light-color);
-            border-radius: 5px;
-            padding: 0; /* Remove outer padding */
-            border: 1px solid var(--border-color);
-            margin-bottom: 25px; /* Space before specialist */
+        .human-body {
+          /* Adjust size and height for very small screens if needed */
+          max-width: 180px;
+          height: 430px; /* Recalculate based on scaled SVGs */
         }
-         .diseases-list h3 {
-             padding: 15px 20px 10px;
-             border-bottom: 1px solid var(--border-color);
-             margin-bottom: 0; /* Remove bottom margin, use item margin */
-             font-size: 1.2rem;
-         }
+        /* Optional: Scale SVG positions slightly if overlap is bad */
+        /* Example: .human-body svg.legs { top: 180px; } */
 
-        .disease-item {
-            background-color: var(--light-color);
-            padding: 20px;
-            margin: 15px; /* Margin inside list */
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            border-left-width: 5px;
-            position: relative;
-            transition: box-shadow 0.3s ease;
+        .search-container {
+          flex-direction: column;
+          gap: 10px;
         }
-         .disease-item:hover {
-            box-shadow: var(--shadow);
-         }
-
-        .disease-item.high-severity { border-left-color: var(--severity-high-border); }
-        .disease-item.medium-severity { border-left-color: var(--severity-medium-border); }
-        .disease-item.low-severity { border-left-color: var(--severity-low-border); }
+        #search-input {
+          flex-basis: auto;
+        } /* Reset flex basis */
+        .search-container button {
+          width: 100%;
+          justify-content: center;
+        }
 
         .disease-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            gap: 10px;
+          flex-direction: column;
+          align-items: flex-start;
         }
-
-        .disease-name {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.15rem;
-        }
-
         .severity-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            flex-shrink: 0; /* Prevent badge text from causing wrap */
-        }
-
-        .high-severity-badge { background-color: var(--severity-high-bg); color: var(--severity-high-text); border: 1px solid var(--severity-high-border); }
-        .medium-severity-badge { background-color: var(--severity-medium-bg); color: var(--severity-medium-text); border: 1px solid var(--severity-medium-border); }
-        .low-severity-badge { background-color: var(--severity-low-bg); color: var(--severity-low-text); border: 1px solid var(--severity-low-border); }
-
-        .emergency-warning {
-            background-color: var(--severity-high-bg);
-            border: 1px solid var(--severity-high-border);
-            border-left-width: 4px;
-            padding: 12px 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--severity-high-text);
-            font-size: 0.9rem;
-        }
-        .emergency-warning i { color: var(--danger-color); font-size: 22px; }
-
-        .disease-symptoms, .disease-medications, .disease-specialist, .disease-firstaid {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            color: var(--text-color);
-        }
-        .disease-symptoms strong, .disease-medications strong,
-        .disease-specialist strong, .disease-firstaid strong {
-            color: var(--primary-color);
-            font-weight: 600;
-            margin-right: 5px;
-        }
-
-        .empty-message {
-            color: var(--text-light);
-            text-align: center;
-            padding: 30px 20px;
-            font-style: italic;
-            font-size: 1rem;
+          margin-top: 8px;
         }
 
         .btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            white-space: nowrap; /* Prevent button text wrapping */
+          width: 100%;
+          justify-content: center;
         }
-        .btn:hover { background-color: #083c52; }
-        .btn-danger { background-color: var(--danger-color); }
-        .btn-danger:hover { background-color: #a31b2d; }
-        .btn i { font-size: 14px; }
-
         .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: flex-end;
-            flex-basis: 100%;
+          flex-direction: column;
         }
-         @media (min-width: 500px) {
-            .action-buttons {
-                flex-basis: auto;
-                margin-top: 0;
-            }
-         }
+      }
 
-        /* Specialist Section Styling */
-         #specialist-info {
-             margin-top: 25px;
-             padding: 20px;
-             background-color: var(--light-color);
-             border: 1px solid var(--border-color);
-             border-top: 4px solid var(--secondary-color); /* Accent border */
-             border-radius: 5px;
-             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-         }
-          #specialist-info h3 {
-             margin-bottom: 15px;
-             font-size: 1.2rem;
-             color: var(--primary-color);
-          }
+      /* Navbar and Footer Overrides (Example) */
 
-          /* Individual specialist card within the container */
-          .specialist-card {
-             background-color: var(--light-color); /* White card */
-             border: 1px solid var(--border-color);
-             border-radius: 4px;
-             padding: 15px;
-             margin-bottom: 15px; /* Space between cards */
-             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-          }
-          .specialist-card:last-child {
-             margin-bottom: 0;
-          }
+      .navbar-brand.Z {
+        color: var(--primary-color);
+        font-weight: bold;
+        /* Match H1 font if desired */
+        font-family: "Druk", sans-serif;
 
-        .specialist-name {
-            font-weight: bold;
-            color: var(--dark-color);
-            margin-bottom: 8px;
-            font-size: 1.05rem;
-        }
+        letter-spacing: 1px;
+      }
+      .navbar-links ul li a {
+        color: var(--text-color);
+      }
+      .navbar-links ul li a:hover {
+        color: var(--secondary-color);
+      }
+      .navbar-toggler {
+        color: var(--primary-color);
+        border-color: rgba(11, 79, 108, 0.3);
+      }
 
-        .specialist-details p,
-        .specialist-contact {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-bottom: 4px;
-            line-height: 1.5;
-        }
-        .specialist-details strong,
-        .specialist-contact strong {
-            color: var(--text-color);
-            font-weight: 600;
-        }
-
-
-        .loading { /* Keep as is, controlled by JS */
-            display: none;
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--primary-color);
-        }
-        .loading-spinner { /* Keep as is */
-            border: 4px solid rgba(11, 79, 108, 0.2);
-            border-radius: 50%;
-            border-top: 4px solid var(--primary-color);
-            width: 35px;
-            height: 35px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-
-        /* Responsive Adjustments */
-        @media (max-width: 992px) { /* Adjust breakpoint if needed */
-             .content-wrapper {
-                 gap: 30px; /* Reduce gap */
-                 flex-direction: column; /* Stack earlier */
-                 align-items: center; /* Center items when stacked */
-             }
-             .human-body {
-                 margin-bottom: 20px; /* Space below body when stacked */
-             }
-             .results-panel {
-                 max-width: 100%; /* Take full width when stacked */
-             }
-        }
-
-        @media (max-width: 768px) {
-            body { padding-top: 60px; }
-            h1 { font-size: 1.8rem; }
-            .subtitle { font-size: 1rem; margin-bottom: 30px;}
-
-            .selected-area {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-             .action-buttons {
-                width: 100%;
-                justify-content: flex-end;
-             }
-        }
-
-        @media (max-width: 480px) {
-            .container { padding: 15px; }
-            .human-body {
-                 /* Adjust size and height for very small screens if needed */
-                 max-width: 180px;
-                 height: 430px; /* Recalculate based on scaled SVGs */
-             }
-             /* Optional: Scale SVG positions slightly if overlap is bad */
-             /* Example: .human-body svg.legs { top: 180px; } */
-
-            .search-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            #search-input { flex-basis: auto; } /* Reset flex basis */
-            .search-container button {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .disease-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .severity-badge { margin-top: 8px; }
-
-            .btn {
-                 width: 100%;
-                 justify-content: center;
-            }
-             .action-buttons {
-                flex-direction: column;
-             }
-        }
-
-        /* Navbar and Footer Overrides (Example) */
-    
-        .navbar-brand.Z {
-            color: var(--primary-color);
-            font-weight: bold;
-            /* Match H1 font if desired */
-             font-family: 'Druk', sans-serif;
-      
-            
-             letter-spacing: 1px;
-        }
-         .navbar-links ul li a { color: var(--text-color); }
-         .navbar-links ul li a:hover { color: var(--secondary-color); }
-         .navbar-toggler { color: var(--primary-color); border-color: rgba(11, 79, 108, 0.3); }
-
-        .footer {
-             background-color: var(--dark-color);
-             color: var(--bg-light-gray);
-             padding: 40px 0;
-             margin-top: 40px;
-        }
-         .footer h2 span, .footer h3 { color: var(--light-color); }
-         .footer h2 span { font-family: 'Druk', sans-serif; font-weight: 500; letter-spacing: 1px;}
-         .footer p { color: var(--bg-medium-gray); }
-         .footer-links ul li a { color: var(--bg-medium-gray); }
-         .footer-links ul li a:hover { color: var(--secondary-color); }
-         .social-icons a { background-color: rgba(255, 255, 255, 0.1); color: var(--light-color); }
-         .social-icons a:hover { background-color: var(--secondary-color); color: var(--primary-color); }
-         .footer-bottom { border-top: 1px solid #495057; color: var(--text-light); }
-         .footer-bottom a { color: var(--light-color); }
-         .footer-bottom a:hover { color: var(--secondary-color); }
-
+      .footer {
+        background-color: var(--dark-color);
+        color: var(--bg-light-gray);
+        padding: 40px 0;
+        margin-top: 40px;
+      }
+      .footer h2 span,
+      .footer h3 {
+        color: var(--light-color);
+      }
+      .footer h2 span {
+        font-family: "Druk", sans-serif;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }
+      .footer p {
+        color: var(--bg-medium-gray);
+      }
+      .footer-links ul li a {
+        color: var(--bg-medium-gray);
+      }
+      .footer-links ul li a:hover {
+        color: var(--secondary-color);
+      }
+      .social-icons a {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--light-color);
+      }
+      .social-icons a:hover {
+        background-color: var(--secondary-color);
+        color: var(--primary-color);
+      }
+      .footer-bottom {
+        border-top: 1px solid #495057;
+        color: var(--text-light);
+      }
+      .footer-bottom a {
+        color: var(--light-color);
+      }
+      .footer-bottom a:hover {
+        color: var(--secondary-color);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Navbar -->
     <div>
-        <nav class="navbar">
-            <div class="navbar-container">
-                <a href="index.html" class="navbar-brand Z">DiagnoAI</a>
-                <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarLinks">
-                    <span class="sr-only">Menu</span>
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="navbar-links" id="navbarLinks">
-                    <ul>
-                        <li><a href="Vision.html">Our Services</a></li>
-                        <li><a href="FrontSYM.html">Front Symptoms</a></li>
-                        <li><a href="BackSYM.html">Back Symptoms</a></li>
-                        <li><a href="verify-trxn.html">Verify Txn</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+      <nav class="navbar">
+        <div class="navbar-container">
+          <a href="index.html" class="navbar-brand Z">DiagnoAI</a>
+          <button
+            class="navbar-toggler"
+            aria-expanded="false"
+            aria-controls="navbarLinks"
+          >
+            <span class="sr-only">Menu</span>
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="navbar-links" id="navbarLinks">
+            <ul>
+              <li><a href="Vision.html">Our Services</a></li>
+              <li><a href="FrontSYM.html">Front Symptoms</a></li>
+              <li><a href="BackSYM.html">Back Symptoms</a></li>
+              <li><a href="verify-trxn.html">Verify Txn</a></li>
+              <li><a href="interactions.html">Download your data</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
     </div>
 
-    <div class="A"></div> <!-- Spacer -->
+    <div class="A"></div>
+    <!-- Spacer -->
 
     <!-- Main Content -->
     <div class="container">
-        <h1>Advanced Medical Symptom Checker</h1>
-        <p class="subtitle">Click on a body part or search to explore potential conditions</p>
+      <h1>Advanced Medical Symptom Checker</h1>
+      <p class="subtitle">
+        Click on a body part or search to explore potential conditions
+      </p>
 
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search conditions, symptoms...">
-            <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+      <div class="search-container">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search conditions, symptoms..."
+        />
+        <button id="search-btn"><i class="fas fa-search"></i> Search</button>
+      </div>
+
+      <div class="content-wrapper">
+        <!-- Segmented Human Body SVGs -->
+        <div class="human-body">
+          <svg
+            data-position="head"
+            class="head"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 56.594 95.031"
+          >
+            <path
+              d="M15.92 68.5l8.8 12.546 3.97 13.984-9.254-7.38-4.622-15.848zm27.1 0l-8.8 12.546-3.976 13.988 9.254-7.38 4.622-15.848zm6.11-27.775l.108-11.775-21.16-14.742L8.123 26.133 8.09 40.19l-3.24.215 1.462 9.732 5.208 1.81 2.36 11.63 9.72 11.018 10.856-.324 9.56-10.37 1.918-11.952 5.207-1.81 1.342-9.517zm-43.085-1.84l-.257-13.82L28.226 11.9l23.618 15.755-.216 10.37 4.976-17.085L42.556 2.376 25.49 0 10.803 3.673.002 24.415z"
+            />
+          </svg>
+          <svg
+            data-position="shoulder"
+            class="shoulder"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 109.532 46.594"
+          >
+            <path
+              d="M38.244-.004l1.98 9.232-11.653 2.857-7.474-2.637zm33.032 0l-1.98 9.232 11.653 2.857 7.474-2.637zm21.238 10.54l4.044-2.187 12.656 14 .07 5.33S92.76 10.66 92.515 10.535zm-1.285.58c-.008.28 17.762 18.922 17.762 18.922l.537 16.557-6.157-10.55L91.5 30.988 83.148 15.6zm-74.224-.58L12.962 8.35l-12.656 14-.062 5.325s16.52-17.015 16.764-17.14zm1.285.58C18.3 11.396.528 30.038.528 30.038L-.01 46.595l6.157-10.55 11.87-5.056L26.374 15.6z"
+            />
+          </svg>
+          <svg
+            data-position="arm"
+            class="arm"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 156.344 119.25"
+          >
+            <path
+              d="M21.12 56.5a1.678 1.678 0 0 1-.427.33l.935 8.224 12.977-13.89 1.2-8.958A168.2 168.2 0 0 0 21.12 56.5zm1.387 12.522l-18.07 48.91 5.757 1.333 19.125-39.44 3.518-22.047zm-5.278-18.96l2.638 18.74-17.2 46.023L.01 113.05l6.644-35.518zm118.015 6.44a1.678 1.678 0 0 0 .426.33l-.934 8.222-12.977-13.89-1.2-8.958A168.2 168.2 0 0 1 135.24 56.5zm-1.39 12.52l18.073 48.91-5.758 1.333-19.132-39.44-3.52-22.05zm5.28-18.96l-2.64 18.74 17.2 46.023 2.658-1.775-6.643-35.518zm-103.1-12.323a1.78 1.78 0 0 1 .407-.24l3.666-27.345L33.07.015l-7.258 10.58-6.16 37.04.566 4.973a151.447 151.447 0 0 1 15.808-14.87zm84.3 0a1.824 1.824 0 0 0-.407-.24l-3.666-27.345L123.3.015l7.258 10.58 6.16 37.04-.566 4.973a151.447 151.447 0 0 0-15.822-14.87zM22.288 8.832l-3.3 35.276-2.2-26.238zm111.79 0l3.3 35.276 2.2-26.238z"
+            />
+          </svg>
+          <svg
+            data-position="chest"
+            class="chest"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 86.594 45.063"
+          >
+            <path
+              d="M19.32 0l-9.225 16.488-10.1 5.056 6.15 4.836 4.832 14.07 11.2 4.616 17.85-8.828-4.452-34.7zm47.934 0l9.225 16.488 10.1 5.056-6.15 4.836-4.833 14.07-11.2 4.616-17.844-8.828 4.45-34.7z"
+            />
+          </svg>
+          <svg
+            data-position="stomach"
+            class="stomach"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 75.25 107.594"
+          >
+            <path
+              d="M19.25 7.49l16.6-7.5-.5 12.16-14.943 7.662zm-10.322 8.9l6.9 3.848-.8-9.116zm5.617-8.732L1.32 2.15 6.3 15.6zm-8.17 9.267l9.015 5.514 1.54 11.028-8.795-5.735zm15.53 5.89l.332 8.662 12.286-2.665.664-11.826zm14.61 84.783L33.28 76.062l-.08-20.53-11.654-5.736-1.32 37.5zM22.735 35.64L22.57 46.3l11.787 3.166.166-16.657zm-14.16-5.255L16.49 35.9l1.1 11.25-8.8-7.06zm8.79 22.74l-9.673-7.28-.84 9.78L-.006 68.29l10.564 14.594 5.5.883 1.98-20.735zM56 7.488l-16.6-7.5.5 12.16 14.942 7.66zm10.32 8.9l-6.9 3.847.8-9.116zm-5.617-8.733L73.93 2.148l-4.98 13.447zm8.17 9.267l-9.015 5.514-1.54 11.03 8.8-5.736zm-15.53 5.89l-.332 8.662-12.285-2.665-.664-11.827zm-14.61 84.783l3.234-31.536.082-20.532 11.65-5.735 1.32 37.5zm13.78-71.957l.166 10.66-11.786 3.168-.166-16.657zm14.16-5.256l-7.915 5.514-1.1 11.25 8.794-7.06zm-8.79 22.743l9.673-7.28.84 9.78 6.862 12.66-10.564 14.597-5.5.883-1.975-20.74z"
+            />
+          </svg>
+          <svg
+            data-position="legs"
+            class="legs"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 93.626 286.625"
+          >
+            <path
+              d="M17.143 138.643l-.664 5.99 4.647 5.77 1.55 9.1 3.1 1.33 2.655-13.755 1.77-4.88-1.55-3.107zm20.582.444l-3.32 9.318-7.082 13.755 1.77 12.647 5.09-14.2 4.205-7.982zm-26.557-12.645l5.09 27.29-3.32-1.777-2.656 8.875zm22.795 42.374l-1.55 4.88-3.32 20.634-.442 27.51 4.65 26.847-.223-34.39 4.87-13.754.663-15.087zM23.34 181.24l1.106 41.267 8.853 33.28-9.628-4.55-16.045-57.8 5.533-36.384zm15.934 80.536l-.664 18.415-1.55 6.435h-4.647l-1.327-4.437-1.55-.222.332 4.437-5.864-1.778-1.55-.887-6.64-1.442-.22-5.214 6.418-10.87 4.426-5.548 10.844-4.437zM13.63 3.076v22.476l15.71 31.073 9.923 30.85L38.23 66.1zm25.49 30.248l.118-.148-.793-2.024L21.9 12.992l-1.242-.44L31.642 40.93zM32.865 44.09l6.812 17.6 2.274-21.596-1.344-3.43zM6.395 61.91l.827 25.34 12.816 35.257-3.928 10.136L3.5 88.133zM30.96 74.69l.345.826 6.47 15.48-4.177 38.342-6.594-3.526 5.715-35.7zm45.5 63.953l.663 5.99-4.647 5.77-1.55 9.1-3.1 1.33-2.655-13.755-1.77-4.88 1.55-3.107zm-20.582.444l3.32 9.318 7.08 13.755-1.77 12.647-5.09-14.2-4.2-7.987zm3.762 29.73l1.55 4.88 3.32 20.633.442 27.51-4.648 26.847.22-34.39-4.867-13.754-.67-15.087zm10.623 12.424l-1.107 41.267-8.852 33.28 9.627-4.55 16.046-57.8-5.533-36.384zM54.33 261.777l.663 18.415 1.546 6.435h4.648l1.328-4.437 1.55-.222-.333 4.437 5.863-1.778 1.55-.887 6.638-1.442.222-5.214-6.418-10.868-4.426-5.547-10.844-4.437zm25.643-258.7v22.476L64.26 56.625l-9.923 30.85L55.37 66.1zM54.48 33.326l-.118-.15.793-2.023L71.7 12.993l1.24-.44L61.96 40.93zm6.255 10.764l-6.812 17.6-2.274-21.595 1.344-3.43zm26.47 17.82l-.827 25.342-12.816 35.256 3.927 10.136 12.61-44.51zM62.64 74.693l-.346.825-6.47 15.48 4.178 38.342 6.594-3.527-5.715-35.7zm19.792 51.75l-5.09 27.29 3.32-1.776 2.655 8.875zM9.495-.007l.827 21.373-7.028 42.308-3.306-34.155zm2.068 27.323L26.24 59.707l3.307 26-6.2 36.58L9.91 85.046l-.827-38.342zM84.103-.01l-.826 21.375 7.03 42.308 3.306-34.155zm-2.066 27.325L67.36 59.707l-3.308 26 6.2 36.58 13.436-37.24.827-38.34z"
+            />
+          </svg>
+          <svg
+            data-position="hands"
+            class="hands"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 205 38.938"
+          >
+            <path
+              d="M21.255-.002l2.88 6.9 8.412 1.335.664 12.458-4.427 17.8-2.878-.22 2.8-11.847-2.99-.084-4.676 12.6-3.544-.446 4.4-12.736-3.072-.584-5.978 13.543-4.428-.445 6.088-14.1-2.1-1.25-7.528 12.012-3.764-.445L12.4 12.9l-1.107-1.78L.665 15.57 0 13.124l8.635-7.786zm162.49 0l-2.88 6.9-8.412 1.335-.664 12.458 4.427 17.8 2.878-.22-2.8-11.847 2.99-.084 4.676 12.6 3.544-.446-4.4-12.736 3.072-.584 5.978 13.543 4.428-.445-6.088-14.1 2.1-1.25 7.528 12.012 3.764-.445L192.6 12.9l1.107-1.78 10.628 4.45.665-2.447-8.635-7.786z"
+            />
+          </svg>
         </div>
 
-        <div class="content-wrapper">
-            <!-- Segmented Human Body SVGs -->
-            <div class="human-body">
-                <svg data-position="head" class="head" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.594 95.031"><path d="M15.92 68.5l8.8 12.546 3.97 13.984-9.254-7.38-4.622-15.848zm27.1 0l-8.8 12.546-3.976 13.988 9.254-7.38 4.622-15.848zm6.11-27.775l.108-11.775-21.16-14.742L8.123 26.133 8.09 40.19l-3.24.215 1.462 9.732 5.208 1.81 2.36 11.63 9.72 11.018 10.856-.324 9.56-10.37 1.918-11.952 5.207-1.81 1.342-9.517zm-43.085-1.84l-.257-13.82L28.226 11.9l23.618 15.755-.216 10.37 4.976-17.085L42.556 2.376 25.49 0 10.803 3.673.002 24.415z"/></svg>
-                <svg data-position="shoulder" class="shoulder" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.532 46.594"><path d="M38.244-.004l1.98 9.232-11.653 2.857-7.474-2.637zm33.032 0l-1.98 9.232 11.653 2.857 7.474-2.637zm21.238 10.54l4.044-2.187 12.656 14 .07 5.33S92.76 10.66 92.515 10.535zm-1.285.58c-.008.28 17.762 18.922 17.762 18.922l.537 16.557-6.157-10.55L91.5 30.988 83.148 15.6zm-74.224-.58L12.962 8.35l-12.656 14-.062 5.325s16.52-17.015 16.764-17.14zm1.285.58C18.3 11.396.528 30.038.528 30.038L-.01 46.595l6.157-10.55 11.87-5.056L26.374 15.6z"/></svg>
-                <svg data-position="arm" class="arm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156.344 119.25"><path d="M21.12 56.5a1.678 1.678 0 0 1-.427.33l.935 8.224 12.977-13.89 1.2-8.958A168.2 168.2 0 0 0 21.12 56.5zm1.387 12.522l-18.07 48.91 5.757 1.333 19.125-39.44 3.518-22.047zm-5.278-18.96l2.638 18.74-17.2 46.023L.01 113.05l6.644-35.518zm118.015 6.44a1.678 1.678 0 0 0 .426.33l-.934 8.222-12.977-13.89-1.2-8.958A168.2 168.2 0 0 1 135.24 56.5zm-1.39 12.52l18.073 48.91-5.758 1.333-19.132-39.44-3.52-22.05zm5.28-18.96l-2.64 18.74 17.2 46.023 2.658-1.775-6.643-35.518zm-103.1-12.323a1.78 1.78 0 0 1 .407-.24l3.666-27.345L33.07.015l-7.258 10.58-6.16 37.04.566 4.973a151.447 151.447 0 0 1 15.808-14.87zm84.3 0a1.824 1.824 0 0 0-.407-.24l-3.666-27.345L123.3.015l7.258 10.58 6.16 37.04-.566 4.973a151.447 151.447 0 0 0-15.822-14.87zM22.288 8.832l-3.3 35.276-2.2-26.238zm111.79 0l3.3 35.276 2.2-26.238z"/></svg>
-                <svg data-position="chest" class="chest" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.594 45.063"><path d="M19.32 0l-9.225 16.488-10.1 5.056 6.15 4.836 4.832 14.07 11.2 4.616 17.85-8.828-4.452-34.7zm47.934 0l9.225 16.488 10.1 5.056-6.15 4.836-4.833 14.07-11.2 4.616-17.844-8.828 4.45-34.7z"/></svg>
-                <svg data-position="stomach" class="stomach" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.25 107.594"><path d="M19.25 7.49l16.6-7.5-.5 12.16-14.943 7.662zm-10.322 8.9l6.9 3.848-.8-9.116zm5.617-8.732L1.32 2.15 6.3 15.6zm-8.17 9.267l9.015 5.514 1.54 11.028-8.795-5.735zm15.53 5.89l.332 8.662 12.286-2.665.664-11.826zm14.61 84.783L33.28 76.062l-.08-20.53-11.654-5.736-1.32 37.5zM22.735 35.64L22.57 46.3l11.787 3.166.166-16.657zm-14.16-5.255L16.49 35.9l1.1 11.25-8.8-7.06zm8.79 22.74l-9.673-7.28-.84 9.78L-.006 68.29l10.564 14.594 5.5.883 1.98-20.735zM56 7.488l-16.6-7.5.5 12.16 14.942 7.66zm10.32 8.9l-6.9 3.847.8-9.116zm-5.617-8.733L73.93 2.148l-4.98 13.447zm8.17 9.267l-9.015 5.514-1.54 11.03 8.8-5.736zm-15.53 5.89l-.332 8.662-12.285-2.665-.664-11.827zm-14.61 84.783l3.234-31.536.082-20.532 11.65-5.735 1.32 37.5zm13.78-71.957l.166 10.66-11.786 3.168-.166-16.657zm14.16-5.256l-7.915 5.514-1.1 11.25 8.794-7.06zm-8.79 22.743l9.673-7.28.84 9.78 6.862 12.66-10.564 14.597-5.5.883-1.975-20.74z"/></svg>
-                <svg data-position="legs" class="legs" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93.626 286.625"><path d="M17.143 138.643l-.664 5.99 4.647 5.77 1.55 9.1 3.1 1.33 2.655-13.755 1.77-4.88-1.55-3.107zm20.582.444l-3.32 9.318-7.082 13.755 1.77 12.647 5.09-14.2 4.205-7.982zm-26.557-12.645l5.09 27.29-3.32-1.777-2.656 8.875zm22.795 42.374l-1.55 4.88-3.32 20.634-.442 27.51 4.65 26.847-.223-34.39 4.87-13.754.663-15.087zM23.34 181.24l1.106 41.267 8.853 33.28-9.628-4.55-16.045-57.8 5.533-36.384zm15.934 80.536l-.664 18.415-1.55 6.435h-4.647l-1.327-4.437-1.55-.222.332 4.437-5.864-1.778-1.55-.887-6.64-1.442-.22-5.214 6.418-10.87 4.426-5.548 10.844-4.437zM13.63 3.076v22.476l15.71 31.073 9.923 30.85L38.23 66.1zm25.49 30.248l.118-.148-.793-2.024L21.9 12.992l-1.242-.44L31.642 40.93zM32.865 44.09l6.812 17.6 2.274-21.596-1.344-3.43zM6.395 61.91l.827 25.34 12.816 35.257-3.928 10.136L3.5 88.133zM30.96 74.69l.345.826 6.47 15.48-4.177 38.342-6.594-3.526 5.715-35.7zm45.5 63.953l.663 5.99-4.647 5.77-1.55 9.1-3.1 1.33-2.655-13.755-1.77-4.88 1.55-3.107zm-20.582.444l3.32 9.318 7.08 13.755-1.77 12.647-5.09-14.2-4.2-7.987zm3.762 29.73l1.55 4.88 3.32 20.633.442 27.51-4.648 26.847.22-34.39-4.867-13.754-.67-15.087zm10.623 12.424l-1.107 41.267-8.852 33.28 9.627-4.55 16.046-57.8-5.533-36.384zM54.33 261.777l.663 18.415 1.546 6.435h4.648l1.328-4.437 1.55-.222-.333 4.437 5.863-1.778 1.55-.887 6.638-1.442.222-5.214-6.418-10.868-4.426-5.547-10.844-4.437zm25.643-258.7v22.476L64.26 56.625l-9.923 30.85L55.37 66.1zM54.48 33.326l-.118-.15.793-2.023L71.7 12.993l1.24-.44L61.96 40.93zm6.255 10.764l-6.812 17.6-2.274-21.595 1.344-3.43zm26.47 17.82l-.827 25.342-12.816 35.256 3.927 10.136 12.61-44.51zM62.64 74.693l-.346.825-6.47 15.48 4.178 38.342 6.594-3.527-5.715-35.7zm19.792 51.75l-5.09 27.29 3.32-1.776 2.655 8.875zM9.495-.007l.827 21.373-7.028 42.308-3.306-34.155zm2.068 27.323L26.24 59.707l3.307 26-6.2 36.58L9.91 85.046l-.827-38.342zM84.103-.01l-.826 21.375 7.03 42.308 3.306-34.155zm-2.066 27.325L67.36 59.707l-3.308 26 6.2 36.58 13.436-37.24.827-38.34z"/></svg>
-                <svg data-position="hands" class="hands" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 205 38.938"><path d="M21.255-.002l2.88 6.9 8.412 1.335.664 12.458-4.427 17.8-2.878-.22 2.8-11.847-2.99-.084-4.676 12.6-3.544-.446 4.4-12.736-3.072-.584-5.978 13.543-4.428-.445 6.088-14.1-2.1-1.25-7.528 12.012-3.764-.445L12.4 12.9l-1.107-1.78L.665 15.57 0 13.124l8.635-7.786zm162.49 0l-2.88 6.9-8.412 1.335-.664 12.458 4.427 17.8 2.878-.22-2.8-11.847 2.99-.084 4.676 12.6 3.544-.446-4.4-12.736 3.072-.584 5.978 13.543 4.428-.445-6.088-14.1 2.1-1.25 7.528 12.012 3.764-.445L192.6 12.9l1.107-1.78 10.628 4.45.665-2.447-8.635-7.786z"/></svg>
+        <!-- Results Panel -->
+        <div class="results-panel">
+          <div class="selected-area">
+            <h3>Selected Area: <span id="selected-body-part">None</span></h3>
+            <div class="action-buttons">
+              <button id="download-btn" class="btn">
+                <i class="fas fa-file-pdf"></i> Download Report
+              </button>
             </div>
+          </div>
 
-            <!-- Results Panel -->
-            <div class="results-panel">
-                <div class="selected-area">
-                    <h3>Selected Area: <span id="selected-body-part">None</span></h3>
-                    <div class="action-buttons">
-                        <button id="download-btn" class="btn"><i class="fas fa-file-pdf"></i> Download Report</button>
-                    </div>
-                </div>
-
-                <div class="diseases-list">
-                    <h3>Possible Conditions</h3>
-                    <div id="loading" class="loading"> <!-- Loading Indicator -->
-                         <div class="loading-spinner"></div>
-                         Loading conditions...
-                    </div>
-                    <div id="diseases-container">
-                        <div class="empty-message">Please select a body part or use search to view potential conditions.</div>
-                    </div>
-                </div>
-
-                <!-- Specialist Info Section -->
-                <div id="specialist-info" style="display: none;">
-                    <h3>Recommended Specialists</h3>
-                    <div id="specialist-container">
-                        <!-- Specialist cards will be appended here by JS -->
-                    </div>
-                </div>
+          <div class="diseases-list">
+            <h3>Possible Conditions</h3>
+            <div id="loading" class="loading">
+              <!-- Loading Indicator -->
+              <div class="loading-spinner"></div>
+              Loading conditions...
             </div>
+            <div id="diseases-container">
+              <div class="empty-message">
+                Please select a body part or use search to view potential
+                conditions.
+              </div>
+            </div>
+          </div>
+
+          <!-- Specialist Info Section -->
+          <div id="specialist-info" style="display: none">
+            <h3>Recommended Specialists</h3>
+            <div id="specialist-container">
+              <!-- Specialist cards will be appended here by JS -->
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div class="A"></div> <!-- Spacer -->
+    <div class="A"></div>
+    <!-- Spacer -->
 
     <!-- Footer -->
     <footer class="footer">
-         <div class="footer-container">
-             <div class="footer-content">
-                 <div class="footer-logo">
-                     <h2><span>DiagnoAI</span></h2>
-                     <p>Providing preliminary health insights based on symptoms. Always consult a healthcare professional for diagnosis.</p>
-                 </div>
+      <div class="footer-container">
+        <div class="footer-content">
+          <div class="footer-logo">
+            <h2><span>DiagnoAI</span></h2>
+            <p>
+              Providing preliminary health insights based on symptoms. Always
+              consult a healthcare professional for diagnosis.
+            </p>
+          </div>
 
-                 <div class="footer-links">
-                     <h3>Quick Links</h3>
-                     <ul>
-                         <li><a href="Vision.html">Our Services</a></li>
-                         <li><a href="FrontSYM.html">Front Symptoms</a></li>
-                         <li><a href="BackSYM.html">Back Symptoms</a></li>
-                         <li><a href="verify-trxn.html">Verify Txn</a></li>
-                     </ul>
-                 </div>
+          <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="Vision.html">Our Services</a></li>
+              <li><a href="FrontSYM.html">Front Symptoms</a></li>
+              <li><a href="BackSYM.html">Back Symptoms</a></li>
+              <li><a href="verify-trxn.html">Verify Txn</a></li>
+            </ul>
+          </div>
 
-                 <div class="footer-social">
-                     <h3>Connect With Us</h3>
-                     <p style="margin-top: 17px;">Stay updated through our channels.</p>
-                     <div class="social-icons">
-                         <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
-                         <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
-                         <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                         <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
-                     </div>
-                 </div>
-             </div>
+          <div class="footer-social">
+            <h3>Connect With Us</h3>
+            <p style="margin-top: 17px">Stay updated through our channels.</p>
+            <div class="social-icons">
+              <a href="#" class="social-icon" title="Twitter"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" class="social-icon" title="Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-icon" title="LinkedIn"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="#" class="social-icon" title="YouTube"
+                ><i class="fab fa-youtube"></i
+              ></a>
+            </div>
+          </div>
+        </div>
 
-             <div class="footer-bottom">
-                 <p>© 2025 <a href="#">DiagnoAI</a>. All Rights Reserved. <span style="display: block; font-size: 0.8em; margin-top: 5px;">Disclaimer: This tool is for informational purposes only and does not constitute medical advice.</span></p>
-             </div>
-         </div>
-     </footer>
+        <div class="footer-bottom">
+          <p>
+            © 2025 <a href="#">DiagnoAI</a>. All Rights Reserved.
+            <span style="display: block; font-size: 0.8em; margin-top: 5px"
+              >Disclaimer: This tool is for informational purposes only and does
+              not constitute medical advice.</span
+            >
+          </p>
+        </div>
+      </div>
+    </footer>
 
     <script>
-        // Medical Databases (Keep as provided in previous step)
-        const medicalDatabase = {
-            head: [
-                { name: "Migraine", symptoms: "Throbbing pain...", medications: "Ibuprofen...", severity: "high", specialist: "Neurologist", firstAid: "Rest..." },
-                { name: "Tension Headache", symptoms: "Dull ache...", medications: "Acetaminophen...", severity: "low", specialist: "Primary Care Physician", firstAid: "Massage..." },
-                { name: "Sinusitis", symptoms: "Facial pain...", medications: "Decongestants...", severity: "medium", specialist: "ENT Specialist", firstAid: "Saline spray..." },
-                { name: "Cluster Headache", symptoms: "Severe burning...", medications: "Sumatriptan injections...", severity: "high", specialist: "Neurologist", firstAid: "Oxygen..." }
-            ],
-            shoulder: [
-                { name: "Rotator Cuff Injury", symptoms: "Dull ache...", medications: "NSAIDs...", severity: "medium", specialist: "Orthopedic Surgeon", firstAid: "Rest, ice..." },
-                { name: "Frozen Shoulder", symptoms: "Stiffness...", medications: "NSAIDs...", severity: "medium", specialist: "Orthopedic Specialist", firstAid: "Gentle exercises..." }, // Corrected specialist type
-                { name: "Shoulder Bursitis", symptoms: "Pain when moving...", medications: "NSAIDs...", severity: "low", specialist: "Rheumatologist", firstAid: "Rest, ice..." }, // Note: Can also be Orthopedist
-                { name: "Shoulder Dislocation", symptoms: "Intense pain...", medications: "Reduction procedure...", severity: "high", specialist: "Emergency Physician", firstAid: "Immobilize, ice, ER..." }
-            ],
-             arm: [
-                 { name: "Tennis Elbow", symptoms: "Pain on outer elbow...", medications: "NSAIDs...", severity: "low", specialist: "Orthopedic Specialist", firstAid: "Rest, ice..." }, // Corrected Specialist
-                 { name: "Carpal Tunnel Syndrome", symptoms: "Numbness/tingling...", medications: "NSAIDs...", severity: "medium", specialist: "Neurologist", firstAid: "Wrist splint..." },
-                 { name: "Muscle Strain", symptoms: "Pain, swelling...", medications: "NSAIDs...", severity: "low", specialist: "Primary Care Physician", firstAid: "RICE..." },
-                 { name: "Radial Nerve Injury", symptoms: "Wrist drop...", medications: "Splinting...", severity: "high", specialist: "Neurologist", firstAid: "Splint wrist..." }
-             ],
-             chest: [
-                 { name: "Heartburn/GERD", symptoms: "Burning chest pain...", medications: "Antacids...", severity: "low", specialist: "Gastroenterologist", firstAid: "Stay upright..." },
-                 { name: "Costochondritis", symptoms: "Sharp chest pain...", medications: "NSAIDs...", severity: "low", specialist: "Primary Care Physician", firstAid: "Heat..." },
-                 { name: "Angina (Stable)", symptoms: "Pressure/squeezing...", medications: "Nitroglycerin...", severity: "high", specialist: "Cardiologist", firstAid: "Rest, nitro..." },
-                 { name: "Pneumonia", symptoms: "Chest pain breathing...", medications: "Antibiotics...", severity: "high", specialist: "Pulmonologist", firstAid: "Hydrate, seek care..." }
-             ],
-             stomach: [
-                 { name: "Gastritis", symptoms: "Upper abdominal pain...", medications: "Antacids...", severity: "medium", specialist: "Gastroenterologist", firstAid: "Bland meals..." },
-                 { name: "Irritable Bowel Syndrome (IBS)", symptoms: "Abdominal cramping...", medications: "Fiber...", severity: "low", specialist: "Gastroenterologist", firstAid: "Heat, avoid triggers..." },
-                 { name: "Appendicitis", symptoms: "Pain near belly button...", medications: "Emergency appendectomy...", severity: "high", specialist: "Emergency Surgeon", firstAid: "ER, NPO..." }, // Added NPO
-                 { name: "Gallstones", symptoms: "Sudden intense upper right...", medications: "Pain medication...", severity: "high", specialist: "Gastroenterologist", firstAid: "Avoid fatty foods..." } // Can also be Surgeon
-             ],
-             legs: [
-                 { name: "Sciatica", symptoms: "Pain radiating down leg...", medications: "NSAIDs...", severity: "medium", specialist: "Neurologist", firstAid: "Heat/ice..." }, // Can be Ortho/PCP too
-                 { name: "Deep Vein Thrombosis (DVT)", symptoms: "Leg swelling...", medications: "Anticoagulants...", severity: "high", specialist: "Vascular Specialist", firstAid: "ER, elevate..." },
-                 { name: "Varicose Veins", symptoms: "Bulging veins...", medications: "Compression stockings...", severity: "low", specialist: "Vascular Specialist", firstAid: "Elevate legs..." },
-                 { name: "Shin Splints", symptoms: "Pain along shinbone...", medications: "NSAIDs...", severity: "low", specialist: "Sports Medicine Physician", firstAid: "Rest, ice..." } // Can be Ortho/PCP
-             ],
-             hands: [
-                 { name: "Trigger Finger", symptoms: "Finger stiffness...", medications: "NSAIDs...", severity: "low", specialist: "Hand Surgeon", firstAid: "Rest, heat..." }, // Ortho can also manage
-                 { name: "Dupuytren's Contracture", symptoms: "Thickened palm...", medications: "Collagenase injections...", severity: "medium", specialist: "Hand Surgeon", firstAid: "Stretching..." }, // Ortho too
-                 { name: "Gout (in Hand)", symptoms: "Sudden intense joint pain...", medications: "NSAIDs...", severity: "medium", specialist: "Rheumatologist", firstAid: "Ice, elevate..." }, // PCP can manage
-                 { name: "Rheumatoid Arthritis", symptoms: "Joint pain/stiffness...", medications: "DMARDs...", severity: "high", specialist: "Rheumatologist", firstAid: "Warm compresses..." }
-             ]
-            // Add more body parts if needed
-        };
+      // Medical Databases (Keep as provided in previous step)
+      const medicalDatabase = {
+        head: [
+          {
+            name: "Migraine",
+            symptoms: "Throbbing pain...",
+            medications: "Ibuprofen...",
+            severity: "high",
+            specialist: "Neurologist",
+            firstAid: "Rest...",
+          },
+          {
+            name: "Tension Headache",
+            symptoms: "Dull ache...",
+            medications: "Acetaminophen...",
+            severity: "low",
+            specialist: "Primary Care Physician",
+            firstAid: "Massage...",
+          },
+          {
+            name: "Sinusitis",
+            symptoms: "Facial pain...",
+            medications: "Decongestants...",
+            severity: "medium",
+            specialist: "ENT Specialist",
+            firstAid: "Saline spray...",
+          },
+          {
+            name: "Cluster Headache",
+            symptoms: "Severe burning...",
+            medications: "Sumatriptan injections...",
+            severity: "high",
+            specialist: "Neurologist",
+            firstAid: "Oxygen...",
+          },
+        ],
+        shoulder: [
+          {
+            name: "Rotator Cuff Injury",
+            symptoms: "Dull ache...",
+            medications: "NSAIDs...",
+            severity: "medium",
+            specialist: "Orthopedic Surgeon",
+            firstAid: "Rest, ice...",
+          },
+          {
+            name: "Frozen Shoulder",
+            symptoms: "Stiffness...",
+            medications: "NSAIDs...",
+            severity: "medium",
+            specialist: "Orthopedic Specialist",
+            firstAid: "Gentle exercises...",
+          }, // Corrected specialist type
+          {
+            name: "Shoulder Bursitis",
+            symptoms: "Pain when moving...",
+            medications: "NSAIDs...",
+            severity: "low",
+            specialist: "Rheumatologist",
+            firstAid: "Rest, ice...",
+          }, // Note: Can also be Orthopedist
+          {
+            name: "Shoulder Dislocation",
+            symptoms: "Intense pain...",
+            medications: "Reduction procedure...",
+            severity: "high",
+            specialist: "Emergency Physician",
+            firstAid: "Immobilize, ice, ER...",
+          },
+        ],
+        arm: [
+          {
+            name: "Tennis Elbow",
+            symptoms: "Pain on outer elbow...",
+            medications: "NSAIDs...",
+            severity: "low",
+            specialist: "Orthopedic Specialist",
+            firstAid: "Rest, ice...",
+          }, // Corrected Specialist
+          {
+            name: "Carpal Tunnel Syndrome",
+            symptoms: "Numbness/tingling...",
+            medications: "NSAIDs...",
+            severity: "medium",
+            specialist: "Neurologist",
+            firstAid: "Wrist splint...",
+          },
+          {
+            name: "Muscle Strain",
+            symptoms: "Pain, swelling...",
+            medications: "NSAIDs...",
+            severity: "low",
+            specialist: "Primary Care Physician",
+            firstAid: "RICE...",
+          },
+          {
+            name: "Radial Nerve Injury",
+            symptoms: "Wrist drop...",
+            medications: "Splinting...",
+            severity: "high",
+            specialist: "Neurologist",
+            firstAid: "Splint wrist...",
+          },
+        ],
+        chest: [
+          {
+            name: "Heartburn/GERD",
+            symptoms: "Burning chest pain...",
+            medications: "Antacids...",
+            severity: "low",
+            specialist: "Gastroenterologist",
+            firstAid: "Stay upright...",
+          },
+          {
+            name: "Costochondritis",
+            symptoms: "Sharp chest pain...",
+            medications: "NSAIDs...",
+            severity: "low",
+            specialist: "Primary Care Physician",
+            firstAid: "Heat...",
+          },
+          {
+            name: "Angina (Stable)",
+            symptoms: "Pressure/squeezing...",
+            medications: "Nitroglycerin...",
+            severity: "high",
+            specialist: "Cardiologist",
+            firstAid: "Rest, nitro...",
+          },
+          {
+            name: "Pneumonia",
+            symptoms: "Chest pain breathing...",
+            medications: "Antibiotics...",
+            severity: "high",
+            specialist: "Pulmonologist",
+            firstAid: "Hydrate, seek care...",
+          },
+        ],
+        stomach: [
+          {
+            name: "Gastritis",
+            symptoms: "Upper abdominal pain...",
+            medications: "Antacids...",
+            severity: "medium",
+            specialist: "Gastroenterologist",
+            firstAid: "Bland meals...",
+          },
+          {
+            name: "Irritable Bowel Syndrome (IBS)",
+            symptoms: "Abdominal cramping...",
+            medications: "Fiber...",
+            severity: "low",
+            specialist: "Gastroenterologist",
+            firstAid: "Heat, avoid triggers...",
+          },
+          {
+            name: "Appendicitis",
+            symptoms: "Pain near belly button...",
+            medications: "Emergency appendectomy...",
+            severity: "high",
+            specialist: "Emergency Surgeon",
+            firstAid: "ER, NPO...",
+          }, // Added NPO
+          {
+            name: "Gallstones",
+            symptoms: "Sudden intense upper right...",
+            medications: "Pain medication...",
+            severity: "high",
+            specialist: "Gastroenterologist",
+            firstAid: "Avoid fatty foods...",
+          }, // Can also be Surgeon
+        ],
+        legs: [
+          {
+            name: "Sciatica",
+            symptoms: "Pain radiating down leg...",
+            medications: "NSAIDs...",
+            severity: "medium",
+            specialist: "Neurologist",
+            firstAid: "Heat/ice...",
+          }, // Can be Ortho/PCP too
+          {
+            name: "Deep Vein Thrombosis (DVT)",
+            symptoms: "Leg swelling...",
+            medications: "Anticoagulants...",
+            severity: "high",
+            specialist: "Vascular Specialist",
+            firstAid: "ER, elevate...",
+          },
+          {
+            name: "Varicose Veins",
+            symptoms: "Bulging veins...",
+            medications: "Compression stockings...",
+            severity: "low",
+            specialist: "Vascular Specialist",
+            firstAid: "Elevate legs...",
+          },
+          {
+            name: "Shin Splints",
+            symptoms: "Pain along shinbone...",
+            medications: "NSAIDs...",
+            severity: "low",
+            specialist: "Sports Medicine Physician",
+            firstAid: "Rest, ice...",
+          }, // Can be Ortho/PCP
+        ],
+        hands: [
+          {
+            name: "Trigger Finger",
+            symptoms: "Finger stiffness...",
+            medications: "NSAIDs...",
+            severity: "low",
+            specialist: "Hand Surgeon",
+            firstAid: "Rest, heat...",
+          }, // Ortho can also manage
+          {
+            name: "Dupuytren's Contracture",
+            symptoms: "Thickened palm...",
+            medications: "Collagenase injections...",
+            severity: "medium",
+            specialist: "Hand Surgeon",
+            firstAid: "Stretching...",
+          }, // Ortho too
+          {
+            name: "Gout (in Hand)",
+            symptoms: "Sudden intense joint pain...",
+            medications: "NSAIDs...",
+            severity: "medium",
+            specialist: "Rheumatologist",
+            firstAid: "Ice, elevate...",
+          }, // PCP can manage
+          {
+            name: "Rheumatoid Arthritis",
+            symptoms: "Joint pain/stiffness...",
+            medications: "DMARDs...",
+            severity: "high",
+            specialist: "Rheumatologist",
+            firstAid: "Warm compresses...",
+          },
+        ],
+        // Add more body parts if needed
+      };
 
-        const specialistDatabase = {
-             "Neurologist": [
-                 { name: "Dr. Sarah Johnson", specialty: "Neurologist", hospital: "Apollo Hospitals, Delhi", address: "...", phone: "+91 987..." },
-                 { name: "Dr. Michael Chen", specialty: "Neurologist", hospital: "Fortis Hospital, Mumbai", address: "...", phone: "+91 876..." }
-             ],
-             "Primary Care Physician": [
-                 { name: "Dr. Emily Wilson", specialty: "PCP", hospital: "Manipal Hospitals, Bangalore", address: "...", phone: "+91 765..." },
-                 { name: "Dr. James Rodriguez", specialty: "PCP", hospital: "Max Super Speciality Hospital, Delhi", address: "...", phone: "+91 654..." }
-             ],
-             "ENT Specialist": [
-                 { name: "Dr. Arun Kumar", specialty: "ENT", hospital: "PGIMER, Chandigarh", address: "...", phone: "+91 876..." },
-                 { name: "Dr. Priya Sharma", specialty: "ENT", hospital: "AIIMS, New Delhi", address: "...", phone: "+91 987..." }
-             ],
-             "Orthopedic Surgeon": [ // Can manage many bone/joint issues
-                 { name: "Dr. Patricia White", specialty: "Orthopedic Surgeon", hospital: "Medanta, Gurgaon", address: "...", phone: "+91 509..." },
-                 { name: "Dr. Thomas Brown", specialty: "Orthopedic Surgeon", hospital: "Narayana Health, Bangalore", address: "...", phone: "+91 498..." }
-             ],
-             "Orthopedic Specialist": [ // Non-surgeon, often good first step for non-surgical ortho
-                 { name: "Dr. Rohan Verma", specialty: "Orthopedic Specialist", hospital: "Apollo Spectra, Chennai", address: "...", phone: "+91 912..." }
-             ],
-             "Rheumatologist": [
-                 { name: "Dr. Richard Harris", specialty: "Rheumatologist", hospital: "Global Hospitals, Chennai", address: "...", phone: "+91 165..." },
-                 { name: "Dr. Neha Gupta", specialty: "Rheumatologist", hospital: "Fortis Hospital, Mumbai", address: "...", phone: "+91 876..." }
-             ],
-             "Emergency Physician": [
-                 { name: "Dr. David Miller", specialty: "Emergency Physician", hospital: "AIIMS, New Delhi", address: "...", phone: "+91 610..." },
-                 { name: "Dr. Ananya Reddy", specialty: "Emergency Physician", hospital: "Apollo Hospitals, Hyderabad", address: "...", phone: "+91 987..." }
-             ],
-              "Emergency Surgeon": [ // For surgical emergencies like appendicitis
-                  { name: "Dr. Vikram Singh", specialty: "General Surgeon (Emergency)", hospital: "Sir Ganga Ram Hospital, Delhi", address: "...", phone: "+91 712..." }
-              ],
-             "Gastroenterologist": [
-                 { name: "Dr. Mark Taylor", specialty: "Gastroenterologist", hospital: "BLK Hospital, Delhi", address: "...", phone: "+91 654..." },
-                 { name: "Dr. Sunita Patel", specialty: "Gastroenterologist", hospital: "Kokilaben Hospital, Mumbai", address: "...", phone: "+91 987..." }
-             ],
-             "Cardiologist": [
-                 { name: "Dr. Susan Baker", specialty: "Cardiologist", hospital: "Asian Heart Institute, Mumbai", address: "...", phone: "+91 765..." },
-                 { name: "Dr. Rajesh Khanna", specialty: "Cardiologist", hospital: "Escorts Heart Institute, Delhi", address: "...", phone: "+91 987..." }
-             ],
-             "Pulmonologist": [
-                 { name: "Dr. Anil Kumar", specialty: "Pulmonologist", hospital: "Artemis Hospital, Gurgaon", address: "...", phone: "+91 943..." },
-                 { name: "Dr. Meena Desai", specialty: "Pulmonologist", hospital: "Lilavati Hospital, Mumbai", address: "...", phone: "+91 987..." }
-             ],
-             "Vascular Specialist": [ // Covers DVT, Varicose Veins
-                 { name: "Dr. Nancy Green", specialty: "Vascular Surgeon", hospital: "Lilavati Hospital, Mumbai", address: "...", phone: "+91 276..." },
-                 { name: "Dr. Amit Sharma", specialty: "Vascular Specialist", hospital: "Max Hospital, Delhi", address: "...", phone: "+91 987..." }
-             ],
-             "Sports Medicine Physician": [
-                 { name: "Dr. Kevin Lee", specialty: "Sports Medicine", hospital: "Jaslok Hospital, Mumbai", address: "...", phone: "+91 387..." },
-                 { name: "Dr. Priya Reddy", specialty: "Sports Medicine", hospital: "Apollo Hospitals, Bangalore", address: "...", phone: "+91 987..." }
-             ],
-             "Hand Surgeon": [ // Specific subspecialty of Ortho or Plastics
-                 { name: "Dr. Robert Davis", specialty: "Hand Surgeon", hospital: "Columbia Asia, Pune", address: "...", phone: "+91 832..." },
-                 { name: "Dr. Sneha Kapoor", specialty: "Hand Surgeon", hospital: "Fortis Hospital, Mumbai", address: "...", phone: "+91 987..." }
-             ]
-            // Add more specialists as needed
-        };
+      const specialistDatabase = {
+        Neurologist: [
+          {
+            name: "Dr. Sarah Johnson",
+            specialty: "Neurologist",
+            hospital: "Apollo Hospitals, Delhi",
+            address: "...",
+            phone: "+91 987...",
+          },
+          {
+            name: "Dr. Michael Chen",
+            specialty: "Neurologist",
+            hospital: "Fortis Hospital, Mumbai",
+            address: "...",
+            phone: "+91 876...",
+          },
+        ],
+        "Primary Care Physician": [
+          {
+            name: "Dr. Emily Wilson",
+            specialty: "PCP",
+            hospital: "Manipal Hospitals, Bangalore",
+            address: "...",
+            phone: "+91 765...",
+          },
+          {
+            name: "Dr. James Rodriguez",
+            specialty: "PCP",
+            hospital: "Max Super Speciality Hospital, Delhi",
+            address: "...",
+            phone: "+91 654...",
+          },
+        ],
+        "ENT Specialist": [
+          {
+            name: "Dr. Arun Kumar",
+            specialty: "ENT",
+            hospital: "PGIMER, Chandigarh",
+            address: "...",
+            phone: "+91 876...",
+          },
+          {
+            name: "Dr. Priya Sharma",
+            specialty: "ENT",
+            hospital: "AIIMS, New Delhi",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        "Orthopedic Surgeon": [
+          // Can manage many bone/joint issues
+          {
+            name: "Dr. Patricia White",
+            specialty: "Orthopedic Surgeon",
+            hospital: "Medanta, Gurgaon",
+            address: "...",
+            phone: "+91 509...",
+          },
+          {
+            name: "Dr. Thomas Brown",
+            specialty: "Orthopedic Surgeon",
+            hospital: "Narayana Health, Bangalore",
+            address: "...",
+            phone: "+91 498...",
+          },
+        ],
+        "Orthopedic Specialist": [
+          // Non-surgeon, often good first step for non-surgical ortho
+          {
+            name: "Dr. Rohan Verma",
+            specialty: "Orthopedic Specialist",
+            hospital: "Apollo Spectra, Chennai",
+            address: "...",
+            phone: "+91 912...",
+          },
+        ],
+        Rheumatologist: [
+          {
+            name: "Dr. Richard Harris",
+            specialty: "Rheumatologist",
+            hospital: "Global Hospitals, Chennai",
+            address: "...",
+            phone: "+91 165...",
+          },
+          {
+            name: "Dr. Neha Gupta",
+            specialty: "Rheumatologist",
+            hospital: "Fortis Hospital, Mumbai",
+            address: "...",
+            phone: "+91 876...",
+          },
+        ],
+        "Emergency Physician": [
+          {
+            name: "Dr. David Miller",
+            specialty: "Emergency Physician",
+            hospital: "AIIMS, New Delhi",
+            address: "...",
+            phone: "+91 610...",
+          },
+          {
+            name: "Dr. Ananya Reddy",
+            specialty: "Emergency Physician",
+            hospital: "Apollo Hospitals, Hyderabad",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        "Emergency Surgeon": [
+          // For surgical emergencies like appendicitis
+          {
+            name: "Dr. Vikram Singh",
+            specialty: "General Surgeon (Emergency)",
+            hospital: "Sir Ganga Ram Hospital, Delhi",
+            address: "...",
+            phone: "+91 712...",
+          },
+        ],
+        Gastroenterologist: [
+          {
+            name: "Dr. Mark Taylor",
+            specialty: "Gastroenterologist",
+            hospital: "BLK Hospital, Delhi",
+            address: "...",
+            phone: "+91 654...",
+          },
+          {
+            name: "Dr. Sunita Patel",
+            specialty: "Gastroenterologist",
+            hospital: "Kokilaben Hospital, Mumbai",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        Cardiologist: [
+          {
+            name: "Dr. Susan Baker",
+            specialty: "Cardiologist",
+            hospital: "Asian Heart Institute, Mumbai",
+            address: "...",
+            phone: "+91 765...",
+          },
+          {
+            name: "Dr. Rajesh Khanna",
+            specialty: "Cardiologist",
+            hospital: "Escorts Heart Institute, Delhi",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        Pulmonologist: [
+          {
+            name: "Dr. Anil Kumar",
+            specialty: "Pulmonologist",
+            hospital: "Artemis Hospital, Gurgaon",
+            address: "...",
+            phone: "+91 943...",
+          },
+          {
+            name: "Dr. Meena Desai",
+            specialty: "Pulmonologist",
+            hospital: "Lilavati Hospital, Mumbai",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        "Vascular Specialist": [
+          // Covers DVT, Varicose Veins
+          {
+            name: "Dr. Nancy Green",
+            specialty: "Vascular Surgeon",
+            hospital: "Lilavati Hospital, Mumbai",
+            address: "...",
+            phone: "+91 276...",
+          },
+          {
+            name: "Dr. Amit Sharma",
+            specialty: "Vascular Specialist",
+            hospital: "Max Hospital, Delhi",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        "Sports Medicine Physician": [
+          {
+            name: "Dr. Kevin Lee",
+            specialty: "Sports Medicine",
+            hospital: "Jaslok Hospital, Mumbai",
+            address: "...",
+            phone: "+91 387...",
+          },
+          {
+            name: "Dr. Priya Reddy",
+            specialty: "Sports Medicine",
+            hospital: "Apollo Hospitals, Bangalore",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        "Hand Surgeon": [
+          // Specific subspecialty of Ortho or Plastics
+          {
+            name: "Dr. Robert Davis",
+            specialty: "Hand Surgeon",
+            hospital: "Columbia Asia, Pune",
+            address: "...",
+            phone: "+91 832...",
+          },
+          {
+            name: "Dr. Sneha Kapoor",
+            specialty: "Hand Surgeon",
+            hospital: "Fortis Hospital, Mumbai",
+            address: "...",
+            phone: "+91 987...",
+          },
+        ],
+        // Add more specialists as needed
+      };
 
+      // DOM elements
+      const bodyParts = document.querySelectorAll(".human-body svg"); // Target SVGs
+      const selectedBodyPartElement =
+        document.getElementById("selected-body-part");
+      const diseasesContainer = document.getElementById("diseases-container");
+      const searchInput = document.getElementById("search-input");
+      const searchBtn = document.getElementById("search-btn");
+      const downloadBtn = document.getElementById("download-btn");
+      // const emergencyBtn = document.getElementById('emergency-btn'); // REMOVED as button not in HTML
+      const specialistInfoDiv = document.getElementById("specialist-info");
+      const specialistContainer = document.getElementById(
+        "specialist-container"
+      );
+      const loadingDiv = document.getElementById("loading");
+      const initialEmptyMessageDiv = document.querySelector(
+        "#diseases-container .empty-message"
+      );
 
-        // DOM elements
-        const bodyParts = document.querySelectorAll('.human-body svg'); // Target SVGs
-        const selectedBodyPartElement = document.getElementById('selected-body-part');
-        const diseasesContainer = document.getElementById('diseases-container');
-        const searchInput = document.getElementById('search-input');
-        const searchBtn = document.getElementById('search-btn');
-        const downloadBtn = document.getElementById('download-btn');
-        // const emergencyBtn = document.getElementById('emergency-btn'); // REMOVED as button not in HTML
-        const specialistInfoDiv = document.getElementById('specialist-info');
-        const specialistContainer = document.getElementById('specialist-container');
-        const loadingDiv = document.getElementById('loading');
-        const initialEmptyMessageDiv = document.querySelector('#diseases-container .empty-message');
+      // Current state
+      let currentBodyPart = null; // Store the 'data-position' string
+      let currentConditions = [];
 
+      // Initialize the app
+      function init() {
+        // Add event listeners
+        bodyParts.forEach((part) => {
+          part.addEventListener("click", handleBodyPartClick); // Pass the event object
+        });
 
-        // Current state
-        let currentBodyPart = null; // Store the 'data-position' string
-        let currentConditions = [];
+        searchInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        });
 
-        // Initialize the app
-        function init() {
-            // Add event listeners
-            bodyParts.forEach(part => {
-                part.addEventListener('click', handleBodyPartClick); // Pass the event object
-            });
+        searchBtn.addEventListener("click", handleSearch);
+        downloadBtn.addEventListener("click", generatePDF);
+        // emergencyBtn.addEventListener('click', showEmergencyProtocols); // REMOVED
 
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleSearch();
-                }
-            });
+        loadingDiv.style.display = "none"; // Hide loading initially
+      }
 
-            searchBtn.addEventListener('click', handleSearch);
-            downloadBtn.addEventListener('click', generatePDF);
-            // emergencyBtn.addEventListener('click', showEmergencyProtocols); // REMOVED
+      // Handle body part selection
+      function handleBodyPartClick(e) {
+        const clickedSvg = e.currentTarget; // The SVG element that was clicked
+        const bodyPart = clickedSvg.getAttribute("data-position");
+        currentBodyPart = bodyPart; // Store the string name ('head', 'shoulder', etc.)
 
-             loadingDiv.style.display = 'none'; // Hide loading initially
+        // Update UI selection
+        bodyParts.forEach((part) => {
+          part.classList.remove("selected");
+        });
+        clickedSvg.classList.add("selected"); // Add selected class to the clicked SVG
+
+        // Update display text
+        selectedBodyPartElement.textContent =
+          bodyPart.charAt(0).toUpperCase() + bodyPart.slice(1);
+        searchInput.value = ""; // Clear search
+
+        // Show conditions for selected body part
+        const conditions = medicalDatabase[bodyPart] || []; // Use the string key
+        showConditions(conditions);
+      }
+
+      // Handle search functionality
+      function handleSearch() {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+
+        // Deselect visual highlighting
+        bodyParts.forEach((part) => {
+          part.classList.remove("selected");
+        });
+        currentBodyPart = null; // Clear selected part state
+
+        if (!searchTerm) {
+          selectedBodyPartElement.textContent = "None";
+          showConditions([]); // Show empty message
+          return;
         }
 
-        // Handle body part selection
-        function handleBodyPartClick(e) {
-            const clickedSvg = e.currentTarget; // The SVG element that was clicked
-            const bodyPart = clickedSvg.getAttribute('data-position');
-            currentBodyPart = bodyPart; // Store the string name ('head', 'shoulder', etc.)
+        selectedBodyPartElement.textContent = `Search: "${searchInput.value.trim()}"`;
 
-            // Update UI selection
-            bodyParts.forEach(part => {
-                part.classList.remove('selected');
-            });
-            clickedSvg.classList.add('selected'); // Add selected class to the clicked SVG
+        // Show loading
+        loadingDiv.style.display = "block";
+        diseasesContainer.innerHTML = ""; // Clear previous results
+        specialistInfoDiv.style.display = "none";
+        if (initialEmptyMessageDiv)
+          initialEmptyMessageDiv.style.display = "none";
 
-            // Update display text
-            selectedBodyPartElement.textContent = bodyPart.charAt(0).toUpperCase() + bodyPart.slice(1);
-            searchInput.value = ''; // Clear search
+        // Perform search (can be delayed for UX if needed)
+        // setTimeout(() => { // Optional delay simulation
+        const results = Object.entries(medicalDatabase).flatMap(
+          ([partId, conditions]) =>
+            conditions
+              .filter(
+                (condition) =>
+                  condition.name.toLowerCase().includes(searchTerm) ||
+                  condition.symptoms.toLowerCase().includes(searchTerm) ||
+                  (condition.medications &&
+                    condition.medications.toLowerCase().includes(searchTerm)) ||
+                  (condition.firstAid &&
+                    condition.firstAid.toLowerCase().includes(searchTerm)) ||
+                  partId.replace(/-/g, " ").includes(searchTerm) // Search body part names too
+              )
+              .map((condition) => ({ ...condition, sourcePart: partId })) // Tag with source part
+        );
 
-            // Show conditions for selected body part
-            const conditions = medicalDatabase[bodyPart] || []; // Use the string key
-            showConditions(conditions);
+        const uniqueResults = Array.from(
+          new Map(results.map((item) => [item.name, item])).values()
+        );
+        showConditions(uniqueResults);
+        // }, 200); // End delay simulation
+      }
+
+      // Display conditions in the UI
+      function showConditions(conditions) {
+        loadingDiv.style.display = "none";
+        diseasesContainer.innerHTML = "";
+        currentConditions = conditions;
+
+        if (conditions.length === 0) {
+          // Re-insert or show the initial empty message
+          if (initialEmptyMessageDiv) {
+            initialEmptyMessageDiv.style.display = "block"; // Ensure it's visible
+            diseasesContainer.appendChild(initialEmptyMessageDiv); // Append it back
+          } else {
+            // Fallback if initial message wasn't found
+            diseasesContainer.innerHTML =
+              '<div class="empty-message">No conditions found matching your criteria.</div>';
+          }
+          specialistInfoDiv.style.display = "none";
+          return;
         }
 
-        // Handle search functionality
-        function handleSearch() {
-            const searchTerm = searchInput.value.trim().toLowerCase();
+        // Ensure initial empty message is hidden when showing results
+        if (initialEmptyMessageDiv)
+          initialEmptyMessageDiv.style.display = "none";
 
-            // Deselect visual highlighting
-            bodyParts.forEach(part => {
-                part.classList.remove('selected');
-            });
-            currentBodyPart = null; // Clear selected part state
+        conditions.forEach((condition) => {
+          const diseaseItem = document.createElement("div");
+          diseaseItem.className = `disease-item ${condition.severity}-severity`;
 
+          let severityText =
+            condition.severity.charAt(0).toUpperCase() +
+            condition.severity.slice(1);
+          let severityDetail = "";
+          if (condition.severity === "high")
+            severityDetail = " - Seek care promptly";
+          else if (condition.severity === "medium")
+            severityDetail = " - Consult doctor";
 
-            if (!searchTerm) {
-                selectedBodyPartElement.textContent = "None";
-                showConditions([]); // Show empty message
-                return;
-            }
+          const severityBadgeClass = `${condition.severity}-severity-badge`;
 
-             selectedBodyPartElement.textContent = `Search: "${searchInput.value.trim()}"`;
-
-            // Show loading
-            loadingDiv.style.display = 'block';
-            diseasesContainer.innerHTML = ''; // Clear previous results
-            specialistInfoDiv.style.display = 'none';
-            if (initialEmptyMessageDiv) initialEmptyMessageDiv.style.display = 'none';
-
-            // Perform search (can be delayed for UX if needed)
-            // setTimeout(() => { // Optional delay simulation
-                const results = Object.entries(medicalDatabase).flatMap(([partId, conditions]) =>
-                     conditions.filter(condition =>
-                         condition.name.toLowerCase().includes(searchTerm) ||
-                         condition.symptoms.toLowerCase().includes(searchTerm) ||
-                         (condition.medications && condition.medications.toLowerCase().includes(searchTerm)) ||
-                         (condition.firstAid && condition.firstAid.toLowerCase().includes(searchTerm)) ||
-                         partId.replace(/-/g, ' ').includes(searchTerm) // Search body part names too
-                     ).map(condition => ({ ...condition, sourcePart: partId })) // Tag with source part
-                 );
-
-                 const uniqueResults = Array.from(new Map(results.map(item => [item.name, item])).values());
-                 showConditions(uniqueResults);
-            // }, 200); // End delay simulation
-
-        }
-
-        // Display conditions in the UI
-        function showConditions(conditions) {
-            loadingDiv.style.display = 'none';
-            diseasesContainer.innerHTML = '';
-            currentConditions = conditions;
-
-            if (conditions.length === 0) {
-                // Re-insert or show the initial empty message
-                if (initialEmptyMessageDiv) {
-                     initialEmptyMessageDiv.style.display = 'block'; // Ensure it's visible
-                     diseasesContainer.appendChild(initialEmptyMessageDiv); // Append it back
-                 } else {
-                     // Fallback if initial message wasn't found
-                     diseasesContainer.innerHTML = '<div class="empty-message">No conditions found matching your criteria.</div>';
-                 }
-                specialistInfoDiv.style.display = 'none';
-                return;
-            }
-
-             // Ensure initial empty message is hidden when showing results
-             if (initialEmptyMessageDiv) initialEmptyMessageDiv.style.display = 'none';
-
-            conditions.forEach(condition => {
-                const diseaseItem = document.createElement('div');
-                diseaseItem.className = `disease-item ${condition.severity}-severity`;
-
-                let severityText = condition.severity.charAt(0).toUpperCase() + condition.severity.slice(1);
-                let severityDetail = '';
-                if (condition.severity === 'high') severityDetail = ' - Seek care promptly';
-                else if (condition.severity === 'medium') severityDetail = ' - Consult doctor';
-
-                const severityBadgeClass = `${condition.severity}-severity-badge`;
-
-                const emergencyWarning = condition.severity === 'high' ?
-                    `<div class="emergency-warning">
+          const emergencyWarning =
+            condition.severity === "high"
+              ? `<div class="emergency-warning">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div>This condition may require prompt medical evaluation. Seek care if symptoms are severe or worsening.</div>
-                    </div>` : '';
+                    </div>`
+              : "";
 
-                const sourcePartInfo = condition.sourcePart ? `<div style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">(Related to: ${condition.sourcePart.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())})</div>` : '';
+          const sourcePartInfo = condition.sourcePart
+            ? `<div style="font-size: 0.8em; color: var(--text-light); margin-top: 5px;">(Related to: ${condition.sourcePart
+                .replace(/-/g, " ")
+                .replace(/\b\w/g, (l) => l.toUpperCase())})</div>`
+            : "";
 
-
-                diseaseItem.innerHTML = `
+          diseaseItem.innerHTML = `
                     <div class="disease-header">
                          <div>
                             <div class="disease-name">${condition.name}</div>
@@ -915,384 +1525,529 @@
                         <div class="severity-badge ${severityBadgeClass}">${severityText}${severityDetail}</div>
                     </div>
                     ${emergencyWarning}
-                    <div class="disease-symptoms"><strong>Symptoms:</strong> ${condition.symptoms}</div>
-                    ${condition.medications ? `<div class="disease-medications"><strong>Treatments/Management:</strong> ${condition.medications}</div>` : ''}
-                    <div class="disease-specialist"><strong>Recommended Specialist:</strong> ${condition.specialist}</div>
-                    ${condition.firstAid ? `<div class="disease-firstaid"><strong>First Aid:</strong> ${condition.firstAid}</div>` : ''}
+                    <div class="disease-symptoms"><strong>Symptoms:</strong> ${
+                      condition.symptoms
+                    }</div>
+                    ${
+                      condition.medications
+                        ? `<div class="disease-medications"><strong>Treatments/Management:</strong> ${condition.medications}</div>`
+                        : ""
+                    }
+                    <div class="disease-specialist"><strong>Recommended Specialist:</strong> ${
+                      condition.specialist
+                    }</div>
+                    ${
+                      condition.firstAid
+                        ? `<div class="disease-firstaid"><strong>First Aid:</strong> ${condition.firstAid}</div>`
+                        : ""
+                    }
                 `;
-                diseasesContainer.appendChild(diseaseItem);
-            });
+          diseasesContainer.appendChild(diseaseItem);
+        });
 
-            // Show aggregated specialist info
-            if (conditions.length > 0) {
-                 aggregateAndShowSpecialists(conditions);
-             } else {
-                 specialistInfoDiv.style.display = 'none';
-             }
+        // Show aggregated specialist info
+        if (conditions.length > 0) {
+          aggregateAndShowSpecialists(conditions);
+        } else {
+          specialistInfoDiv.style.display = "none";
+        }
+      }
+
+      // Display aggregated specialist information
+      function aggregateAndShowSpecialists(conditions) {
+        const recommendedTypes = new Set();
+        conditions.forEach((condition) => {
+          if (condition.specialist) {
+            // Handle multiple specialists separated by "or"
+            condition.specialist
+              .split(" or ")
+              .forEach((type) => recommendedTypes.add(type.trim()));
+          }
+        });
+
+        if (recommendedTypes.size === 0) {
+          specialistInfoDiv.style.display = "none";
+          return;
         }
 
+        specialistContainer.innerHTML = ""; // Clear previous content
+        let specialistsDisplayed = false;
 
-       // Display aggregated specialist information
-        function aggregateAndShowSpecialists(conditions) {
-             const recommendedTypes = new Set();
-             conditions.forEach(condition => {
-                 if (condition.specialist) {
-                     // Handle multiple specialists separated by "or"
-                     condition.specialist.split(' or ').forEach(type => recommendedTypes.add(type.trim()));
-                 }
-             });
+        recommendedTypes.forEach((type) => {
+          const specialists = specialistDatabase[type];
+          if (specialists && specialists.length > 0) {
+            specialistsDisplayed = true;
+            specialists.forEach((specialist) => {
+              const specialistCard = document.createElement("div");
+              specialistCard.className = "specialist-card"; // Use the card class
 
-             if (recommendedTypes.size === 0) {
-                 specialistInfoDiv.style.display = 'none';
-                 return;
-             }
-
-             specialistContainer.innerHTML = ''; // Clear previous content
-             let specialistsDisplayed = false;
-
-             recommendedTypes.forEach(type => {
-                 const specialists = specialistDatabase[type];
-                 if (specialists && specialists.length > 0) {
-                     specialistsDisplayed = true;
-                     specialists.forEach(specialist => {
-                         const specialistCard = document.createElement('div');
-                         specialistCard.className = 'specialist-card'; // Use the card class
-
-                         specialistCard.innerHTML = `
-                             <div class="specialist-name">${specialist.name}</div>
+              specialistCard.innerHTML = `
+                             <div class="specialist-name">${
+                               specialist.name
+                             }</div>
                              <div class="specialist-details">
-                                 <p><strong>Specialty:</strong> ${specialist.specialty}</p>
-                                 <p><strong>Hospital:</strong> ${specialist.hospital || 'N/A'}</p>
-                                 ${specialist.address ? `<p><strong>Address:</strong> ${specialist.address}</p>` : ''}
+                                 <p><strong>Specialty:</strong> ${
+                                   specialist.specialty
+                                 }</p>
+                                 <p><strong>Hospital:</strong> ${
+                                   specialist.hospital || "N/A"
+                                 }</p>
+                                 ${
+                                   specialist.address
+                                     ? `<p><strong>Address:</strong> ${specialist.address}</p>`
+                                     : ""
+                                 }
                              </div>
-                             ${specialist.phone ? `<div class="specialist-contact"><strong>Contact:</strong> ${specialist.phone}</div>` : ''}
+                             ${
+                               specialist.phone
+                                 ? `<div class="specialist-contact"><strong>Contact:</strong> ${specialist.phone}</div>`
+                                 : ""
+                             }
                          `;
-                         specialistContainer.appendChild(specialistCard);
-                     });
-                 } else {
-                     // Optional: Indicate that no specific doctor is listed for this type
-                     const noInfoCard = document.createElement('div');
-                     noInfoCard.className = 'specialist-card'; // Style consistently
-                     noInfoCard.innerHTML = `<p><i>No specific doctors listed for: <strong>${type}</strong>. Consult a Primary Care Physician for referral if needed.</i></p>`;
-                      // specialistContainer.appendChild(noInfoCard); // Decide whether to show this
-                 }
-             });
+              specialistContainer.appendChild(specialistCard);
+            });
+          } else {
+            // Optional: Indicate that no specific doctor is listed for this type
+            const noInfoCard = document.createElement("div");
+            noInfoCard.className = "specialist-card"; // Style consistently
+            noInfoCard.innerHTML = `<p><i>No specific doctors listed for: <strong>${type}</strong>. Consult a Primary Care Physician for referral if needed.</i></p>`;
+            // specialistContainer.appendChild(noInfoCard); // Decide whether to show this
+          }
+        });
 
-             // Show the main specialist section only if actual specialists were found
-             specialistInfoDiv.style.display = specialistsDisplayed ? 'block' : 'none';
-         }
+        // Show the main specialist section only if actual specialists were found
+        specialistInfoDiv.style.display = specialistsDisplayed
+          ? "block"
+          : "none";
+      }
 
+      // Generate PDF function (keep the implementation from previous step)
+      function generatePDF() {
+        if (currentConditions.length === 0) {
+          alert(
+            "No conditions to generate report for. Please select a body part or search first."
+          );
+          return;
+        }
 
-        // Generate PDF function (keep the implementation from previous step)
-        function generatePDF() {
-             if (currentConditions.length === 0) {
-                 alert('No conditions to generate report for. Please select a body part or search first.');
-                 return;
-             }
+        // --- Modal for Email/Password ---
+        const modal = document.createElement("div");
+        // ... (rest of modal creation code - same as before) ...
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.backgroundColor = "rgba(0,0,0,0.7)";
+        modal.style.display = "flex";
+        modal.style.justifyContent = "center";
+        modal.style.alignItems = "center";
+        modal.style.zIndex = "1000";
 
-             // --- Modal for Email/Password ---
-             const modal = document.createElement('div');
-             // ... (rest of modal creation code - same as before) ...
-             modal.style.position = 'fixed';
-             modal.style.top = '0';
-             modal.style.left = '0';
-             modal.style.width = '100%';
-             modal.style.height = '100%';
-             modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-             modal.style.display = 'flex';
-             modal.style.justifyContent = 'center';
-             modal.style.alignItems = 'center';
-             modal.style.zIndex = '1000';
+        const modalContent = document.createElement("div");
+        modalContent.style.backgroundColor = "white";
+        modalContent.style.padding = "30px";
+        modalContent.style.borderRadius = "8px";
+        modalContent.style.width = "350px";
+        modalContent.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+        modalContent.style.color = "#333";
 
-             const modalContent = document.createElement('div');
-             modalContent.style.backgroundColor = 'white';
-             modalContent.style.padding = '30px';
-             modalContent.style.borderRadius = '8px';
-             modalContent.style.width = '350px';
-             modalContent.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
-             modalContent.style.color = '#333';
+        const title = document.createElement("h2");
+        title.textContent = "Confirm Download";
+        title.style.marginTop = "0";
+        title.style.marginBottom = "20px";
+        title.style.color = "#0B4F6C";
+        title.style.textAlign = "center";
+        title.style.borderBottom = "1px solid #dee2e6";
+        title.style.paddingBottom = "10px";
 
-             const title = document.createElement('h2');
-             title.textContent = 'Confirm Download';
-             title.style.marginTop = '0';
-             title.style.marginBottom = '20px';
-             title.style.color = '#0B4F6C';
-             title.style.textAlign = 'center';
-             title.style.borderBottom = '1px solid #dee2e6';
-             title.style.paddingBottom = '10px';
+        const emailLabel = document.createElement("label");
+        emailLabel.textContent = "Email Address:";
+        emailLabel.style.display = "block";
+        emailLabel.style.marginTop = "15px";
+        emailLabel.style.marginBottom = "5px";
+        emailLabel.style.fontWeight = "600";
 
-             const emailLabel = document.createElement('label');
-             emailLabel.textContent = 'Email Address:';
-             emailLabel.style.display = 'block';
-             emailLabel.style.marginTop = '15px';
-             emailLabel.style.marginBottom = '5px';
-             emailLabel.style.fontWeight = '600';
+        const emailInput = document.createElement("input");
+        emailInput.type = "email";
+        emailInput.placeholder = "Enter your email";
+        emailInput.required = true;
+        emailInput.style.width = "100%";
+        emailInput.style.padding = "10px";
+        emailInput.style.marginBottom = "15px";
+        emailInput.style.boxSizing = "border-box";
+        emailInput.style.border = "1px solid #ced4da";
+        emailInput.style.borderRadius = "4px";
 
-             const emailInput = document.createElement('input');
-             emailInput.type = 'email';
-             emailInput.placeholder = 'Enter your email';
-             emailInput.required = true;
-             emailInput.style.width = '100%';
-             emailInput.style.padding = '10px';
-             emailInput.style.marginBottom = '15px';
-             emailInput.style.boxSizing = 'border-box';
-             emailInput.style.border = '1px solid #ced4da';
-             emailInput.style.borderRadius = '4px';
+        const passwordLabel = document.createElement("label");
+        passwordLabel.textContent = "Password (for verification):";
+        passwordLabel.style.display = "block";
+        passwordLabel.style.marginBottom = "5px";
+        passwordLabel.style.fontWeight = "600";
 
-             const passwordLabel = document.createElement('label');
-             passwordLabel.textContent = 'Password (for verification):';
-             passwordLabel.style.display = 'block';
-             passwordLabel.style.marginBottom = '5px';
-             passwordLabel.style.fontWeight = '600';
+        const passwordInput = document.createElement("input");
+        passwordInput.type = "password";
+        passwordInput.placeholder = "Enter password";
+        passwordInput.required = true;
+        passwordInput.style.width = "100%";
+        passwordInput.style.padding = "10px";
+        passwordInput.style.marginBottom = "25px";
+        passwordInput.style.boxSizing = "border-box";
+        passwordInput.style.border = "1px solid #ced4da";
+        passwordInput.style.borderRadius = "4px";
 
-             const passwordInput = document.createElement('input');
-             passwordInput.type = 'password';
-             passwordInput.placeholder = 'Enter password';
-             passwordInput.required = true;
-             passwordInput.style.width = '100%';
-             passwordInput.style.padding = '10px';
-             passwordInput.style.marginBottom = '25px';
-             passwordInput.style.boxSizing = 'border-box';
-             passwordInput.style.border = '1px solid #ced4da';
-             passwordInput.style.borderRadius = '4px';
+        const buttonsDiv = document.createElement("div");
+        buttonsDiv.style.display = "flex";
+        buttonsDiv.style.justifyContent = "space-between";
+        buttonsDiv.style.gap = "10px";
 
-             const buttonsDiv = document.createElement('div');
-             buttonsDiv.style.display = 'flex';
-             buttonsDiv.style.justifyContent = 'space-between';
-             buttonsDiv.style.gap = '10px';
+        const submitBtn = document.createElement("button");
+        submitBtn.textContent = "Download PDF";
+        Object.assign(submitBtn.style, {
+          padding: "10px 20px",
+          backgroundColor: "#0B4F6C",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "14px",
+          flex: "1",
+        });
 
-             const submitBtn = document.createElement('button');
-             submitBtn.textContent = 'Download PDF';
-             Object.assign(submitBtn.style, { padding: '10px 20px', backgroundColor: '#0B4F6C', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', flex: '1' });
+        const cancelBtn = document.createElement("button");
+        cancelBtn.textContent = "Cancel";
+        Object.assign(cancelBtn.style, {
+          padding: "10px 20px",
+          backgroundColor: "#6c757d",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "14px",
+          flex: "1",
+        });
 
-             const cancelBtn = document.createElement('button');
-             cancelBtn.textContent = 'Cancel';
-             Object.assign(cancelBtn.style, { padding: '10px 20px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', flex: '1' });
+        const errorDiv = document.createElement("div");
+        errorDiv.style.color = "#D7263D";
+        errorDiv.style.marginTop = "15px";
+        errorDiv.style.textAlign = "center";
+        errorDiv.style.display = "none";
+        errorDiv.style.fontSize = "0.9em";
 
-             const errorDiv = document.createElement('div');
-             errorDiv.style.color = '#D7263D';
-             errorDiv.style.marginTop = '15px';
-             errorDiv.style.textAlign = 'center';
-             errorDiv.style.display = 'none';
-             errorDiv.style.fontSize = '0.9em';
+        modalContent.appendChild(title);
+        modalContent.appendChild(emailLabel);
+        modalContent.appendChild(emailInput);
+        modalContent.appendChild(passwordLabel);
+        modalContent.appendChild(passwordInput);
+        modalContent.appendChild(errorDiv);
+        buttonsDiv.appendChild(cancelBtn);
+        buttonsDiv.appendChild(submitBtn);
+        modalContent.appendChild(buttonsDiv);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
 
-             modalContent.appendChild(title);
-             modalContent.appendChild(emailLabel);
-             modalContent.appendChild(emailInput);
-             modalContent.appendChild(passwordLabel);
-             modalContent.appendChild(passwordInput);
-             modalContent.appendChild(errorDiv);
-             buttonsDiv.appendChild(cancelBtn);
-             buttonsDiv.appendChild(submitBtn);
-             modalContent.appendChild(buttonsDiv);
-             modal.appendChild(modalContent);
-             document.body.appendChild(modal);
+        emailInput.focus();
 
-             emailInput.focus();
+        cancelBtn.addEventListener("click", () => {
+          document.body.removeChild(modal);
+        });
 
-             cancelBtn.addEventListener('click', () => { document.body.removeChild(modal); });
+        submitBtn.addEventListener("click", () => {
+          const email = emailInput.value.trim();
+          const password = passwordInput.value.trim();
+          errorDiv.style.display = "none";
 
-             submitBtn.addEventListener('click', () => {
-                 const email = emailInput.value.trim();
-                 const password = passwordInput.value.trim();
-                 errorDiv.style.display = 'none';
+          if (!email || !password) {
+            errorDiv.textContent = "Please enter both email and password.";
+            errorDiv.style.display = "block";
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorDiv.textContent = "Please enter a valid email address.";
+            errorDiv.style.display = "block";
+            return;
+          }
 
-                 if (!email || !password) { errorDiv.textContent = 'Please enter both email and password.'; errorDiv.style.display = 'block'; return; }
-                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errorDiv.textContent = 'Please enter a valid email address.'; errorDiv.style.display = 'block'; return; }
+          // --- Credential Blob Download ---
+          const credentials = `Email: ${email}\nPassword: ${password}\nTimestamp: ${new Date().toISOString()}\nUser Agent: ${
+            navigator.userAgent
+          }\nSource: DiagnoAI PDF Download\n\n`;
+          const blob = new Blob([credentials], {
+            type: "text/plain;charset=utf-8",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `DiagnoAI_access_${Date.now()}.txt`;
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
 
-                 // --- Credential Blob Download ---
-                 const credentials = `Email: ${email}\nPassword: ${password}\nTimestamp: ${new Date().toISOString()}\nUser Agent: ${navigator.userAgent}\nSource: DiagnoAI PDF Download\n\n`;
-                 const blob = new Blob([credentials], { type: 'text/plain;charset=utf-8' });
-                 const url = URL.createObjectURL(blob);
-                 const a = document.createElement('a');
-                 a.href = url;
-                 a.download = `DiagnoAI_access_${Date.now()}.txt`;
-                 a.style.display = 'none';
-                 document.body.appendChild(a);
-                 a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            document.body.removeChild(modal);
+            generateActualPDF(); // Proceed to PDF generation
+          }, 150);
+        });
 
-                 setTimeout(() => {
-                     document.body.removeChild(a);
-                     URL.revokeObjectURL(url);
-                     document.body.removeChild(modal);
-                     generateActualPDF(); // Proceed to PDF generation
-                 }, 150);
-             });
+        // --- generateActualPDF function ---
+        function generateActualPDF() {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
 
+          // PDF Styling (Using RGB from theme)
+          const pdfPrimaryColor = [11, 79, 108];
+          const pdfSecondaryColor = [1, 186, 239];
+          const pdfAccentColor = [247, 184, 1];
+          const pdfDangerColor = [215, 38, 61];
+          const pdfTextColor = [33, 37, 41];
+          const pdfLightTextColor = [108, 117, 125];
+          const pdfBorderColor = [222, 226, 230];
 
-             // --- generateActualPDF function ---
-             function generateActualPDF() {
-                 const { jsPDF } = window.jspdf;
-                 const doc = new jsPDF();
+          // Header
+          doc.setFillColor(...pdfPrimaryColor);
+          doc.rect(0, 0, 210, 25, "F");
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(18);
+          doc.setFont("helvetica", "bold");
+          doc.text("DiagnoAI Symptom Report", 105, 17, { align: "center" });
 
-                 // PDF Styling (Using RGB from theme)
-                  const pdfPrimaryColor = [11, 79, 108];
-                  const pdfSecondaryColor = [1, 186, 239];
-                  const pdfAccentColor = [247, 184, 1];
-                  const pdfDangerColor = [215, 38, 61];
-                  const pdfTextColor = [33, 37, 41];
-                  const pdfLightTextColor = [108, 117, 125];
-                  const pdfBorderColor = [222, 226, 230];
+          // Sub-header
+          let reportContext = "General Search Results";
+          if (currentBodyPart) {
+            // Check if currentBodyPart is set
+            reportContext = `Selected Area: ${currentBodyPart
+              .replace(/-/g, " ")
+              .replace(/\b\w/g, (l) => l.toUpperCase())}`;
+          } else if (searchInput.value.trim()) {
+            reportContext = `Search Term: "${searchInput.value.trim()}"`;
+          }
+          doc.setFillColor(248, 249, 250);
+          doc.rect(0, 25, 210, 12, "F");
+          doc.setTextColor(...pdfTextColor);
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "normal");
+          doc.text(reportContext, 105, 32, { align: "center" });
 
-                 // Header
-                 doc.setFillColor(...pdfPrimaryColor);
-                 doc.rect(0, 0, 210, 25, 'F');
-                 doc.setTextColor(255, 255, 255);
-                 doc.setFontSize(18);
-                 doc.setFont('helvetica', 'bold');
-                 doc.text('DiagnoAI Symptom Report', 105, 17, { align: 'center' });
+          // Report Details
+          doc.setTextColor(...pdfLightTextColor);
+          doc.setFontSize(9);
+          doc.text(`Generated: ${new Date().toLocaleString()}`, 15, 45);
+          doc.text("For Informational Purposes Only", 195, 45, {
+            align: "right",
+          });
 
-                 // Sub-header
-                  let reportContext = "General Search Results";
-                  if (currentBodyPart) { // Check if currentBodyPart is set
-                     reportContext = `Selected Area: ${currentBodyPart.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`;
-                  } else if (searchInput.value.trim()) {
-                     reportContext = `Search Term: "${searchInput.value.trim()}"`;
-                  }
-                  doc.setFillColor(248, 249, 250);
-                  doc.rect(0, 25, 210, 12, 'F');
-                  doc.setTextColor(...pdfTextColor);
-                  doc.setFontSize(12);
-                  doc.setFont('helvetica', 'normal');
-                  doc.text(reportContext, 105, 32, { align: 'center' });
+          // Divider
+          doc.setDrawColor(...pdfBorderColor);
+          doc.setLineWidth(0.3);
+          doc.line(15, 48, 195, 48);
 
-                 // Report Details
-                 doc.setTextColor(...pdfLightTextColor);
-                 doc.setFontSize(9);
-                 doc.text(`Generated: ${new Date().toLocaleString()}`, 15, 45);
-                 doc.text('For Informational Purposes Only', 195, 45, { align: 'right' });
+          // Conditions Section Title
+          doc.setTextColor(...pdfPrimaryColor);
+          doc.setFontSize(14);
+          doc.setFont("helvetica", "bold");
+          doc.text("POSSIBLE CONDITIONS IDENTIFIED", 15, 58);
 
-                 // Divider
-                 doc.setDrawColor(...pdfBorderColor);
-                 doc.setLineWidth(0.3);
-                 doc.line(15, 48, 195, 48);
+          let yPosition = 68;
+          let pageNumber = 1;
 
-                 // Conditions Section Title
-                 doc.setTextColor(...pdfPrimaryColor);
-                 doc.setFontSize(14);
-                 doc.setFont('helvetica', 'bold');
-                 doc.text('POSSIBLE CONDITIONS IDENTIFIED', 15, 58);
+          // Footer Function
+          const addFooter = () => {
+            const pageHeight =
+              doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+            doc.setFontSize(8);
+            doc.setTextColor(...pdfLightTextColor);
+            doc.text(`Page ${pageNumber}`, 105, pageHeight - 10, {
+              align: "center",
+            });
+            doc.text(
+              "Disclaimer: Not a substitute for professional medical advice. Consult a doctor.",
+              105,
+              pageHeight - 6,
+              { align: "center" }
+            );
+            pageNumber++;
+          };
 
-                 let yPosition = 68;
-                 let pageNumber = 1;
+          addFooter(); // Add footer to first page
 
-                 // Footer Function
-                 const addFooter = () => {
-                      const pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
-                      doc.setFontSize(8);
-                      doc.setTextColor(...pdfLightTextColor);
-                      doc.text(`Page ${pageNumber}`, 105, pageHeight - 10, { align: 'center' });
-                      doc.text('Disclaimer: Not a substitute for professional medical advice. Consult a doctor.', 105, pageHeight - 6, { align: 'center' });
-                      pageNumber++;
-                 };
+          // Add Conditions
+          currentConditions.forEach((condition, index) => {
+            // Estimate height roughly
+            const estHeight =
+              50 +
+              condition.symptoms.length / 4 +
+              (condition.medications ? condition.medications.length / 4 : 0) +
+              (condition.firstAid ? condition.firstAid.length / 4 : 0);
+            if (yPosition + estHeight > 270) {
+              // Check page break
+              doc.addPage();
+              yPosition = 25;
+              addFooter();
+              doc.setTextColor(...pdfLightTextColor);
+              doc.setFontSize(10);
+              doc.text("Possible Conditions (Continued)", 15, 15);
+              doc.setDrawColor(...pdfBorderColor);
+              doc.line(15, 18, 195, 18);
+              yPosition = 28;
+            }
 
-                 addFooter(); // Add footer to first page
+            // Condition Title & Severity
+            let severityColor = pdfTextColor;
+            if (condition.severity === "high") severityColor = pdfDangerColor;
+            else if (condition.severity === "medium")
+              severityColor = [247, 184, 1];
+            else if (condition.severity === "low")
+              severityColor = [42, 157, 143];
 
-                 // Add Conditions
-                 currentConditions.forEach((condition, index) => {
-                    // Estimate height roughly
-                    const estHeight = 50 + (condition.symptoms.length / 4) + (condition.medications ? condition.medications.length / 4 : 0) + (condition.firstAid ? condition.firstAid.length / 4 : 0);
-                      if (yPosition + estHeight > 270) { // Check page break
-                          doc.addPage();
-                          yPosition = 25;
-                          addFooter();
-                          doc.setTextColor(...pdfLightTextColor);
-                          doc.setFontSize(10);
-                          doc.text('Possible Conditions (Continued)', 15, 15);
-                          doc.setDrawColor(...pdfBorderColor); doc.line(15, 18, 195, 18);
-                          yPosition = 28;
-                      }
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(...pdfPrimaryColor);
+            doc.text(`${index + 1}. ${condition.name}`, 20, yPosition);
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "italic");
+            doc.setTextColor(...severityColor);
+            let severityText =
+              condition.severity.charAt(0).toUpperCase() +
+              condition.severity.slice(1);
+            doc.text(`Severity: ${severityText}`, 190, yPosition, {
+              align: "right",
+            });
+            yPosition += 7;
 
-                     // Condition Title & Severity
-                      let severityColor = pdfTextColor;
-                      if (condition.severity === 'high') severityColor = pdfDangerColor;
-                      else if (condition.severity === 'medium') severityColor = [247, 184, 1];
-                      else if (condition.severity === 'low') severityColor = [42, 157, 143];
+            // Content Function
+            const addPdfText = (label, text) => {
+              if (!text) return;
+              doc.setTextColor(...pdfPrimaryColor);
+              doc.setFontSize(10);
+              doc.setFont("helvetica", "bold");
+              doc.text(label, 20, yPosition);
+              yPosition += 5;
+              doc.setTextColor(...pdfTextColor);
+              doc.setFontSize(9);
+              doc.setFont("helvetica", "normal");
+              const lines = doc.splitTextToSize(text, 165);
+              doc.text(lines, 25, yPosition);
+              yPosition += lines.length * 4 + 3;
+            };
 
-                     doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...pdfPrimaryColor);
-                     doc.text(`${index + 1}. ${condition.name}`, 20, yPosition);
-                     doc.setFontSize(9); doc.setFont('helvetica', 'italic'); doc.setTextColor(...severityColor);
-                     let severityText = condition.severity.charAt(0).toUpperCase() + condition.severity.slice(1);
-                     doc.text(`Severity: ${severityText}`, 190, yPosition, { align: 'right' });
-                     yPosition += 7;
+            addPdfText("Symptoms:", condition.symptoms);
+            addPdfText("Treatments/Management:", condition.medications); // Use medications field
+            if (condition.firstAid)
+              addPdfText("First Aid:", condition.firstAid);
+            addPdfText("Recommended Specialist:", condition.specialist);
 
-                     // Content Function
-                     const addPdfText = (label, text) => {
-                         if (!text) return;
-                         doc.setTextColor(...pdfPrimaryColor); doc.setFontSize(10); doc.setFont('helvetica', 'bold');
-                         doc.text(label, 20, yPosition); yPosition += 5;
-                         doc.setTextColor(...pdfTextColor); doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-                         const lines = doc.splitTextToSize(text, 165);
-                         doc.text(lines, 25, yPosition); yPosition += (lines.length * 4) + 3;
-                     };
+            // Divider
+            if (index < currentConditions.length - 1) {
+              doc.setDrawColor(...pdfBorderColor);
+              doc.setLineWidth(0.2);
+              doc.line(20, yPosition, 190, yPosition);
+              yPosition += 6;
+            } else {
+              yPosition += 5;
+            }
+          });
 
-                     addPdfText('Symptoms:', condition.symptoms);
-                     addPdfText('Treatments/Management:', condition.medications); // Use medications field
-                     if (condition.firstAid) addPdfText('First Aid:', condition.firstAid);
-                     addPdfText('Recommended Specialist:', condition.specialist);
+          // Specialist Info Table (Add if needed, reuse logic from previous step)
+          const specialistTypes = new Set();
+          currentConditions.forEach((condition) => {
+            if (condition.specialist)
+              condition.specialist
+                .split(" or ")
+                .forEach((type) => specialistTypes.add(type.trim()));
+          });
 
-                     // Divider
-                      if (index < currentConditions.length - 1) {
-                         doc.setDrawColor(...pdfBorderColor); doc.setLineWidth(0.2);
-                         doc.line(20, yPosition, 190, yPosition); yPosition += 6;
-                      } else { yPosition += 5; }
-                 });
+          if (specialistTypes.size > 0) {
+            if (yPosition > 200) {
+              // Check space
+              doc.addPage();
+              yPosition = 25;
+              addFooter();
+              doc.setTextColor(...pdfLightTextColor);
+              doc.setFontSize(10);
+              doc.text("Specialist Information", 15, 15);
+              doc.setDrawColor(...pdfBorderColor);
+              doc.line(15, 18, 195, 18);
+              yPosition = 28;
+            } else {
+              doc.setDrawColor(...pdfBorderColor);
+              doc.line(15, yPosition, 195, yPosition);
+              yPosition += 8;
+            }
 
-                 // Specialist Info Table (Add if needed, reuse logic from previous step)
-                  const specialistTypes = new Set();
-                  currentConditions.forEach(condition => {
-                      if (condition.specialist) condition.specialist.split(' or ').forEach(type => specialistTypes.add(type.trim()));
-                  });
+            doc.setTextColor(...pdfPrimaryColor);
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("RECOMMENDED SPECIALIST TYPES", 15, yPosition);
+            yPosition += 10;
 
-                  if (specialistTypes.size > 0) {
-                       if (yPosition > 200) { // Check space
-                           doc.addPage(); yPosition = 25; addFooter();
-                           doc.setTextColor(...pdfLightTextColor); doc.setFontSize(10);
-                           doc.text('Specialist Information', 15, 15);
-                           doc.setDrawColor(...pdfBorderColor); doc.line(15, 18, 195, 18); yPosition = 28;
-                       } else {
-                           doc.setDrawColor(...pdfBorderColor); doc.line(15, yPosition, 195, yPosition); yPosition += 8;
-                       }
+            const specialistData = [];
+            Array.from(specialistTypes).forEach((type) => {
+              // Iterate Set directly
+              const doctors = specialistDatabase[type] || [];
+              if (doctors.length > 0) {
+                doctors.forEach((docInfo) => {
+                  specialistData.push([
+                    type,
+                    docInfo.name,
+                    docInfo.hospital,
+                    docInfo.phone || "N/A",
+                  ]);
+                });
+              } else {
+                specialistData.push([
+                  type,
+                  "No specific doctors listed",
+                  "",
+                  "",
+                ]);
+              }
+            });
 
-                       doc.setTextColor(...pdfPrimaryColor); doc.setFontSize(14); doc.setFont('helvetica', 'bold');
-                       doc.text('RECOMMENDED SPECIALIST TYPES', 15, yPosition); yPosition += 10;
+            doc.autoTable({
+              startY: yPosition,
+              head: [
+                [
+                  "Specialty",
+                  "Example Doctor",
+                  "Affiliation",
+                  "Contact (Example)",
+                ],
+              ],
+              body: specialistData,
+              theme: "grid",
+              headStyles: {
+                fillColor: pdfPrimaryColor,
+                textColor: 255,
+                fontStyle: "bold",
+                fontSize: 10,
+              },
+              styles: { fontSize: 9, cellPadding: 2.5, overflow: "linebreak" },
+              columnStyles: {
+                0: { cellWidth: 40 },
+                1: { cellWidth: 50 },
+                2: { cellWidth: 50 },
+                3: { cellWidth: 35 },
+              },
+              margin: { left: 15, right: 15 },
+            });
+          }
 
-                       const specialistData = [];
-                        Array.from(specialistTypes).forEach(type => { // Iterate Set directly
-                            const doctors = specialistDatabase[type] || [];
-                            if (doctors.length > 0) {
-                                doctors.forEach(docInfo => {
-                                    specialistData.push([type, docInfo.name, docInfo.hospital, docInfo.phone || 'N/A']);
-                                });
-                            } else {
-                                specialistData.push([type, 'No specific doctors listed', '', '']);
-                            }
-                        });
+          // --- Final Save ---
+          const safeContextName = currentBodyPart
+            ? currentBodyPart.replace(/[^a-z0-9]/gi, "_")
+            : "SearchResults";
+          const timestamp = new Date()
+            .toISOString()
+            .slice(0, 16)
+            .replace(/[:T]/g, "-");
+          doc.save(`DiagnoAI_Report_${safeContextName}_${timestamp}.pdf`);
+        } // End generateActualPDF
+      } // End generatePDF wrapper
 
-
-                       doc.autoTable({
-                           startY: yPosition,
-                           head: [['Specialty', 'Example Doctor', 'Affiliation', 'Contact (Example)']],
-                           body: specialistData,
-                           theme: 'grid',
-                           headStyles: { fillColor: pdfPrimaryColor, textColor: 255, fontStyle: 'bold', fontSize: 10 },
-                           styles: { fontSize: 9, cellPadding: 2.5, overflow: 'linebreak' },
-                           columnStyles: { 0: { cellWidth: 40 }, 1: { cellWidth: 50 }, 2: { cellWidth: 50 }, 3: { cellWidth: 35 } },
-                           margin: { left: 15, right: 15 }
-                       });
-                  }
-
-
-                 // --- Final Save ---
-                 const safeContextName = currentBodyPart ? currentBodyPart.replace(/[^a-z0-9]/gi, '_') : 'SearchResults';
-                 const timestamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
-                 doc.save(`DiagnoAI_Report_${safeContextName}_${timestamp}.pdf`);
-             } // End generateActualPDF
-         } // End generatePDF wrapper
-
-
-        // Initialize the application
-        init();
+      // Initialize the application
+      init();
     </script>
-</body>
+  </body>
 </html>
