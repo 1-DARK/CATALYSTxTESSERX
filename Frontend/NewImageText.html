@@ -3,48 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DiagnoAI</title> <!-- Updated title -->
-    <link rel="shortcut icon" href="Favi.png" type="image/x-icon">
+
+    <title>DiagnoAI - Chatbot</title>
+    <!-- Updated title -->
+    <link rel="shortcut icon" href="Favi.png" type="image/x-icon" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <!-- Add Roboto font (or Segoe UI, depending on preference) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* Apollo-Inspired Color Palette */
+      /* Apollo-Inspired Color Palette (Modified for Light Theme) */
       :root {
-          --primary-color: #0B4F6C;       /* Professional Dark Blue */
-          --primary-dark: #005f73;       /* Darker Blue/Teal for hover */
-          --secondary-color: #01BAEF;   /* Bright Cyan/Blue Accent */
-          --light-color: #ffffff;        /* White */
-          --bg-light-gray: #f8f9fa;    /* Very Light Gray Background */
-          --bg-medium-gray: #e9ecef;   /* Slightly Darker Gray (for user message) */
-          --dark-color: #343a40;         /* Dark Gray */
-          --text-color: #212529;         /* Near Black for body text */
-          --text-light: #6c757d;         /* Medium Gray for secondary text */
-          --success-color: #2A9D8F;      /* Calming Green (can use for status) */
-          --warning-color: #F7B801;      /* Yellow/Gold */
-          --danger-color: #D7263D;       /* Clear Red */
-          --border-color: #dee2e6;       /* Light Gray for borders */
-          --border-radius-lg: 12px;
-          --border-radius-md: 8px;
-          --border-radius-sm: 4px;
-          --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-          --transition: all 0.3s ease;
+        --primary-color: #3094bf; /* Light Blue Base */
+        --primary-dark: #2a82a7; /* Slightly Darker Blue for hover/accents */
+        --secondary-color: #01baef; /* Brighter Cyan/Blue Accent (can still use for highlights) */
+        --light-color: #ffffff; /* White */
+
+        /* Backgrounds based on the light theme */
+        --bg-light-gray: #f8f9fa; /* Very Light Gray Page Background */
+        --bg-medium-gray: #e9ecef; /* Slightly Darker Gray (Good for user message background) */
+
+        /* Text colors for the light theme */
+        --dark-color: #343a40; /* Dark Gray (Can be general dark text) */
+        --text-color: #212529; /* Near Black for body text */
+        --text-light: #6c757d; /* Medium Gray for secondary text/placeholders */
+
+        /* Status/System Colors (Keep generally consistent but backgrounds fit theme) */
+        --success-color: #2a9d8f; /* Calming Green */
+        --warning-color: #f7b801; /* Yellow/Gold */
+        --danger-color: #d7263d; /* Clear Red */
+
+        /* Borders */
+        --border-color: #dee2e6; /* Light Gray for borders */
+        --border-color-subtle: #e9ecef; /* Even lighter border */
+
+        --border-radius-lg: 12px;
+        --border-radius-md: 8px;
+        --border-radius-sm: 4px;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Light box shadow */
+        --transition: all 0.3s ease;
       }
 
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-
-      html {
-          height: 100%; /* Ensure HTML takes full height */
+        /* Font set below for body */
       }
 
       body {
-        background-color: var(--bg-light-gray); /* Light gray page background */
+        font-family: "Roboto", sans-serif; /* Use Roboto or Segoe UI */
+        background-color: var(--bg-light-gray); /* Light background */
         color: var(--text-color); /* Default dark text */
         height: 100vh; /* Full viewport height */
         display: flex;
@@ -55,22 +69,24 @@
       }
 
       .chat-container {
-        width: 100%; /* Use full width available */
-        max-width: 800px; /* Increased max-width for better readability */
-        height: calc(100vh - 40px); /* Use most of viewport height, minus body padding */
-        max-height: 750px; /* Optional: Limit max height on very tall screens */
+        width: 100%;
+        max-width: 800px; /* Re-added max-width for better structure */
+        height: calc(
+          100vh - 40px
+        ); /* Use most of viewport height, minus body padding */
+        max-height: 750px; /* Optional: Limit max height */
         background-color: var(--light-color); /* White chat background */
         border-radius: var(--border-radius-lg);
         box-shadow: var(--box-shadow);
         display: flex;
         flex-direction: column;
         overflow: hidden; /* Handles internal scrolling */
-        position: relative; /* For absolute positioning inside if needed */
+        position: relative;
         border: 1px solid var(--border-color); /* Subtle border */
       }
 
       .chat-header {
-        background-color: var(--primary-color); /* Dark blue header */
+        background-color: var(--primary-color); /* Light blue header */
         color: white; /* White text */
         padding: 15px 20px;
         display: flex;
@@ -87,14 +103,14 @@
       }
 
       .chat-title i {
-      
+        color: white; /* White icon on blue header */
         font-size: 1.5rem;
       }
 
       .chat-title h1 {
         font-size: 1.2rem;
         font-weight: 600;
-        color: white; /* White title */
+        color: white; /* White title text */
       }
 
       .chat-status {
@@ -114,7 +130,7 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
-        background-color: var(--light-color); /* Keep message area white */
+        background-color: var(--light-color); /* Message area is white */
       }
 
       .message {
@@ -123,7 +139,16 @@
         max-width: 80%; /* Limit message width */
         animation: fadeIn 0.3s ease-in-out; /* Keep fade-in */
       }
-       @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } } /* Slightly adjusted animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      } /* Slightly adjusted animation */
 
       .user-message {
         align-self: flex-end;
@@ -134,6 +159,19 @@
         align-self: flex-start;
       }
 
+      /* Style for the thinking/placeholder message */
+      .bot-message.thinking .message-content {
+        background-color: var(--bg-medium-gray); /* Light grey background */
+        font-style: italic;
+        color: var(--text-light); /* Light grey text */
+      }
+      /* Style for error messages */
+      .bot-message.error .message-content {
+        background-color: #ffebee; /* Very light red background */
+        color: var(--error-color); /* Red text */
+        border-color: #ef9a9a; /* Lighter red border */
+      }
+
       .message-avatar {
         width: 36px;
         height: 36px;
@@ -142,47 +180,52 @@
         justify-content: center;
         align-items: center;
         flex-shrink: 0;
+        /* Border color based on the message type */
         border: 1px solid var(--border-color);
       }
 
       .user-message .message-avatar {
-        background-color: var(--bg-medium-gray); /* Medium gray bg */
-         color: var(--primary-color); /* Blue icon */
+        background-color: var(--bg-medium-gray); /* Light grey background */
+        color: var(--primary-color); /* Blue icon color */
+        border-color: var(
+          --border-color-subtle
+        ); /* Lighter border for user avatar */
       }
-       .bot-message .message-avatar {
-        background-color: var(--primary-color); /* Blue bg */
-        color: white; /* White icon */
-         border: none; /* Remove border for colored avatar */
+      .bot-message .message-avatar {
+        background-color: var(--primary-color); /* Blue background */
+        color: white; /* White icon color */
+        border: none; /* No border on colored avatar */
       }
 
       .message-avatar i {
-        /* Color is set by parent (.user-message or .bot-message) */
         font-size: 1rem;
+        /* Icon color set by parent (.user-message or .bot-message) */
       }
 
       .message-content {
         padding: 10px 15px; /* Adjusted padding */
         border-radius: var(--border-radius-md);
-        font-size: 0.95rem;
+        font-size: 0.95rem; /* Adjusted font size */
         line-height: 1.5;
         white-space: pre-wrap; /* Handle line breaks */
         word-wrap: break-word; /* Break long words */
         overflow-x: auto; /* Handle wide tables */
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border-color); /* Subtle border */
+        /* Default text color will be inherited from body (--text-color) */
       }
 
       .user-message .message-content {
-        background-color: var(--bg-medium-gray);
-        color: var(--text-color);
+        background-color: var(--bg-medium-gray); /* Light grey background */
+        color: var(--text-color); /* Dark text */
         border-top-right-radius: var(--border-radius-sm); /* Bubble shape */
-        border-color: #d1d9e0;
+        border-color: var(--border-color-subtle); /* Lighter border */
       }
 
       .bot-message .message-content {
-        background-color: var(--primary-color);
-        color: white;
+        background-color: var(--primary-color); /* Blue background */
+        color: white; /* White text */
         border-top-left-radius: var(--border-radius-sm); /* Bubble shape */
-        border-color: var(--primary-dark);
+        border-color: var(--primary-dark); /* Darker blue border */
       }
 
       .message-content img {
@@ -192,66 +235,106 @@
         display: block; /* Ensure images behave correctly */
       }
 
-       /* --- Table Styles within message content --- */
+      /* --- Table Styles within message content (Copied from previous response) --- */
       .message-content table {
         width: 100%;
         border-collapse: collapse;
         margin: 10px 0; /* Consistent margin */
-        font-size: 0.9em; /* Relative to message font size */
+        font-size: 0.9em; /* Relative to message content font size (0.95rem) */
         line-height: 1.4;
-         /* Table text color will be inherited (white for bot, dark for user) */
+        /* Table text color inherited from message-content */
       }
 
-       .message-content th,
-       .message-content td {
+      .message-content th,
+      .message-content td {
         padding: 8px 10px;
         text-align: left;
         vertical-align: top;
         word-wrap: break-word;
-        white-space: normal;
-        /* Border color depends on parent */
-        border: 1px solid transparent;
+        white-space: normal; /* Override pre-wrap if necessary */
+        /* Border color depends on parent bubble */
+        border: 1px solid transparent; /* Default transparent, set by parent type */
       }
 
-       /* User message table style */
-       .user-message .message-content th,
-       .user-message .message-content td {
-          border: 1px solid var(--border-color);
-          color: var(--text-color); /* Dark text */
-       }
-       .user-message .message-content th {
-          background-color: #d1d9e0; /* Darker shade of user bubble */
-          color: var(--primary-color); /* Blue header text */
-          font-weight: 600;
-       }
-        .user-message .message-content tr:nth-child(even) { background-color: rgba(0,0,0,0.02); } /* Very subtle striping */
-        .user-message .message-content tr:hover { background-color: rgba(11, 79, 108, 0.05); } /* Subtle blue hover */
+      /* User message table style (on light gray background) */
+      .user-message .message-content th,
+      .user-message .message-content td {
+        border: 1px solid var(--border-color); /* Light border */
+        color: var(--text-color); /* Dark text */
+      }
+      .user-message .message-content th {
+        background-color: var(
+          --bg-light-gray
+        ); /* Lighter background than bubble */
+        color: var(--primary-color); /* Blue header text */
+        font-weight: 600;
+      }
+      .user-message .message-content tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02); /* Very subtle striping */
+      }
+      .user-message .message-content tr:hover {
+        background-color: rgba(48, 148, 191, 0.05); /* Subtle blue hover */
+      }
 
-       /* Bot message table style */
-       .bot-message .message-content th,
-       .bot-message .message-content td {
-          border: 1px solid rgba(255, 255, 255, 0.2); /* Light border on dark bg */
-          color: white;
-       }
-       .bot-message .message-content th {
-          background-color: rgba(255, 255, 255, 0.1);
-          color: var(--secondary-color); /* Cyan header text */
-          font-weight: 600;
-       }
-        .bot-message .message-content tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
-        .bot-message .message-content tr:hover { background-color: rgba(1, 186, 239, 0.1); }
+      /* Bot message table style (on blue background) */
+      .bot-message .message-content th,
+      .bot-message .message-content td {
+        border: 1px solid rgba(255, 255, 255, 0.2); /* Light border on dark bg */
+        color: white; /* White text */
+      }
+      .bot-message .message-content th {
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.1
+        ); /* Slightly lighter background */
+        color: var(--secondary-color); /* Cyan header text */
+        font-weight: 600;
+      }
+      .bot-message .message-content tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.05); /* Subtle striping */
+      }
+      .bot-message .message-content tr:hover {
+        background-color: rgba(1, 186, 239, 0.1); /* Subtle cyan hover */
+      }
 
-       /* Adjust spacing for other raw HTML elements */
-       .message-content p { margin-bottom: 0.7em; }
-       .message-content p:last-of-type { margin-bottom: 0; }
-       .message-content ul, .message-content ol { margin: 10px 0 10px 20px; padding: 0; }
-       .message-content li { margin-bottom: 5px; }
-
+      /* Adjust spacing for other raw HTML elements (Copied from previous response) */
+      .message-content p {
+        margin-bottom: 0.7em;
+      }
+      .message-content p:last-of-type {
+        margin-bottom: 0;
+      }
+      .message-content ul,
+      .message-content ol {
+        margin: 10px 0 10px 20px;
+        padding: 0;
+      }
+      .message-content li {
+        margin-bottom: 5px;
+      }
+      .message-content h1,
+      .message-content h2,
+      .message-content h3,
+      .message-content h4,
+      .message-content h5,
+      .message-content h6 {
+        margin: 15px 0 10px 0;
+        color: inherit; /* Inherit text color from bubble */
+        font-weight: bold;
+      }
+      .bot-message .message-content h1, .bot-message .message-content h2, /* ... */ {
+        color: var(--secondary-color); /* Cyan for headings in bot messages */
+      }
+      .user-message .message-content h1, .user-message .message-content h2, /* ... */ {
+        color: var(--primary-color); /* Blue for headings in user messages */
+      }
 
       .chat-input-container {
-        padding: 15px 20px;
-        background-color: var(--light-color);
-        border-top: 1px solid var(--border-color);
+        padding: 15px 20px; /* Adjusted padding */
+        background-color: var(--light-color); /* White background */
+        border-top: 1px solid var(--border-color); /* Light border */
         flex-shrink: 0; /* Prevent input area shrinking */
       }
 
@@ -268,15 +351,36 @@
         height: 65px;
         border-radius: var(--border-radius-sm);
         overflow: hidden;
-        border: 1px solid var(--border-color);
+        /* Background color for empty state/loading/border */
+        background-color: var(--bg-medium-gray);
+        border: 1px solid var(--border-color-subtle);
       }
-      .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+      .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
       .preview-item .remove-preview {
-        position: absolute; top: 3px; right: 3px;
-        background-color: rgba(0, 0, 0, 0.6); color: white;
-        border: none; border-radius: 50%; width: 18px; height: 18px; /* Smaller remove btn */
-        display: flex; justify-content: center; align-items: center;
-        cursor: pointer; font-size: 0.7rem; /* Smaller icon */
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.6
+        ); /* Dark background for visibility */
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px; /* Smaller remove btn */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 0.7rem; /* Smaller icon */
+        z-index: 1; /* Ensure it's above the image */
       }
 
       .chat-input-wrapper {
@@ -287,463 +391,866 @@
 
       .attachment-buttons {
         display: flex;
-        gap: 8px;
-        align-items: center; /* Align buttons vertically */
-        margin-bottom: 5px; /* Align with textarea bottom padding */
+        gap: 8px; /* Reduced gap */
+        align-items: flex-end; /* Align buttons to bottom */
+        /* Use row for horizontal layout (removed flex-direction: column) */
+        flex-direction: row;
       }
 
       .attachment-button {
-        width: 38px; height: 38px;
+        width: 38px; /* Smaller button */
+        height: 38px; /* Smaller button */
+        border-radius: 50%;
+        background-color: var(--bg-medium-gray); /* Light grey background */
+        border: 1px solid var(--border-color); /* Light border */
+        color: var(--primary-color); /* Blue icon */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: var(--transition);
+        flex-shrink: 0; /* Prevent shrinking */
+        /* Added margin-bottom to align with input baseline */
+        margin-bottom: 5px;
+      }
+      .attachment-button:hover {
+        background-color: var(--primary-color); /* Blue background */
+        color: white; /* White icon */
+        border-color: var(--primary-color);
+      }
+      .attachment-button:disabled {
+        background-color: var(--bg-medium-gray); /* Keep same light gray */
+        color: var(--text-light); /* Lighter gray icon */
+        cursor: not-allowed;
+      }
+      /* Style for the input label acting as a button */
+      .attachment-buttons label.attachment-button {
+        /* Ensure label behaves like the button */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
         border-radius: 50%;
         background-color: var(--bg-medium-gray);
         border: 1px solid var(--border-color);
         color: var(--primary-color);
-        display: flex; justify-content: center; align-items: center;
-        cursor: pointer; transition: var(--transition);
+        cursor: pointer;
+        transition: var(--transition);
+        flex-shrink: 0;
+        margin-bottom: 5px;
       }
-      .attachment-button:hover {
+      .attachment-buttons label.attachment-button:hover {
         background-color: var(--primary-color);
-        color: white; border-color: var(--primary-color);
-      }
-      .attachment-button label { /* Make label fill button for click */
-        display: flex; align-items: center; justify-content: center;
-        width: 100%; height: 100%; cursor: pointer;
+        color: white;
+        border-color: var(--primary-color);
       }
 
       .input-wrapper {
         flex: 1;
         display: flex;
-        background-color: var(--light-color);
-        border: 1px solid var(--border-color);
+        background-color: var(--light-color); /* White background */
+        border: 1px solid var(--border-color); /* Light border */
         border-radius: 24px;
         padding: 5px 10px 5px 15px; /* Adjusted padding */
         align-items: center;
         transition: border-color 0.3s, box-shadow 0.3s;
       }
-       .input-wrapper:focus-within {
-          border-color: var(--primary-color);
-          box-shadow: 0 0 0 2px rgba(11, 79, 108, 0.2);
-       }
+      .input-wrapper:focus-within {
+        border-color: var(--primary-color); /* Blue border */
+        box-shadow: 0 0 0 2px rgba(48, 148, 191, 0.2); /* Blue glow */
+      }
 
       #message-input {
-        flex: 1; background: transparent; border: none;
-        color: var(--text-color); font-size: 0.95rem;
-        resize: none; height: 24px; /* Initial height based on font size */
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--text-color); /* Dark text */
+        font-size: 0.95rem; /* Adjusted font size */
+        resize: none;
+        height: 24px; /* Initial height based on font size */
         max-height: 100px; /* Reduced max height */
-        outline: none; padding: 5px 0; /* Vertical padding */
+        outline: none;
+        padding: 5px 0; /* Vertical padding */
         line-height: 1.4; /* Match line height */
         overflow-y: auto; /* Add scroll if max height reached */
+        /* Removed align-self: center; - flex-end on parent handles alignment better */
       }
-      #message-input::placeholder { color: var(--text-light); }
+      #message-input::placeholder {
+        color: var(--text-light); /* Medium gray placeholder */
+      }
 
       .send-button {
-        background: transparent; border: none;
-        color: var(--primary-color);
-        font-size: 1.2rem; cursor: pointer;
+        background: transparent;
+        border: none;
+        color: var(--primary-color); /* Blue icon */
+        font-size: 1.2rem;
+        cursor: pointer;
         padding: 5px 0 5px 10px; /* Match vertical padding */
-        display: flex; align-items: center;
-        transition: color 0.3s;
+        display: flex;
+        align-items: center;
+        transition: color 0.2s ease;
         height: 100%; /* Align with textarea */
+        flex-shrink: 0; /* Prevent shrinking */
       }
-      .send-button:hover { color: var(--primary-dark); }
 
+      .send-button:hover:not(:disabled) {
+        color: var(--primary-dark); /* Darker blue */
+      }
 
-      .recording-indicator-input { /* Renamed for specificity if needed */
-        position: absolute; bottom: 80px; /* Position above input */
-        left: 50%; transform: translateX(-50%);
-        background-color: var(--light-color); border: 1px solid var(--border-color);
-        border-radius: 20px; padding: 8px 15px; /* Smaller padding */
-        display: none; align-items: center; gap: 8px;
-        color: var(--danger-color); box-shadow: var(--box-shadow);
+      .send-button:disabled {
+        color: var(--text-light); /* Lighter gray icon */
+        cursor: not-allowed;
+      }
+
+      /* Recording Indicator (Absolute positioned, shown during recording) */
+      .recording-indicator-input {
+        /* Renamed class for clarity */
+        position: absolute;
+        bottom: 80px; /* Position above input */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--light-color); /* White background */
+        border: 1px solid var(--border-color); /* Light border */
+        border-radius: 20px;
+        padding: 8px 15px; /* Smaller padding */
+        display: none;
+        align-items: center;
+        gap: 8px;
+        color: var(--danger-color); /* Red text */
+        box-shadow: var(--box-shadow);
         z-index: 10;
       }
-       .recording-indicator-input .recording-pulse { /* Style pulse inside */
-         width: 10px; height: 10px; background-color: var(--danger-color);
-         border-radius: 50%; animation: pulse-rec 1.5s infinite;
-       }
-       .recording-indicator-input span { font-size: 0.85rem; }
-       #stop-recording-indicator { /* Style stop button inside */
-         background: transparent; border: none; color: var(--danger-color);
-         font-size: 0.9rem; cursor: pointer; padding: 0 3px;
-       }
+      .recording-indicator-input .recording-pulse {
+        /* Style pulse inside */
+        width: 10px; /* Smaller pulse dot */
+        height: 10px; /* Smaller pulse dot */
+        background-color: var(--danger-color); /* Red pulse */
+        border-radius: 50%;
+        animation: pulse-rec 1.5s infinite;
+      }
+      @keyframes pulse-rec {
+        /* Define recording pulse keyframes */
+        0% {
+          transform: scale(0.9);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.9);
+          opacity: 0.7;
+        }
+      }
 
+      .recording-indicator-input span {
+        font-size: 0.85rem; /* Smaller text */
+      }
+      #stop-recording-indicator {
+        /* Style stop button inside */
+        background: transparent;
+        border: none;
+        color: var(--danger-color); /* Red icon */
+        font-size: 0.9rem; /* Smaller icon */
+        cursor: pointer;
+        padding: 0 3px;
+      }
 
       /* Scrollbar Styles */
-      ::-webkit-scrollbar { width: 6px; height: 6px;}
-      ::-webkit-scrollbar-track { background: var(--bg-light-gray); }
-      ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px; /* For horizontal scroll in tables */
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-light-gray); /* Light track */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border-color); /* Light grey thumb */
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-light); /* Darker thumb on hover */
+      }
 
+      /* Animation for new messages */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
       /* Responsive */
       @media (max-width: 600px) {
-        body { padding: 0; } /* Remove body padding */
+        body {
+          padding: 0;
+        } /* Remove body padding */
         .chat-container {
-          height: 100vh; width: 100%; max-width: 100%;
-          border-radius: 0; margin: 0; border: none; box-shadow: none;
+          height: 100vh;
+          width: 100%;
+          max-width: 100%;
+          border-radius: 0;
+          margin: 0;
+          border: none;
+          box-shadow: none;
           max-height: none; /* Full screen */
         }
-        .chat-header { border-radius: 0; padding: 12px 15px;}
-        .chat-header h1 { font-size: 1.1rem; }
-        .chat-messages { padding: 15px; gap: 12px;}
-        .message { max-width: 90%; font-size: 0.9rem; padding: 8px 12px;}
-        .message-avatar { width: 32px; height: 32px; }
-        .message-avatar i { font-size: 0.9rem; }
-        .chat-input-container { padding: 10px 15px; }
-        .chat-input-wrapper { gap: 8px; }
-        .attachment-buttons { gap: 5px; }
-        .attachment-button { width: 35px; height: 35px; }
-        .input-wrapper { padding: 5px 8px 5px 12px;}
-        #message-input { font-size: 0.9rem; }
-        .send-button { font-size: 1.1rem; padding: 5px 0 5px 8px; }
-        .preview-item { width: 55px; height: 55px; }
-        .preview-item .remove-preview { width: 16px; height: 16px; font-size: 0.6rem;}
-        .recording-indicator-input { bottom: 70px; padding: 6px 12px; font-size: 0.8rem; }
-      }
+        .chat-header {
+          border-radius: 0;
+          padding: 12px 15px;
+        }
+        .chat-header h1 {
+          font-size: 1.1rem;
+        }
+        .chat-messages {
+          padding: 15px;
+          gap: 12px;
+        }
+        .message {
+          max-width: 95%; /* Allow messages to be a bit wider */
+          font-size: 0.9rem; /* Slightly smaller message font */
+        }
+        /* Adjust message content padding for smaller screens */
+        .message-content {
+          padding: 10px 12px;
+          font-size: 0.9rem;
+        }
 
+        .message-avatar {
+          width: 32px;
+          height: 32px;
+        }
+        .message-avatar i {
+          font-size: 0.9rem;
+        }
+        /* Table font size on smaller screens */
+        .message-content table {
+          font-size: 0.75em; /* Even smaller table text */
+        }
+        .message-content th,
+        .message-content td {
+          padding: 6px 8px; /* Less padding in table cells */
+        }
+
+        .chat-input-container {
+          padding: 10px 15px;
+        }
+        .chat-input-wrapper {
+          gap: 8px;
+        }
+        .attachment-buttons {
+          gap: 5px;
+        }
+        .attachment-button {
+          width: 35px;
+          height: 35px;
+        }
+        .input-wrapper {
+          padding: 5px 8px 5px 12px;
+        }
+        #message-input {
+          font-size: 0.9rem;
+        }
+        .send-button {
+          font-size: 1.1rem;
+          padding: 5px 0 5px 8px;
+        }
+        .preview-item {
+          width: 55px;
+          height: 55px;
+        }
+        .preview-item .remove-preview {
+          width: 16px;
+          height: 16px;
+          font-size: 0.6rem;
+        }
+        .recording-indicator-input {
+          bottom: 70px; /* Adjust position */
+          padding: 6px 12px;
+          font-size: 0.8rem;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="chat-container">
       <div class="chat-header">
         <div class="chat-title">
-          <i class="fas fa-comment"></i> <!-- Consider fas fa-stethoscope or fa-user-md -->
-          <h1>Buddy</h1> <!-- More specific title -->
+          <i class="fas fa-robot"></i>
+          <h1>AI Assistant</h1>
         </div>
-  
+        <!-- Status can be updated dynamically -->
+        <div class="chat-status" id="chat-status">Online</div>
       </div>
 
       <div class="chat-messages" id="chat-messages">
-        <!-- Initial bot message added by JS -->
+        <!-- Initial bot message will be added by JavaScript -->
       </div>
 
-      <!-- Input Area -->
       <div class="chat-input-container">
         <div class="attachment-preview" id="attachment-preview"></div>
+
         <div class="chat-input-wrapper">
-          <div class="attachment-buttons">
-            <label for="image-upload" class="attachment-button" title="Upload Image">
-               <i class="fas fa-paperclip"></i>
-               <input type="file" id="image-upload" accept="image/*" hidden multiple/> <!-- Added multiple -->
-            </label>
-            <button id="voice-record" class="attachment-button" type="button" title="Record Voice">
-              <i class="fas fa-microphone"></i>
-            </button>
-            <!-- Removed separate stop button, use indicator's stop button -->
-            <!-- <button id="stop-recording" class="attachment-button" type="button" hidden> <i class="fas fa-stop"></i> </button> -->
-          </div>
+          <!-- Moved file input and label inside input-wrapper for flex alignment -->
+          <!-- <div class="input-wrapper"> -->
+          <label
+            for="image-upload"
+            class="attachment-button"
+            title="Upload Image"
+          >
+            <i class="fas fa-image"></i>
+            <!-- Changed icon to fas fa-image -->
+            <!-- Input element is now inside the label -->
+            <input type="file" id="image-upload" accept="image/*" hidden />
+          </label>
+          <!-- Voice record button moved inside the input-wrapper -->
+          <button
+            id="voice-record"
+            class="attachment-button"
+            type="button"
+            title="Record Voice"
+          >
+            <i class="fas fa-microphone"></i>
+          </button>
+
           <div class="input-wrapper">
-            <textarea id="message-input" placeholder="Describe symptoms or ask a question..." rows="1"></textarea>
-            <button id="send-button" class="send-button" type="button" title="Send Message">
+            <textarea
+              id="message-input"
+              placeholder="Type your message..."
+              rows="1"
+            ></textarea>
+            <!-- Start with 1 row -->
+            <button
+              id="send-button"
+              class="send-button"
+              type="button"
+              title="Send Message"
+            >
               <i class="fas fa-paper-plane"></i>
             </button>
           </div>
+          <!-- </div> -->
+          <!-- Closing div removed as buttons are moved outside -->
         </div>
       </div>
-
       <!-- Recording Indicator (Absolute positioned, shown during recording) -->
-       <div class="recording-indicator-input" id="recording-indicator"> <!-- Renamed ID -->
-         <div class="recording-pulse"></div>
-         <span>Recording...</span>
-         <button id="stop-recording-indicator" type="button" title="Stop Recording">
-           <i class="fas fa-stop"></i>
-         </button>
-       </div>
-
+      <div class="recording-indicator-input" id="recording-indicator">
+        <!-- Renamed ID -->
+        <div class="recording-pulse"></div>
+        <span>Recording...</span>
+        <button
+          id="stop-recording-indicator"
+          type="button"
+          title="Stop Recording"
+        >
+          <i class="fas fa-stop"></i>
+        </button>
+        <!-- Added ID -->
+      </div>
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", function () {
         // DOM Elements
         const chatMessages = document.getElementById("chat-messages");
         const messageInput = document.getElementById("message-input");
         const sendButton = document.getElementById("send-button");
         const imageUpload = document.getElementById("image-upload");
-        const voiceRecord = document.getElementById("voice-record");
-        // const stopRecord = document.getElementById("stop-recording"); // Removed
-        const recordingIndicator = document.getElementById("recording-indicator"); // Renamed ID used
-        const stopRecordingIndicatorBtn = document.getElementById("stop-recording-indicator");
-        const attachmentPreview = document.getElementById("attachment-preview");
-
-        // Backend Endpoint - UPDATE IF NEEDED
-        const backendUrl = "http://127.0.0.1:8000/";
-
-        // --- Add initial bot message ---
-        addMessage(
-          "<p>Hello! I'm your Buddy health assistant. How can I help? You can describe symptoms, ask questions, or customized diet chart.</p></p>", // Added Disclaimer
-          "bot"
+        // Voice recording elements added/referenced
+        const voiceRecordBtn = document.getElementById("voice-record");
+        const recordingIndicator = document.getElementById(
+          "recording-indicator"
+        );
+        const stopRecordingIndicatorBtn = document.getElementById(
+          "stop-recording-indicator"
         );
 
+        const attachmentPreview = document.getElementById("attachment-preview");
+        const chatStatus = document.getElementById("chat-status");
+
+        // Backend endpoint URL (Adjust if needed)
+        // Assuming the backend listens for POST requests at the root URL
+        const BACKEND_URL = "http://127.0.0.1:8000/upload";
+
+        // Variables for attachments
+        let attachedFile = null; // Store the actual File object
+        let attachedFilePreview = null; // Store the Data URL for preview (for display only)
+
+        // --- Utility Functions ---
+
+        // Function to add a message to the chat
+        // Modified to accept raw HTML content for bot messages
+        function addMessage(
+          type,
+          content,
+          imagePreviewUrl = null,
+          isPlaceholder = false,
+          isError = false // Added error flag
+        ) {
+          const messageElement = document.createElement("div");
+          messageElement.className = `message ${type}-message`;
+          if (isPlaceholder) {
+            messageElement.classList.add("thinking");
+          }
+          if (isError) {
+            // Add error class
+            messageElement.classList.add("error");
+          }
+
+          const avatarElement = document.createElement("div");
+          avatarElement.className = "message-avatar";
+          const avatarIcon = document.createElement("i");
+          // Use different icons for user and bot
+          avatarIcon.className =
+            type === "user" ? "fas fa-user-alt" : "fas fa-robot"; // Use user-alt for user
+
+          avatarElement.appendChild(avatarIcon);
+
+          const contentElement = document.createElement("div");
+          contentElement.className = "message-content";
+
+          if (type === "user") {
+            // User message: Treat content as plain text, wrap in p, add image if any
+            if (content) {
+              const textElement = document.createElement("p");
+              textElement.style.whiteSpace = "pre-wrap"; // Preserve line breaks
+              textElement.textContent = content; // Use textContent for safety against XSS
+              contentElement.appendChild(textElement);
+            }
+            if (imagePreviewUrl) {
+              const imgElement = document.createElement("img");
+              imgElement.src = imagePreviewUrl;
+              contentElement.appendChild(imgElement);
+            }
+            messageElement.append(contentElement, avatarElement); // User on right
+          } else {
+            // type === 'bot'
+            // Bot message: Check if content looks like HTML.
+            // If it is, set innerHTML directly to render tables, etc.
+            // If it's plain text, wrap in <p> using textContent.
+            const isHtml = /<[a-z][\s\S]*>/i.test(content.trim());
+
+            if (isHtml) {
+              contentElement.innerHTML = content; // Directly set the HTML content
+            } else {
+              const textElement = document.createElement("p");
+              textElement.style.whiteSpace = "pre-wrap"; // Preserve line breaks
+              textElement.textContent = content; // Use textContent for safety
+              contentElement.appendChild(textElement);
+            }
+
+            messageElement.append(avatarElement, contentElement); // Bot on left
+          }
+
+          chatMessages.appendChild(messageElement);
+          scrollToBottom();
+
+          return messageElement; // Return the created message element (useful for placeholders)
+        }
+
+        // Helper to scroll messages to the bottom
+        function scrollToBottom() {
+          // Use requestAnimationFrame or setTimeout to ensure DOM update finishes before scrolling
+          requestAnimationFrame(() => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          });
+        }
+
+        // Function to update chat status
+        function updateChatStatus(statusText) {
+          chatStatus.textContent = statusText;
+        }
+
         // --- Speech Recognition Setup ---
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition;
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
         let isRecording = false;
 
         if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = navigator.language || "en-US";
+          recognition = new SpeechRecognition();
+          recognition.continuous = false; // Single utterance
+          recognition.interimResults = false; // No need for partial results
+          recognition.lang = navigator.language || "en-US"; // Use browser language
 
-            recognition.onstart = () => {
-                isRecording = true;
-                voiceRecord.disabled = true;
-                recordingIndicator.style.display = "flex";
-                voiceRecord.innerHTML = '<i class="fas fa-microphone-slash"></i>';
-                voiceRecord.style.color = 'var(--danger-color)';
-            };
+          recognition.onstart = () => {
+            isRecording = true;
+            voiceRecordBtn.disabled = true;
+            recordingIndicator.style.display = "flex";
+            voiceRecordBtn.innerHTML =
+              '<i class="fas fa-microphone-slash"></i>'; // Change icon
+            voiceRecordBtn.style.color = "var(--danger-color)"; // Change color
+            updateChatStatus("Listening...");
+          };
 
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                messageInput.value += (messageInput.value ? ' ' : '') + transcript;
-                autoResizeTextarea(); // Resize textarea
-            };
+          recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            // Append transcript to input, add a space if input is not empty
+            messageInput.value += (messageInput.value ? " " : "") + transcript;
+            // Trigger input event to auto-resize textarea and check button state
+            messageInput.dispatchEvent(new Event("input"));
+          };
 
-            recognition.onerror = (event) => {
-                console.error("Speech recognition error:", event.error);
-                let errorMsg = `Speech recognition error: ${event.error}`;
-                if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                    errorMsg = "Microphone access denied. Please enable permissions.";
-                } else if (event.error === 'no-speech') {
-                     errorMsg = "No speech detected. Please try speaking louder.";
-                }
-                addMessage(`<p style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> ${errorMsg}</p>`, "bot"); // Display error in chat
-                stopVoiceRecognition();
-            };
+          recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            let errorMsg = `Speech recognition error: ${event.error}`;
+            if (
+              event.error === "not-allowed" ||
+              event.error === "service-not-allowed"
+            ) {
+              errorMsg = "Microphone access denied. Please enable permissions.";
+            } else if (event.error === "no-speech") {
+              errorMsg = "No speech detected."; // More common error
+            }
+            addMessage(
+              "bot",
+              `<p style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> ${errorMsg}</p>`,
+              null,
+              false,
+              true // Not placeholder, is error
+            );
+            // Ensure UI resets after error
+            stopVoiceRecognition();
+          };
 
-            recognition.onend = () => {
-                 // onend might fire unexpectedly sometimes, only fully reset if we know we are stopping
-                 if(isRecording) { // Check the flag before resetting
-                     stopVoiceRecognition();
-                 }
-            };
+          recognition.onend = () => {
+            // This fires after stop() or automatically if no speech is detected
+            // Only fully reset the UI if we were actively recording
+            if (isRecording) {
+              stopVoiceRecognition();
+            }
+          };
         } else {
-            voiceRecord.style.display = "none";
-            console.warn("Speech recognition not supported.");
+          // Hide voice button if API is not supported
+          voiceRecordBtn.style.display = "none";
+          console.warn("Speech recognition not supported in this browser");
         }
 
         function startVoiceRecognition() {
-             if (recognition && !isRecording) {
-                try {
-                    messageInput.value = ""; // Clear input before recording new speech
-                    autoResizeTextarea();
-                    recognition.start();
-                } catch (e) {
-                    console.error("Error starting speech recognition:", e);
-                    alert("Could not start microphone. Please check permissions or try again.");
-                    stopVoiceRecognition(); // Reset UI
-                }
+          if (recognition && !isRecording) {
+            try {
+              // Clear input before recording new speech if it's not empty
+              if (messageInput.value.trim() === "") {
+                messageInput.value = "";
+              }
+              autoResizeTextarea(); // Reset height
+              recognition.start();
+            } catch (e) {
+              console.error("Error starting speech recognition:", e);
+              alert(
+                "Could not start microphone. Please check permissions or try again."
+              );
+              stopVoiceRecognition(); // Ensure UI resets on failed start
             }
+          }
         }
 
         function stopVoiceRecognition() {
-            if (recognition && isRecording) {
-                recognition.stop();
-                 // The 'onend' event will handle the final UI reset now
-            }
-            // Immediate UI reset in case onend doesn't fire correctly
-             isRecording = false;
-             voiceRecord.disabled = false;
-             recordingIndicator.style.display = "none";
-             voiceRecord.innerHTML = '<i class="fas fa-microphone"></i>';
-             voiceRecord.style.color = 'var(--primary-color)';
+          if (recognition && isRecording) {
+            // Check if recognition object exists and isRecording flag is true
+            recognition.stop();
+            // The 'onend' event should fire after stop(), which handles the final UI reset.
+            // However, adding a direct UI reset here can make it more robust.
+            isRecording = false; // Reset flag immediately
+            voiceRecordBtn.disabled = false; // Re-enable record button
+            recordingIndicator.style.display = "none"; // Hide the indicator
+            voiceRecordBtn.innerHTML = '<i class="fas fa-microphone"></i>'; // Restore icon
+            voiceRecordBtn.style.color = "var(--primary-color)"; // Restore color
+            updateChatStatus("Online"); // Reset status
+          } else if (recognition && !isRecording) {
+            // If recognition exists but we are somehow not in the recording state,
+            // just ensure the UI is reset to the default state.
+            isRecording = false; // Defensive reset
+            voiceRecordBtn.disabled = false;
+            recordingIndicator.style.display = "none";
+            voiceRecordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceRecordBtn.style.color = "var(--primary-color)";
+            updateChatStatus("Online");
+          }
+          // Ensure send button state is checked after stopping voice input
+          checkSendButtonState();
         }
 
         // Event Listeners for voice control
-        voiceRecord.addEventListener("click", () => {
-             if (!isRecording) { startVoiceRecognition(); }
-             else { stopVoiceRecognition(); } // Toggle behavior
-        });
-        stopRecordingIndicatorBtn.addEventListener("click", stopVoiceRecognition);
-
-
-        // --- Message Handling ---
-        function addMessage(contentHtml, sender) {
-          const messageDiv = document.createElement("div");
-          messageDiv.className = `message ${sender}-message`;
-
-          const avatar = document.createElement("div");
-          avatar.className = "message-avatar";
-          avatar.innerHTML = `<i class="fas fa-${sender === "user" ? "user-alt" : "comment"}"></i>`; // Use user-alt
-        
-          const content = document.createElement("div");
-          content.className = "message-content";
-          content.innerHTML = contentHtml; // Directly set HTML
-
-          if (sender === "user") { messageDiv.append(content, avatar); }
-          else { messageDiv.append(avatar, content); }
-
-          chatMessages.appendChild(messageDiv);
-          scrollToBottom(); // Ensure scroll
-        }
-
-        function scrollToBottom() {
-           requestAnimationFrame(() => { // Use rAF for smoother scroll after render
-              chatMessages.scrollTop = chatMessages.scrollHeight;
-           });
-        }
-
-
-        // --- Send Message Function (Handles Text & Images) ---
-        async function handleSendMessage() {
-          const messageText = messageInput.value.trim();
-          const attachedFiles = Array.from(imageUpload.files);
-
-          if (!messageText && attachedFiles.length === 0) return;
-
-          // 1. Display User Message / Previews
-          let userDisplayContent = '';
-          if (messageText) {
-              // Escape HTML to prevent injection if displaying as HTML
-              const escapedText = messageText.replace(/</g, "<").replace(/>/g, ">").replace(/\n/g, '<br>');
-              userDisplayContent += `<p>${escapedText}</p>`;
+        voiceRecordBtn.addEventListener("click", () => {
+          if (!isRecording) {
+            startVoiceRecognition();
+          } else {
+            // If button is clicked while recording, stop it
+            stopVoiceRecognition(); // This handles the toggle logic
           }
-           // Display visual previews *below* text if any
-           if (attachedFiles.length > 0) {
-              // Create a simple list or just mention files sent
-              userDisplayContent += `<p style="font-size: 0.8em; margin-top: 5px; color: inherit; opacity: 0.8;"><i>+ ${attachedFiles.length} image${attachedFiles.length > 1 ? 's' : ''} sent for analysis.</i></p>`;
-           }
-           if (userDisplayContent) {
-               addMessage(userDisplayContent, "user");
-           }
+        });
+        // Listener for stopping recording via the indicator button
+        stopRecordingIndicatorBtn.addEventListener(
+          "click",
+          stopVoiceRecognition
+        );
 
+        // --- Core Functionality ---
 
-          // 2. Prepare FormData
-          const formData = new FormData();
-          if (messageText) { formData.append("content", messageText); }
-          attachedFiles.forEach((file, index) => {
-             formData.append(`image_${index}`, file, file.name);
-          });
+        // Function to send message (text and/or image)
+        async function sendMessage() {
+          const messageText = messageInput.value.trim();
+          const fileToSend = attachedFile; // Get the actual File object
 
-          // 3. Clear Input Area
+          // Don't send if no text and no attachments
+          if (!messageText && !fileToSend) return;
+
+          // Add user message to chat immediately using the preview URL if available
+          addMessage("user", messageText, attachedFilePreview);
+
+          // Clear input and attachments display
           messageInput.value = "";
+          // Use autoResizeTextarea to reset height correctly
           autoResizeTextarea();
-          imageUpload.value = "";
+          attachedFile = null;
+          attachedFilePreview = null;
           attachmentPreview.innerHTML = "";
+          checkSendButtonState(); // Update button state after clearing
 
-          // 4. Send & Handle Response
-          // Optional: Add thinking indicator
-          const thinkingMsgId = `thinking-${Date.now()}`;
-          addMessage(`<p id="${thinkingMsgId}"><i><i class="fas fa-spinner fa-spin"></i> Buddy Assistant is thinking...</i></p>`, "bot");
+          // Disable input and buttons while sending
+          messageInput.disabled = true;
+          sendButton.disabled = true;
+          imageUpload.disabled = true;
+          voiceRecordBtn.disabled = true; // Disable voice button too
+
+          // Add a "Thinking..." bot message placeholder
+          // Placeholder content is just text for now, the real response will replace innerHTML
+          const placeholderMessage = addMessage(
+            "bot",
+            "Thinking...", // Simple text for placeholder
+            null,
+            true // Mark as placeholder
+          );
+          updateChatStatus("Typing..."); // Indicate thinking status
+
+          // Send data to backend
+          await sendDataToBackend(messageText, fileToSend, placeholderMessage);
+
+          // Re-enable input and buttons after sending (regardless of success/failure)
+          messageInput.disabled = false;
+          // Send button state is re-checked by checkSendButtonState() called below
+          imageUpload.disabled = false;
+          voiceRecordBtn.disabled = false; // Re-enable voice button
+          updateChatStatus("Online"); // Reset status
+          checkSendButtonState(); // Re-check send button state now that input is re-enabled
+        }
+
+        // Function to send data (text and file) to the backend
+        // Modified to expect raw HTML response from backend
+        async function sendDataToBackend(text, file, placeholderElement) {
+          const formData = new FormData();
+
+          // Append fields as expected by the backend
+          // Based on the previous code, backend expects 'title' and 'image_url' for the file
+          // And 'text_message' for the text input.
+          formData.append("title", "User Chat Upload"); // Default title, adjust if needed
+
+          if (file) {
+            // Append the actual file object with the name 'image_url' as expected by backend
+            // Adjust 'image_url' key name if your backend expects something different for a file upload
+            formData.append("image_url", file, file.name);
+          }
+          if (text) {
+            formData.append("text_message", text); // Append the text message
+          }
 
           try {
-              const response = await fetch(backendUrl, { method: "POST", body: formData });
-              const botResponseHTML = await response.text();
+            const response = await fetch(BACKEND_URL, {
+              method: "POST",
+              body: formData, // FormData handles headers like Content-Type automatically
+            });
 
-              // Remove thinking message
-              const thinkingMsg = document.getElementById(thinkingMsgId);
-              if (thinkingMsg) thinkingMsg.closest('.message')?.remove();
+            // Get the content element from the existing placeholder message
+            const contentElement =
+              placeholderElement.querySelector(".message-content");
 
-
-              if (!response.ok) {
-                  console.error(`HTTP error! status: ${response.status}`, botResponseHTML);
-                  addMessage(`<p style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Error: Could not process request (Status ${response.status}).</p>`, "bot");
-                  return;
-              }
+            if (!response.ok) {
+              // Handle HTTP errors
+              const errorText = await response.text(); // Read error response as text
+              console.error(
+                "Backend response error:",
+                response.status,
+                errorText
+              );
+              // Update content element with error details, wrapped in <p>
+              contentElement.innerHTML = `<p style="color: var(--error-color);"><i class="fas fa-exclamation-triangle"></i> Error from backend: ${
+                response.status
+              } ${response.statusText || ""}. Details: ${errorText.substring(
+                0,
+                200
+              )}...</p>`;
+              placeholderElement.classList.remove("thinking"); // Remove thinking style
+              placeholderElement.classList.add("error"); // Add error style
+            } else {
+              // *** Key Change Here ***
+              // Assume backend returns HTML content directly (or plain text)
+              const botResponseHTML = await response.text(); // Read response as raw text
 
               if (!botResponseHTML || !botResponseHTML.trim()) {
-                  addMessage("<p>Received an empty response. Please try again.</p>", "bot");
+                // Handle empty response - display a default message, wrapped in <p>
+                contentElement.innerHTML =
+                  "<p>Received an empty response from the server.</p>";
+                console.warn("Received empty response from backend.");
               } else {
-                  addMessage(botResponseHTML, "bot"); // Add the actual HTML response
+                // Set the content element's innerHTML directly with the received content
+                // This will render HTML (like tables) or plain text correctly
+                contentElement.innerHTML = botResponseHTML;
               }
+
+              placeholderElement.classList.remove("thinking"); // Remove thinking style
+            }
+
+            scrollToBottom(); // Scroll after updating
           } catch (error) {
-              console.error("Network/Fetch Error:", error);
-              // Remove thinking message on error too
-               const thinkingMsg = document.getElementById(thinkingMsgId);
-               if (thinkingMsg) thinkingMsg.closest('.message')?.remove();
-              addMessage("<p style='color: var(--danger-color);'><i class=\"fas fa-wifi\"></i> Network Error: Could not reach the AI assistant.</p>", "bot");
+            console.error("Error sending data to backend:", error);
+            const contentElement =
+              placeholderElement.querySelector(".message-content");
+            let displayError = error.message;
+            if (error.message.includes("Failed to fetch")) {
+              displayError =
+                "Could not connect to the backend server. Is it running and accessible?";
+            } else if (error.message.includes("SyntaxError")) {
+              displayError = "Error parsing backend response."; // Could happen if backend sends non-HTML/non-text on error
+            }
+            // Display communication error, wrapped in <p>
+            contentElement.innerHTML = `<p style="color: var(--danger-color);"><i class="fas fa-wifi"></i> Communication error: ${displayError}</p>`;
+            placeholderElement.classList.remove("thinking");
+            placeholderElement.classList.add("error"); // Add error class
+            scrollToBottom();
           }
         }
-        // --- End Send Message ---
 
-        sendButton.addEventListener("click", handleSendMessage);
-        messageInput.addEventListener("keydown", (e) => {
+        // --- Event Handlers ---
+
+        // Initial bot message on load
+        // Using the updated addMessage function
+        addMessage(
+          "bot",
+          "<p>Hello! I'm your AI assistant. Send me a message or an image.</p>"
+        );
+
+        // Auto-resize textarea
+        function autoResizeTextarea() {
+          messageInput.style.height = "auto"; // Reset height to calculate scrollHeight correctly
+          const scrollHeight = messageInput.scrollHeight;
+          const maxHeight = 100; // Match CSS max-height
+
+          // Apply new height, capped by max-height
+          messageInput.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+
+          // Adjust vertical alignment of the input wrapper content
+          const inputWrapperDiv = messageInput.closest(".input-wrapper");
+          if (inputWrapperDiv) {
+            // If scroll height exceeds approx one line height (e.g., ~24px), align bottom, else center
+            inputWrapperDiv.style.alignItems =
+              scrollHeight > 25 ? "flex-end" : "center";
+          }
+        }
+        messageInput.addEventListener("input", autoResizeTextarea);
+
+        // Initial size adjustment on load
+        autoResizeTextarea();
+
+        // Handle image upload
+        imageUpload.addEventListener("change", function (e) {
+          // Only allow one file attachment at a time for simplicity with this UI
+          if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+
+            // Basic file size and type validation (optional but recommended)
+            if (!file.type.startsWith("image/")) {
+              alert("Please select an image file.");
+              e.target.value = null; // Clear the input
+              checkSendButtonState(); // Update button state
+              return;
+            }
+            // Add size limit, e.g., 5MB
+            if (file.size > 5 * 1024 * 1024) {
+              alert("File size exceeds 5MB limit.");
+              e.target.value = null; // Clear the input
+              checkSendButtonState(); // Update button state
+              return;
+            }
+
+            attachedFile = file; // Store the actual File object
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              attachedFilePreview = event.target.result; // Store Data URL for preview
+
+              // Create preview display
+              attachmentPreview.innerHTML = ""; // Clear previous previews
+              const previewItem = document.createElement("div");
+              previewItem.className = "preview-item";
+
+              const img = document.createElement("img");
+              img.src = attachedFilePreview;
+              img.alt = "Image Preview";
+
+              const removeButton = document.createElement("button");
+              removeButton.className = "remove-preview";
+              removeButton.type = "button"; // Explicitly set type to button
+              removeButton.innerHTML = '<i class="fas fa-times"></i>';
+              removeButton.addEventListener("click", function () {
+                attachmentPreview.innerHTML = "";
+                attachedFile = null;
+                attachedFilePreview = null;
+                imageUpload.value = null; // Clear the file input value
+                checkSendButtonState(); // Re-check send button state
+              });
+
+              previewItem.appendChild(img);
+              previewItem.appendChild(removeButton);
+              attachmentPreview.appendChild(previewItem);
+
+              checkSendButtonState(); // Re-check send button state
+            };
+            reader.readAsDataURL(file); // Read the file as Data URL for preview
+          } else {
+            // If file selection was cancelled or no file selected
+            attachedFile = null;
+            attachedFilePreview = null;
+            attachmentPreview.innerHTML = "";
+            checkSendButtonState();
+          }
+        });
+
+        // Enable/disable send button based on input/attachment state
+        function checkSendButtonState() {
+          const messageText = messageInput.value.trim();
+          // Button is enabled if there's text OR there's an attached file
+          sendButton.disabled = !messageText && !attachedFile;
+        }
+
+        // Listen for input changes and attachment changes to update button state
+        messageInput.addEventListener("input", checkSendButtonState);
+        // imageUpload.addEventListener("change", checkSendButtonState); // This is already called inside the handler
+
+        // Send message on button click
+        sendButton.addEventListener("click", sendMessage);
+
+        // Send message on Enter key (but allow Shift+Enter for new line)
+        messageInput.addEventListener("keydown", function (e) {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            handleSendMessage();
+            // Only send if button is not disabled (handles empty input/attachment)
+            if (!sendButton.disabled) {
+              sendMessage();
+            }
           }
+          // autoResizeTextarea is handled by the 'input' event listener
         });
 
-        // --- Textarea Auto-resize ---
-        function autoResizeTextarea() {
-            messageInput.style.height = 'auto'; // Reset height to calculate scrollHeight correctly
-            const scrollHeight = messageInput.scrollHeight;
-            const maxHeight = 100; // Match CSS max-height
-            // Apply new height, capped by max-height
-            messageInput.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
-
-            // Adjust vertical alignment of the input wrapper content
-            const inputWrapperDiv = messageInput.closest('.input-wrapper');
-            if (inputWrapperDiv) {
-                 // If scroll height exceeds approx one line height, align bottom, else center
-                 inputWrapperDiv.style.alignItems = (scrollHeight > 30) ? 'flex-end' : 'center';
-             }
-         }
-        messageInput.addEventListener('input', autoResizeTextarea);
-        autoResizeTextarea(); // Initial call
-
-        // --- Image Upload Handling (Preview) ---
-        imageUpload.addEventListener("change", (e) => {
-             attachmentPreview.innerHTML = ""; // Clear previous previews
-             const files = e.target.files;
-             if (!files || files.length === 0) return;
-
-             const maxPreviews = 3;
-             for (let i = 0; i < Math.min(files.length, maxPreviews); i++) {
-                 const file = files[i];
-                 if (!file.type.startsWith("image/")) continue;
-
-                 const reader = new FileReader();
-                 reader.onload = (event) => {
-                     const preview = document.createElement("div");
-                     preview.className = "preview-item";
-                     preview.innerHTML = `
-                         <img src="${event.target.result}" alt="Preview ${file.name}">
-                         <button class="remove-preview" type="button" data-filename="${file.name}" title="Remove"><i class="fas fa-times"></i></button>
-                     `;
-                     preview.querySelector(".remove-preview").addEventListener("click", removePreview);
-                     attachmentPreview.appendChild(preview);
-                 };
-                 reader.readAsDataURL(file);
-             }
-              if (files.length > maxPreviews) {
-                  const moreIndicator = document.createElement("div");
-                  moreIndicator.className = "preview-item";
-                  moreIndicator.style.cssText = `
-                      background-color: var(--bg-medium-gray); display: flex;
-                      align-items: center; justify-content: center;
-                      font-size: 0.8rem; color: var(--text-light);
-                  `;
-                  moreIndicator.textContent = `+${files.length - maxPreviews}`;
-                  attachmentPreview.appendChild(moreIndicator);
-              }
-        });
-
-         function removePreview(e) {
-             const button = e.currentTarget;
-             const previewItem = button.closest('.preview-item');
-             const filenameToRemove = button.dataset.filename;
-
-             if (previewItem) attachmentPreview.removeChild(previewItem);
-
-             // Remove the file from the input element's FileList
-             const currentFiles = Array.from(imageUpload.files);
-             const updatedFiles = currentFiles.filter(file => file.name !== filenameToRemove);
-             const dataTransfer = new DataTransfer();
-             updatedFiles.forEach(file => dataTransfer.items.add(file));
-             imageUpload.files = dataTransfer.files;
-
-             // Optional: Update the '+X more' indicator if needed (more complex)
-         }
-
-
-        // --- Initial state setup ---
-        function initializeApp() {
-            autoResizeTextarea(); // Ensure textarea fits content on load
-        }
-        initializeApp();
-
-      }); // End DOMContentLoaded
+        // Initial state check on load
+        checkSendButtonState();
+      });
     </script>
   </body>
 </html>

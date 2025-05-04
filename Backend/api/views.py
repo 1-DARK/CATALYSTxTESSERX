@@ -3,7 +3,7 @@ from rest_framework import parsers
 from rest_framework.decorators import api_view, parser_classes
 from base.models import Img
 from .serializers import ImgSerializer, VideoSerializer, PdfSerializer
-from .services import llm_handler, image_handler, video_handler
+from .services import llm_handler, image_handler, video_handler, no_image_provided
 from django.http import JsonResponse, HttpResponse
 import json
 from .prettify import prettify
@@ -15,6 +15,7 @@ from zipfile import ZipFile
 import os
 import pyminizip
 from .zipfolder import zip
+from django.utils.datastructures import MultiValueDictKeyError
 
 @api_view(['POST'])
 def query(request):
@@ -32,8 +33,23 @@ def query(request):
 @parser_classes([parsers.MultiPartParser, parsers.FormParser])
 def ImgViewSet(request):
     print(request.data)
-    img_loc =  request.data['image_url']
-    print(img_loc)
+    try:
+        img_loc =  request.data['image_url']
+    except MultiValueDictKeyError as e:
+        print("Image not found")
+        img_loc = ""
+    try:
+        title = request.data['text_message']
+    except MultiValueDictKeyError as e:
+        print("Text not provided: ", e)
+    if len(img_loc) < 1:
+        n = no_image_provided.QueryResponse()
+        res = n.generateResponse(title)
+        prettifiedStr = prettify.Prettify()
+        prettyString = prettifiedStr.prettify_llm_json_string(res)
+
+        return HttpResponse(prettyString, status=200)
+
     serializer = ImgSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
