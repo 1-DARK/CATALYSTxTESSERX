@@ -6,6 +6,12 @@
 
 DiagnoAI is a comprehensive web-based medical diagnosis platform that integrates interactive symptom checking, AI-driven diagnostics, personalized wellness plans, and blockchain-based transaction verification. The platform empowers users to identify potential health conditions, access tailored health recommendations, and securely store medical reports. It features an intuitive, responsive interface suitable for both mobile and desktop users, with a robust backend to handle media processing, decentralized storage, and blockchain integration.
 
+
+
+https://github.com/user-attachments/assets/cc42b882-e15b-41c6-aa87-47af05f2bd13
+
+
+
 ## File Structure
 
 ### Frontend
